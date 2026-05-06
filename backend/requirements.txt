@@ -1,0 +1,13 @@
+fastapi
+uvicorn
+websockets
+faster-whisper
+ollama
+librosa
+sqlalchemy
+psycopg2-binary
+qdrant-client
+python-multipart
+pydantic-settings
+reportlab
+groq

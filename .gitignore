@@ -1,0 +1,19 @@
+# --- Tambahan untuk Frontend (jika ada) ---
+node_modules/
+.next/
+out/
+build/
+
+# --- Tambahan untuk Docker ---
+.dockerignore
+# (Tapi biasanya Dockerfile tetap di-commit)
+
+# --- Tambahan untuk Log & Temp ---
+*.log
+logs/
+tmp/
+
+frontend/certs/cert.pem
+frontend/certs/key.pem
+
+backend/models/hub/models--Systran--faster-whisper-small/blobs/*

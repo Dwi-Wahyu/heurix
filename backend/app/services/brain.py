@@ -1,0 +1,259 @@
+import json
+from groq import AsyncGroq
+from app.core.config import settings
+from app.models import (
+    MasterInstitution,
+    MasterPosition,
+    InterviewAvatar,
+    InterviewSession,
+    SessionTurn,
+    PersonaType,
+    Difficulty,
+    SessionReport
+)
+
+client = AsyncGroq(api_key=settings.GROQ_API_KEY)
+
+async def summarize_interview(
+    session: InterviewSession,
+    institution: MasterInstitution,
+    position: MasterPosition,
+    turns: list[SessionTurn]
+) -> dict:
+    """
+    Menganalisis seluruh sesi wawancara dan memberikan skor serta narasi evaluasi.
+    """
+    history_text = ""
+    for turn in turns:
+        history_text += f"Pewawancara: {turn.questionText}\n"
+        history_text += f"Kandidat: {turn.answerTranscript or '(Tidak menjawab)'}\n"
+        history_text += f"Skor Kualitas: {turn.answerQuality or 0}\n\n"
+
+    system_prompt = f"""
+Kamu adalah AI Pakar Rekrutmen dan Psikolog Industri.
+Tugas kamu adalah mengevaluasi hasil simulasi wawancara kerja berikut.
+
+=== KONTEKS ===
+Institusi: {institution.name}
+Posisi: {position.name}
+Tingkat Kesulitan: {session.difficulty}
+
+=== DATA WAWANCARA ===
+{history_text}
+
+=== INSTRUKSI EVALUASI ===
+1. Berikan skor 0-100 untuk dimensi berikut:
+   - communication_score: Kejelasan, artikulasi, dan struktur menjawab.
+   - consistency_score: Keselarasan jawaban dari awal hingga akhir.
+   - confidence_score: Keyakinan dalam menjawab (dilihat dari pilihan kata).
+   - stress_resistance_score: Ketahanan saat menghadapi pertanyaan sulit/persona intimidatif.
+2. Hitung overall_score sebagai rata-rata tertimbang.
+3. Berikan strengths (minimal 3 poin) dan weaknesses (minimal 3 poin).
+4. Berikan recommendations untuk perbaikan ke depannya.
+5. Berikan evaluation_narrative singkat (2-3 paragraf) yang merangkum performa kandidat.
+
+=== FORMAT OUTPUT ===
+Wajib JSON:
+{{
+  "overall_score": <angka>,
+  "communication_score": <angka>,
+  "consistency_score": <angka>,
+  "confidence_score": <angka>,
+  "stress_resistance_score": <angka>,
+  "strengths": ["...", "...", "..."],
+  "weaknesses": ["...", "...", "..."],
+  "recommendations": ["...", "..."],
+  "evaluation_narrative": "..."
+}}
+"""
+
+    try:
+        response = await client.chat.completions.create(
+            model=settings.LLM_MODEL,
+            messages=[{"role": "system", "content": system_prompt}],
+            response_format={"type": "json_object"},
+            max_tokens=2048,
+        )
+        return json.loads(response.choices[0].message.content)
+    except Exception as e:
+        print(f"Error in Summarization: {e}")
+        # Return fallback data
+        avg_quality = sum([t.answerQuality or 0 for t in turns]) / len(turns) if turns else 50
+        return {
+            "overall_score": avg_quality,
+            "communication_score": avg_quality,
+            "consistency_score": avg_quality,
+            "confidence_score": avg_quality,
+            "stress_resistance_score": avg_quality,
+            "strengths": ["Mampu mengikuti alur wawancara"],
+            "weaknesses": ["Perlu analisis lebih mendalam"],
+            "recommendations": ["Berlatih lebih sering"],
+            "evaluation_narrative": "Evaluasi otomatis gagal dihasilkan karena kendala teknis."
+        }
+
+def build_system_prompt(
+    institution: MasterInstitution,
+    position: MasterPosition,
+    avatar: InterviewAvatar,
+    session: InterviewSession,
+    turn_number: int,
+    total_turns_target: int = 10,
+) -> str:
+    persona_map = {
+        PersonaType.friendly: avatar.promptFriendly,
+        PersonaType.formal: avatar.promptFormal,
+        PersonaType.intimidating: avatar.promptIntimidating,
+    }
+    persona_instruction = persona_map.get(session.currentPersona, avatar.promptFormal)
+
+    difficulty_rules = {
+        Difficulty.easy: "Ajukan pertanyaan ringan. Tidak ada tekanan.",
+        Difficulty.medium: "Gunakan pertanyaan STAR standar. Boleh probing satu level.",
+        Difficulty.hard: "Probing mendalam. Tekan inkonsistensi jawaban.",
+        Difficulty.extreme: "Simulasikan panel wawancara. Pertanyaan teknikal dan stress test.",
+    }.get(session.difficulty, "")
+
+    return f"""
+Kamu adalah {avatar.name}, pewawancara profesional dari {institution.name}.
+
+=== KONTEKS INSTITUSI ===
+{institution.llmContext or "Tidak ada konteks khusus."}
+
+=== KONTEKS POSISI: {position.name} ===
+{position.llmContext or "Tidak ada konteks khusus."}
+
+=== INSTRUKSI PERSONA: {session.currentPersona.value.upper() if hasattr(session.currentPersona, 'value') else str(session.currentPersona).upper()} ===
+{persona_instruction}
+
+=== ATURAN SESI ===
+- Track: {session.track}
+- Difficulty: {session.difficulty} — {difficulty_rules}
+- Ini adalah giliran ke-{turn_number} dari target {total_turns_target} giliran.
+- Persona sudah bergeser {session.personaShiftCount} kali dalam sesi ini.
+- Jangan sebut nama platform atau bahwa ini adalah simulasi.
+- Ajukan SATU pertanyaan saja per giliran.
+- Bahasa: Indonesia formal, boleh campur istilah teknis Inggris.
+
+=== FORMAT OUTPUT ===
+Selalu balas dalam format JSON berikut:
+{{
+  "feedback": "Feedback singkat jawaban sebelumnya (1-2 kalimat). Kosongkan jika ini giliran pertama.",
+  "question": "Pertanyaan wawancara berikutnya.",
+  "persona_assessment": "friendly | formal | intimidating — penilaian kamu atas jawaban kandidat untuk keperluan sistem.",
+  "answer_quality_score": <angka 0-100>
+}}
+""".strip()
+
+def build_chat_history(
+    turns: list[SessionTurn],
+    max_turns: int = 8,
+) -> list[dict]:
+    """
+    Konversi sessionTurn[] dari DB ke format messages[] OpenAI/Groq.
+    Ambil max_turns terakhir untuk menghindari context overflow.
+    Urutan: assistant (pertanyaan) → user (jawaban) → dst.
+    """
+    recent_turns = turns[-max_turns:] if len(turns) > max_turns else turns
+    messages = []
+    for turn in recent_turns:
+        messages.append({
+            "role": "assistant",
+            "content": turn.questionText,
+        })
+        if turn.answerTranscript:
+            messages.append({
+                "role": "user",
+                "content": turn.answerTranscript,
+            })
+    return messages
+
+async def generate_next_turn(
+    session: InterviewSession,
+    institution: MasterInstitution,
+    position: MasterPosition,
+    avatar: InterviewAvatar,
+    past_turns: list[SessionTurn],
+    new_answer_transcript: str | None = None,
+    current_question: str | None = None,
+) -> dict:
+    """
+    Menghasilkan pertanyaan berikutnya dari LLM berdasarkan full context.
+    Mengembalikan dict hasil parse dari JSON output LLM.
+    """
+    # Turn number adalah jumlah turn sebelumnya + turn yang baru saja dijawab (jika ada) + 1
+    # Jika new_answer_transcript ada, berarti kita sedang mencari pertanyaan untuk turn berikutnya
+    turn_number = len(past_turns) + (1 if new_answer_transcript else 0) + 1
+    
+    system_prompt = build_system_prompt(
+        institution=institution,
+        position=position,
+        avatar=avatar,
+        session=session,
+        turn_number=turn_number,
+    )
+
+    # Build history dari turn yang sudah ada (turn-turn lama)
+    messages = build_chat_history(past_turns)
+
+    # Jika ada pertanyaan turn saat ini, tambahkan
+    if current_question:
+        messages.append({"role": "assistant", "content": current_question})
+
+    # Tambahkan jawaban baru jika ada (bukan giliran pertama)
+    if new_answer_transcript:
+        messages.append({"role": "user", "content": new_answer_transcript})
+
+    try:
+        response = await client.chat.completions.create(
+            model=settings.LLM_MODEL,
+            messages=[
+                {"role": "system", "content": system_prompt},
+                *messages,
+            ],
+            response_format={"type": "json_object"},
+            max_tokens=512,
+        )
+        raw = response.choices[0].message.content
+        return json.loads(raw)
+    except Exception as e:
+        print(f"Error in LLM call: {e}")
+        return {
+            "feedback": "Koneksi terganggu sejenak.",
+            "question": "Bisa tolong ulangi atau lanjutkan penjelasan kamu?",
+            "persona_assessment": session.currentPersona,
+            "answer_quality_score": 50
+        }
+
+PERSONA_PROGRESSION = [PersonaType.friendly, PersonaType.formal, PersonaType.intimidating]
+
+SHIFT_THRESHOLDS = {
+    Difficulty.easy:    {"shift_score": 30, "max_shifts": 1},
+    Difficulty.medium:  {"shift_score": 45, "max_shifts": 2},
+    Difficulty.hard:    {"shift_score": 55, "max_shifts": 3},
+    Difficulty.extreme: {"shift_score": 60, "max_shifts": 3},
+}
+
+def should_shift_persona(
+    session: InterviewSession,
+    answer_quality_score: float,
+) -> PersonaType | None:
+    """
+    Mengembalikan persona baru jika harus shift, None jika tidak.
+    """
+    config = SHIFT_THRESHOLDS.get(session.difficulty, SHIFT_THRESHOLDS[Difficulty.medium])
+
+    if session.personaShiftCount >= config["max_shifts"]:
+        return None  # Sudah mencapai batas shift
+
+    if answer_quality_score < config["shift_score"]:
+        current_persona = session.currentPersona
+        try:
+            current_idx = PERSONA_PROGRESSION.index(current_persona)
+            next_idx = min(current_idx + 1, len(PERSONA_PROGRESSION) - 1)
+
+            if next_idx != current_idx:
+                return PERSONA_PROGRESSION[next_idx]
+        except ValueError:
+            return PersonaType.formal
+
+    return None

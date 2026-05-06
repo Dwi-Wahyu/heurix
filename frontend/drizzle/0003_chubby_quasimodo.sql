@@ -1,0 +1,1 @@
+ALTER TABLE "master_institution" ADD COLUMN "track" "interview_track" NOT NULL;

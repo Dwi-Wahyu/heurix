@@ -1,0 +1,22 @@
+# Virtual Environment
+.venv/
+venv/
+env/
+ENV/
+bin/
+lib/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.installed.cfg
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class

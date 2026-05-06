@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+
+<html lang="id"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>HiReady - Hasil Wawancara</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        "colors": {
+                "background": "#f8f9ff",
+                "on-tertiary-fixed": "#1c1c1a",
+                "primary-fixed-dim": "#ffb4a8",
+                "on-tertiary-container": "#a9a7a5",
+                "on-surface": "#0b1c30",
+                "on-background": "#0b1c30",
+                "surface-container-high": "#dce9ff",
+                "error": "#ba1a1a",
+                "tertiary": "#272726",
+                "primary-container": "#800000",
+                "surface-container": "#e5eeff",
+                "secondary-fixed-dim": "#b9c7e0",
+                "surface-container-low": "#eff4ff",
+                "on-secondary-container": "#57657b",
+                "on-tertiary": "#ffffff",
+                "outline": "#8e706c",
+                "secondary-container": "#d5e3fd",
+                "outline-variant": "#e2bfb9",
+                "on-secondary": "#ffffff",
+                "surface-container-lowest": "#ffffff",
+                "surface-dim": "#cbdbf5",
+                "secondary": "#515f74",
+                "inverse-primary": "#ffb4a8",
+                "tertiary-fixed": "#e5e2df",
+                "on-primary": "#ffffff",
+                "tertiary-fixed-dim": "#c8c6c3",
+                "surface": "#f8f9ff",
+                "primary-fixed": "#ffdad4",
+                "surface-tint": "#b22b1d",
+                "on-secondary-fixed-variant": "#3a485c",
+                "on-error": "#ffffff",
+                "tertiary-container": "#3d3d3b",
+                "primary": "#570000",
+                "on-secondary-fixed": "#0d1c2f",
+                "on-primary-fixed-variant": "#8f0f07",
+                "surface-container-highest": "#d3e4fe",
+                "on-primary-container": "#ff8371",
+                "secondary-fixed": "#d5e3fd",
+                "on-error-container": "#93000a",
+                "surface-bright": "#f8f9ff",
+                "on-primary-fixed": "#410000",
+                "inverse-on-surface": "#eaf1ff",
+                "error-container": "#ffdad6",
+                "inverse-surface": "#213145",
+                "on-surface-variant": "#5a413d",
+                "surface-variant": "#d3e4fe",
+                "on-tertiary-fixed-variant": "#474745"
+        },
+        "borderRadius": {
+                "DEFAULT": "0.25rem",
+                "lg": "0.5rem",
+                "xl": "0.75rem",
+                "full": "9999px"
+        },
+        "spacing": {
+                "xl": "40px",
+                "lg": "24px",
+                "xs": "4px",
+                "md": "16px",
+                "unit": "4px",
+                "margin": "32px",
+                "gutter": "24px",
+                "sm": "8px"
+        },
+        "fontFamily": {
+                "headline-md": [
+                        "Plus Jakarta Sans"
+                ],
+                "body-md": [
+                        "Plus Jakarta Sans"
+                ],
+                "headline-lg": [
+                        "Plus Jakarta Sans"
+                ],
+                "label-bold": [
+                        "Plus Jakarta Sans"
+                ],
+                "body-lg": [
+                        "Plus Jakarta Sans"
+                ],
+                "label-sm": [
+                        "Plus Jakarta Sans"
+                ],
+                "headline-xl": [
+                        "Plus Jakarta Sans"
+                ]
+        },
+        "fontSize": {
+                "headline-md": [
+                        "24px",
+                        {
+                                "lineHeight": "32px",
+                                "fontWeight": "600"
+                        }
+                ],
+                "body-md": [
+                        "16px",
+                        {
+                                "lineHeight": "24px",
+                                "fontWeight": "400"
+                        }
+                ],
+                "headline-lg": [
+                        "32px",
+                        {
+                                "lineHeight": "40px",
+                                "letterSpacing": "-0.01em",
+                                "fontWeight": "700"
+                        }
+                ],
+                "label-bold": [
+                        "14px",
+                        {
+                                "lineHeight": "20px",
+                                "letterSpacing": "0.05em",
+                                "fontWeight": "600"
+                        }
+                ],
+                "body-lg": [
+                        "18px",
+                        {
+                                "lineHeight": "28px",
+                                "fontWeight": "400"
+                        }
+                ],
+                "label-sm": [
+                        "12px",
+                        {
+                                "lineHeight": "16px",
+                                "fontWeight": "500"
+                        }
+                ],
+                "headline-xl": [
+                        "40px",
+                        {
+                                "lineHeight": "48px",
+                                "letterSpacing": "-0.02em",
+                                "fontWeight": "700"
+                        }
+                ]
+        }
+},
+    },
+  }
+</script>
+<style>
+        .material-symbols-outlined {
+          font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .icon-fill {
+            font-variation-settings: 'FILL' 1;
+        }
+        .soft-shadow {
+            box-shadow: 0px 4px 20px rgba(0,0,0,0.05);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background antialiased selection:bg-primary-fixed selection:text-on-primary-fixed">
+<!-- TopAppBar -->
+<!-- Main Content -->
+<main class="px-md md:px-xl pb-32 max-w-6xl mx-auto pt-xl">
+<!-- Header Section -->
+<header class="flex flex-col md:flex-row justify-between items-start md:items-center mb-xl gap-4">
+<div>
+<h1 class="font-headline-lg text-headline-lg text-on-surface mb-2">Simulasi Wawancara Selesai</h1>
+<div class="flex items-center gap-2 text-on-surface-variant font-body-md text-body-md">
+<span class="material-symbols-outlined text-lg" data-icon="work">work</span>
+<span>Tokopedia · Product Manager</span>
+<span class="mx-2">•</span>
+<span class="material-symbols-outlined text-lg" data-icon="calendar_today">calendar_today</span>
+<span>Senin, 12 Mei 2025 · 18 menit</span>
+</div>
+</div>
+<div class="flex gap-4">
+<button class="flex items-center gap-2 px-xl py-3 rounded-xl border border-outline-variant text-on-surface font-label-bold text-label-bold hover:bg-surface-variant transition-colors">
+<span class="material-symbols-outlined" data-icon="download">download</span>
+                    Unduh PDF
+                </button>
+</div>
+</header>
+<!-- 8 Dimensions Grid (Bento Style) -->
+<section class="mb-xl">
+<h2 class="font-headline-md text-headline-md text-on-surface mb-lg">8 Dimensi Komunikasi</h2>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-md">
+<!-- Card 1 -->
+<div class="bg-surface-container-lowest p-lg rounded-xl soft-shadow border border-surface-container-highest flex flex-col gap-4">
+<div class="flex justify-between items-start">
+<div class="w-10 h-10 rounded-full bg-primary-container/20 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" data-icon="record_voice_over">record_voice_over</span>
+</div>
+<span class="px-3 py-1 rounded-full bg-secondary-container/30 text-on-secondary-container font-label-sm text-label-sm border border-secondary-container">Mahir</span>
+</div>
+<div>
+<h3 class="font-label-bold text-label-bold text-on-surface mb-1">Tutur Kata</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Artikulasi jelas dan mudah dipahami di seluruh sesi.</p>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="bg-surface-container-lowest p-lg rounded-xl soft-shadow border border-surface-container-highest flex flex-col gap-4">
+<div class="flex justify-between items-start">
+<div class="w-10 h-10 rounded-full bg-primary-container/20 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" data-icon="graphic_eq">graphic_eq</span>
+</div>
+<span class="px-3 py-1 rounded-full bg-blue-100 text-blue-800 font-label-sm text-label-sm border border-blue-200">Berkembang</span>
+</div>
+<div>
+<h3 class="font-label-bold text-label-bold text-on-surface mb-1">Intonasi</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Intonasi cukup dinamis, sedikit monoton di pertanyaan teknis.</p>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="bg-surface-container-lowest p-lg rounded-xl soft-shadow border border-surface-container-highest flex flex-col gap-4">
+<div class="flex justify-between items-start">
+<div class="w-10 h-10 rounded-full bg-primary-container/20 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" data-icon="speed">speed</span>
+</div>
+<span class="px-3 py-1 rounded-full bg-secondary-container/30 text-on-secondary-container font-label-sm text-label-sm border border-secondary-container">Mahir</span>
+</div>
+<div>
+<h3 class="font-label-bold text-label-bold text-on-surface mb-1">Kecepatan Bicara</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Kecepatan ideal (130-150 kata/menit), terdengar tenang.</p>
+</div>
+</div>
+<!-- Card 4 -->
+<div class="bg-surface-container-lowest p-lg rounded-xl soft-shadow border border-surface-container-highest flex flex-col gap-4">
+<div class="flex justify-between items-start">
+<div class="w-10 h-10 rounded-full bg-error-container/50 flex items-center justify-center text-on-error-container">
+<span class="material-symbols-outlined" data-icon="stutter">step</span>
+</div>
+<span class="px-3 py-1 rounded-full bg-orange-100 text-orange-800 font-label-sm text-label-sm border border-orange-200">Perlu Latihan</span>
+</div>
+<div>
+<h3 class="font-label-bold text-label-bold text-on-surface mb-1">Filler Words</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Kamu menggunakan kata "ee" sebanyak 23 kali.</p>
+</div>
+</div>
+<!-- Card 5 -->
+<div class="bg-surface-container-lowest p-lg rounded-xl soft-shadow border border-surface-container-highest flex flex-col gap-4">
+<div class="flex justify-between items-start">
+<div class="w-10 h-10 rounded-full bg-primary-container/20 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" data-icon="translate">translate</span>
+</div>
+<span class="px-3 py-1 rounded-full bg-blue-100 text-blue-800 font-label-sm text-label-sm border border-blue-200">Berkembang</span>
+</div>
+<div>
+<h3 class="font-label-bold text-label-bold text-on-surface mb-1">Pemilihan Kalimat</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Struktur kalimat baik, namun kurang menggunakan kosa kata industri.</p>
+</div>
+</div>
+<!-- Card 6 -->
+<div class="bg-surface-container-lowest p-lg rounded-xl soft-shadow border border-surface-container-highest flex flex-col gap-4">
+<div class="flex justify-between items-start">
+<div class="w-10 h-10 rounded-full bg-primary-container/20 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" data-icon="task_alt">task_alt</span>
+</div>
+<span class="px-3 py-1 rounded-full bg-secondary-container/30 text-on-secondary-container font-label-sm text-label-sm border border-secondary-container">Mahir</span>
+</div>
+<div>
+<h3 class="font-label-bold text-label-bold text-on-surface mb-1">Kelengkapan Jawaban</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Menjawab seluruh bagian pertanyaan menggunakan metode STAR.</p>
+</div>
+</div>
+<!-- Card 7 -->
+<div class="bg-surface-container-lowest p-lg rounded-xl soft-shadow border border-surface-container-highest flex flex-col gap-4">
+<div class="flex justify-between items-start">
+<div class="w-10 h-10 rounded-full bg-primary-container/20 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" data-icon="sync">sync</span>
+</div>
+<span class="px-3 py-1 rounded-full bg-blue-100 text-blue-800 font-label-sm text-label-sm border border-blue-200">Berkembang</span>
+</div>
+<div>
+<h3 class="font-label-bold text-label-bold text-on-surface mb-1">Konsistensi</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Argumen awal dan akhir konsisten, namun beberapa detail berbeda.</p>
+</div>
+</div>
+<!-- Card 8 -->
+<div class="bg-surface-container-lowest p-lg rounded-xl soft-shadow border border-surface-container-highest flex flex-col gap-4">
+<div class="flex justify-between items-start">
+<div class="w-10 h-10 rounded-full bg-primary-container/20 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" data-icon="emoji_emotions">emoji_emotions</span>
+</div>
+<span class="px-3 py-1 rounded-full bg-secondary-container/30 text-on-secondary-container font-label-sm text-label-sm border border-secondary-container">Mahir</span>
+</div>
+<div>
+<h3 class="font-label-bold text-label-bold text-on-surface mb-1">Kepercayaan Diri</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Nada suara mantap, menunjukkan penguasaan materi yang baik.</p>
+</div>
+</div>
+</div>
+</section>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-lg mb-xl">
+<!-- Question Analysis -->
+<section class="lg:col-span-2">
+<h2 class="font-headline-md text-headline-md text-on-surface mb-lg">Analisis per Pertanyaan</h2>
+<div class="flex flex-col gap-md">
+<!-- Question 1 -->
+<div class="bg-surface-container-lowest p-lg rounded-xl soft-shadow border border-surface-container-highest">
+<div class="flex items-start gap-4 mb-4">
+<div class="w-8 h-8 rounded-full bg-surface-variant flex items-center justify-center text-on-surface font-label-bold shrink-0">1</div>
+<div>
+<h3 class="font-label-bold text-label-bold text-on-surface mb-2">Ceritakan tentang pengalaman Anda mengelola peluncuran fitur baru dari awal hingga akhir.</h3>
+<div class="bg-surface p-4 rounded-lg border border-surface-variant mb-4">
+<p class="font-body-md text-body-md text-on-surface-variant italic">"Ya, jadi di perusahaan sebelumnya saya eh, saya memimpin tim untuk meluncurkan fitur payment gateway baru. Kami menghadapi eh beberapa kendala di integrasi API, tapi akhirnya selesai tepat waktu..."</p>
+</div>
+<div class="flex flex-col gap-2">
+<div class="flex items-start gap-2">
+<span class="text-secondary mt-1">✓</span>
+<p class="font-body-md text-body-md text-on-surface">Menjelaskan konteks proyek dengan jelas dan menyebutkan kendala yang relevan.</p>
+</div>
+<div class="flex items-start gap-2">
+<span class="text-orange-500 mt-1">△</span>
+<p class="font-body-md text-body-md text-on-surface">Bisa diperkuat dengan menjelaskan metrik keberhasilan spesifik (misal: persentase peningkatan transaksi) dan tindakan konkrit yang diambil untuk mengatasi kendala API.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Question 2 -->
+<div class="bg-surface-container-lowest p-lg rounded-xl soft-shadow border border-surface-container-highest">
+<div class="flex items-start gap-4 mb-4">
+<div class="w-8 h-8 rounded-full bg-surface-variant flex items-center justify-center text-on-surface font-label-bold shrink-0">2</div>
+<div>
+<h3 class="font-label-bold text-label-bold text-on-surface mb-2">Bagaimana Anda memprioritaskan backlog produk ketika ada banyak permintaan dari stakeholder yang berbeda?</h3>
+<div class="bg-surface p-4 rounded-lg border border-surface-variant mb-4">
+<p class="font-body-md text-body-md text-on-surface-variant italic">"Biasanya saya akan melihat mana yang paling penting buat user. Kalau sales minta A tapi marketing minta B, saya lihat data. Terus saya pakai framework RICE untuk ukur mana yang skornya paling tinggi."</p>
+</div>
+<div class="flex flex-col gap-2">
+<div class="flex items-start gap-2">
+<span class="text-secondary mt-1">✓</span>
+<p class="font-body-md text-body-md text-on-surface">Sangat baik menyebutkan framework spesifik (RICE) dan penggunaan data sebagai dasar pengambilan keputusan.</p>
+</div>
+<div class="flex items-start gap-2">
+<span class="text-orange-500 mt-1">△</span>
+<p class="font-body-md text-body-md text-on-surface">Coba berikan contoh nyata dari pengalaman sebelumnya bagaimana framework ini membantu menyelesaikan konflik prioritas antar divisi.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Filler Words Summary -->
+<section class="lg:col-span-1">
+<div class="bg-surface-container-lowest p-lg rounded-xl soft-shadow border border-surface-container-highest h-full">
+<h2 class="font-headline-md text-headline-md text-on-surface mb-lg">Ringkasan Filler Words</h2>
+<div class="flex flex-col gap-6">
+<div>
+<div class="flex justify-between items-end mb-2">
+<span class="font-label-bold text-label-bold text-on-surface">"ee" / "ehm"</span>
+<span class="font-label-bold text-label-bold text-on-surface-variant">23 kali</span>
+</div>
+<div class="h-2 w-full bg-surface-variant rounded-full overflow-hidden mb-2">
+<div class="h-full bg-orange-400 rounded-full" style="width: 75%"></div>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant italic text-xs">"Saya <strong>ee</strong> memimpin tim..."</p>
+</div>
+<div>
+<div class="flex justify-between items-end mb-2">
+<span class="font-label-bold text-label-bold text-on-surface">"jadi"</span>
+<span class="font-label-bold text-label-bold text-on-surface-variant">15 kali</span>
+</div>
+<div class="h-2 w-full bg-surface-variant rounded-full overflow-hidden mb-2">
+<div class="h-full bg-blue-400 rounded-full" style="width: 45%"></div>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant italic text-xs">"<strong>Jadi</strong>, di perusahaan sebelumnya..."</p>
+</div>
+<div>
+<div class="flex justify-between items-end mb-2">
+<span class="font-label-bold text-label-bold text-on-surface">"kayak"</span>
+<span class="font-label-bold text-label-bold text-on-surface-variant">8 kali</span>
+</div>
+<div class="h-2 w-full bg-surface-variant rounded-full overflow-hidden mb-2">
+<div class="h-full bg-primary-fixed-dim rounded-full" style="width: 25%"></div>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant italic text-xs">"Sistemnya itu <strong>kayak</strong> lebih cepat..."</p>
+</div>
+<div>
+<div class="flex justify-between items-end mb-2">
+<span class="font-label-bold text-label-bold text-on-surface">"sebenarnya"</span>
+<span class="font-label-bold text-label-bold text-on-surface-variant">5 kali</span>
+</div>
+<div class="h-2 w-full bg-surface-variant rounded-full overflow-hidden mb-2">
+<div class="h-full bg-secondary-fixed-dim rounded-full" style="width: 15%"></div>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant italic text-xs">"<strong>Sebenarnya</strong> kami sudah mencoba..."</p>
+</div>
+</div>
+<div class="mt-8 p-4 bg-surface rounded-lg border border-surface-variant">
+<p class="font-body-md text-body-md text-on-surface-variant">
+<strong>Saran Pelatih:</strong> Penggunaan filler words yang terlalu sering dapat mengurangi kesan otoritas. Cobalah untuk mengambil jeda diam sejenak saat berpikir alih-alih menggunakan "ee".
+                        </p>
+</div>
+</div>
+</section>
+</div>
+<!-- Action Buttons -->
+<div class="flex flex-col sm:flex-row gap-4 justify-end mt-xl">
+<button class="px-xl py-3 rounded-xl border border-outline-variant text-on-surface font-label-bold text-label-bold hover:bg-surface-variant transition-colors text-center">
+                Kembali ke dashboard
+            </button>
+<button class="px-xl py-3 rounded-xl bg-primary text-on-primary font-label-bold text-label-bold hover:bg-primary/90 transition-colors soft-shadow text-center">
+                Latihan lagi
+            </button>
+</div>
+</main>
+</body></html>
