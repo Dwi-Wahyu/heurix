@@ -13,6 +13,9 @@ build/
 logs/
 tmp/
 
+.env
+.env.*
+
 frontend/certs/cert.pem
 frontend/certs/key.pem
 

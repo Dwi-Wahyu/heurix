@@ -221,7 +221,7 @@
 					<p class="mt-4 text-xs text-neutral-500 italic">Silakan bicara sejenak untuk mengetes mikrofon Anda.</p>
 				</div>
 
-				<div class="rounded-2xl border border-white/5 bg-white/5 p-6 backdrop-blur-sm flex flex-col justify-center">
+				<div class="rounded-2xl border border-white/5 bg-white/5 p-4 backdrop-blur-sm flex flex-col justify-center">
 					<div class="flex items-start gap-4">
 						<div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
 							<span class="material-symbols-outlined">info</span>

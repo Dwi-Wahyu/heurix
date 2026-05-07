@@ -149,6 +149,9 @@ export const interviewSession = pgTable(
 		communicationScore: real('communication_score'), // 0–100
 		consistencyScore: real('consistency_score'), // 0–100
 		confidenceScore: real('confidence_score'), // 0–100
+		facialExpressionScore: real('facial_expression_score'), // 0–100
+		eyeContactScore: real('eye_contact_score'), // 0–100
+		faceMetrics: jsonb('face_metrics'), // Array of { smileScore, isLookingAtCamera, timestamp }
 
 		createdAt: timestamp('created_at').defaultNow().notNull(),
 		updatedAt: timestamp('updated_at')
@@ -237,6 +240,18 @@ export const sessionReport = pgTable(
 		confidenceScore: real('confidence_score').notNull(),
 		stressResistanceScore: real('stress_resistance_score'), // khusus jika ada Persona Shift
 
+		// New 8 dimensions
+		articulationScore: real('articulation_score'),
+		intonationScore: real('intonation_score'),
+		pacingScore: real('pacing_score'),
+		fillerWordsScore: real('filler_words_score'),
+		sentenceStructureScore: real('sentence_structure_score'),
+		answerCompletenessScore: real('answer_completeness_score'),
+
+		// Skor tambahan non-verbal
+		facialExpressionScore: real('facial_expression_score'),
+		eyeContactScore: real('eye_contact_score'),
+
 		// Rekomendasi
 		strengths: jsonb('strengths'), // string[]
 		weaknesses: jsonb('weaknesses'), // string[]
@@ -244,6 +259,18 @@ export const sessionReport = pgTable(
 
 		// Full narasi evaluasi dari LLM
 		evaluationNarrative: text('evaluation_narrative'),
+
+		// Feedbacks tambahan
+		articulationFeedback: text('articulation_feedback'),
+		intonationFeedback: text('intonation_feedback'),
+		pacingFeedback: text('pacing_feedback'),
+		fillerWordsFeedback: text('filler_words_feedback'),
+		sentenceStructureFeedback: text('sentence_structure_feedback'),
+		answerCompletenessFeedback: text('answer_completeness_feedback'),
+		consistencyFeedback: text('consistency_feedback'),
+		confidenceFeedback: text('confidence_feedback'),
+		facialExpressionFeedback: text('facial_expression_feedback'),
+		eyeContactFeedback: text('eye_contact_feedback'),
 
 		generatedAt: timestamp('generated_at').defaultNow().notNull()
 	},
@@ -272,6 +299,10 @@ export const interviewAvatar = pgTable('interview_avatar', {
 	promptFriendly: text('prompt_friendly'),
 	promptFormal: text('prompt_formal'),
 	promptIntimidating: text('prompt_intimidating'),
+
+	// Konfigurasi Kamera (untuk positioning wajah)
+	// format: { headHeightRatio: 0.82, distanceOffset: 1.0, lookAtOffset: 0.05 }
+	cameraConfig: jsonb('camera_config'),
 
 	isActive: boolean('is_active').default(true).notNull(),
 	createdAt: timestamp('created_at').defaultNow().notNull()

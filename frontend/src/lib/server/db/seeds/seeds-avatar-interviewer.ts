@@ -17,10 +17,10 @@ async function main() {
 			.insert(schema.interviewAvatar)
 			.values({
 				id: 'avatar_professional_man',
-				name: 'Professional Man',
+				name: 'Pak Subarjo',
 				track: 'corporate',
 				glbUrl: 'face/professional-man/model.glb',
-				thumbnailUrl: null,
+				thumbnailUrl: 'face/professional-man/thumbnail.png',
 				ttsVoiceId: 'id-ID-ArdiNeural',
 				ttsFriendlyParams: { rate: '+0%', pitch: '+0Hz', volume: '+0%' },
 				ttsFormalParams: { rate: '-10%', pitch: '-5Hz', volume: '+0%' },
@@ -37,9 +37,15 @@ dan ajukan pertanyaan secara lugas tanpa basa-basi berlebihan.`,
 Kamu menguji ketahanan mental kandidat dengan pertanyaan yang tajam dan kritis.
 Gunakan nada bicara yang serius, sesekali tantang jawaban kandidat,
 dan tunjukkan skeptisisme jika jawaban terasa tidak meyakinkan.`,
+				cameraConfig: { headHeightRatio: 0.82, distanceOffset: 1.0, lookAtOffset: 0.05 },
 				isActive: true
 			})
-			.onConflictDoNothing();
+			.onConflictDoUpdate({
+				target: schema.interviewAvatar.id,
+				set: {
+					cameraConfig: { headHeightRatio: 0.82, distanceOffset: 1.0, lookAtOffset: 0.05 }
+				}
+			});
 
 		console.log('✅ Avatar "Professional Man" berhasil di-seed.');
 
@@ -48,10 +54,10 @@ dan tunjukkan skeptisisme jika jawaban terasa tidak meyakinkan.`,
 			.insert(schema.interviewAvatar)
 			.values({
 				id: 'avatar_young_man',
-				name: 'Young Professional (Indra)',
+				name: 'Indra',
 				track: 'corporate',
 				glbUrl: 'face/boy/model.glb',
-				thumbnailUrl: null,
+				thumbnailUrl: 'face/boy/thumbnail.png',
 				ttsVoiceId: 'id-ID-ArdiNeural',
 				// Pitch sedikit lebih tinggi untuk kesan lebih muda
 				ttsFriendlyParams: { rate: '+5%', pitch: '+5Hz', volume: '+0%' },
@@ -69,9 +75,15 @@ dan tanyakan detail konkret mengenai pengalaman kandidat.`,
 Kamu tidak mudah terkesan dengan jawaban yang bersifat teoritis.
 Tantang setiap pernyataan kandidat dengan "Mengapa?", cari celah dalam argumen mereka,
 dan perhatikan konsistensi jawaban mereka di bawah tekanan.`,
+				cameraConfig: { headHeightRatio: 0.82, distanceOffset: 1.0, lookAtOffset: 0.05 },
 				isActive: true
 			})
-			.onConflictDoNothing();
+			.onConflictDoUpdate({
+				target: schema.interviewAvatar.id,
+				set: {
+					cameraConfig: { headHeightRatio: 0.82, distanceOffset: 1.0, lookAtOffset: 0.05 }
+				}
+			});
 
 		console.log('✅ Avatar "Indra" (Young Professional) berhasil di-seed.');
 
@@ -83,7 +95,7 @@ dan perhatikan konsistensi jawaban mereka di bawah tekanan.`,
 				name: 'Hassan',
 				track: 'corporate',
 				glbUrl: 'face/hassan/model.glb',
-				thumbnailUrl: null,
+				thumbnailUrl: 'face/hassan/thumbnail.png',
 				ttsVoiceId: 'id-ID-ArdiNeural',
 				ttsFriendlyParams: { rate: '+0%', pitch: '+0Hz', volume: '+0%' },
 				ttsFormalParams: { rate: '-10%', pitch: '-5Hz', volume: '+0%' },
@@ -100,9 +112,15 @@ dan tanyakan bagaimana kandidat akan berkontribusi pada budaya perusahaan.`,
 Kamu menguji kejujuran kandidat dengan membandingkan berbagai bagian dari jawaban mereka.
 Jadilah sangat jeli, jangan ragu untuk menginterupsi jika jawaban terasa tidak sinkron,
 dan perhatikan bahasa tubuh serta nada suara kandidat.`,
+				cameraConfig: { headHeightRatio: 0.1, distanceOffset: 0.8, lookAtOffset: 0.0 },
 				isActive: true
 			})
-			.onConflictDoNothing();
+			.onConflictDoUpdate({
+				target: schema.interviewAvatar.id,
+				set: {
+					cameraConfig: { headHeightRatio: 0.1, distanceOffset: 0.8, lookAtOffset: 0.0 }
+				}
+			});
 
 		console.log('✅ Avatar "Hassan" berhasil di-seed.');
 	} catch (e) {

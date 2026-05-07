@@ -5,6 +5,7 @@ faster-whisper
 ollama
 librosa
 sqlalchemy
+gunicorn
 psycopg2-binary
 qdrant-client
 python-multipart

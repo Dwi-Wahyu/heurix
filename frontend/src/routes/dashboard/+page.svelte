@@ -2,6 +2,8 @@
 	import Sidebar from '$lib/components/Sidebar.svelte';
 	import Header from '$lib/components/Header.svelte';
 	import BottomNav from '$lib/components/BottomNav.svelte';
+	import { sidebarState } from '$lib/sidebar.svelte';
+	import { CheckCircle, Mic, Briefcase, Landmark, ChevronRight, History } from '@lucide/svelte';
 
 	let { data } = $props();
 	const { user, profile, recentSessions } = data;
@@ -10,7 +12,11 @@
 <div class="flex min-h-screen bg-[#f4f7fb]">
 	<Sidebar />
 
-	<div class="flex min-h-screen flex-1 flex-col md:ml-64">
+	<div
+		class="flex min-h-screen flex-1 flex-col transition-all duration-300 {sidebarState.isOpen
+			? 'md:ml-64'
+			: 'md:ml-20'}"
+	>
 		<Header />
 
 		<main class="mx-auto w-full max-w-[1100px] px-5 pt-20 pb-20 md:px-8">
@@ -34,9 +40,7 @@
 					<div class="relative z-10">
 						<h2 class="mb-6 text-xl font-bold text-gray-900">Performa Anda</h2>
 						<div class="mb-8 flex w-fit items-center gap-2 rounded-full bg-red-50 px-3 py-1.5">
-							<span class="fill-1 material-symbols-outlined text-[18px] text-primary"
-								>check_circle</span
-							>
+							<CheckCircle size={18} class="text-primary" />
 							<p class="text-sm font-semibold text-primary">
 								{profile?.totalSessions || 0} Sesi Selesai
 							</p>
@@ -89,9 +93,7 @@
 					<div
 						class="absolute bottom-0 left-0 -mb-10 -ml-10 h-40 w-40 rounded-full bg-red-400/20 mix-blend-overlay blur-2xl"
 					></div>
-					<div class="absolute top-1/2 right-8 hidden -translate-y-1/2 opacity-10 md:block">
-						<span class="material-symbols-outlined text-[180px] text-white">psychology</span>
-					</div>
+
 					<div class="relative z-10 w-full md:w-4/5">
 						<h3 class="mb-4 text-3xl leading-tight font-bold text-white md:text-[32px]">
 							Tingkatkan kariermu dengan simulasi AI.
@@ -104,26 +106,23 @@
 							href="/session/select-avatar"
 							class="group flex w-full items-center justify-center gap-3 rounded-2xl bg-white px-8 py-4 text-lg font-bold text-primary shadow-lg transition-all hover:scale-[1.02] hover:shadow-xl active:scale-[0.98] md:w-auto"
 						>
-							<span
-								class="fill-1 material-symbols-outlined text-[22px] transition-transform group-hover:rotate-12"
-								>mic</span
-							>
+							<Mic size={22} class="transition-transform group-hover:rotate-12" />
 							Mulai Sesi Wawancara
 						</a>
-						</div>
-						</div>
+					</div>
+				</div>
 
-						<!-- History Section -->
-						<div class="mt-10 md:col-span-12">
-						<div class="mb-6 flex items-center justify-between px-1">
+				<!-- History Section -->
+				<div class="mt-10 md:col-span-12">
+					<div class="mb-6 flex items-center justify-between px-1">
 						<h2 class="text-2xl font-bold text-gray-900">Riwayat Latihan</h2>
 						<a
 							href="/history"
 							class="text-sm font-semibold text-primary transition-colors hover:text-red-700"
 							>Lihat Semua</a
 						>
-						</div>
-						<div class="space-y-4">
+					</div>
+					<div class="space-y-4">
 						{#each recentSessions as session}
 							<a
 								href="/session/results?sessionId={session.id}"
@@ -133,18 +132,17 @@
 									<div
 										class="flex h-14 w-14 items-center justify-center rounded-xl bg-red-50 text-primary shadow-sm transition-all duration-300 group-hover:scale-105 group-hover:bg-primary group-hover:text-white"
 									>
-										<span class="material-symbols-outlined text-[26px]">
-											{session.track === 'military' ? 'account_balance' : 'business_center'}
-										</span>
+										{#if session.track === 'military'}
+											<Landmark size={26} />
+										{:else}
+											<Briefcase size={26} />
+										{/if}
 									</div>
 									<div>
 										<div class="mb-1.5 flex items-center gap-3">
 											<span
 												class="rounded-md bg-red-50 px-2.5 py-1 text-xs font-semibold tracking-wide text-red-700"
 											>
-												{session.track.toUpperCase()}
-											</span>
-											<span class="text-xs font-medium text-gray-400">
 												{new Date(session.createdAt).toLocaleDateString('id-ID', {
 													day: '2-digit',
 													month: 'short',
@@ -169,10 +167,10 @@
 									<div
 										class="flex h-8 w-8 items-center justify-center rounded-full bg-gray-50 transition-colors group-hover:bg-red-50"
 									>
-										<span
-											class="material-symbols-outlined text-[18px] text-gray-400 transition-colors group-hover:text-primary"
-											>arrow_forward_ios</span
-										>
+										<ChevronRight
+											size={18}
+											class="text-gray-400 transition-colors group-hover:text-primary"
+										/>
 									</div>
 								</div>
 							</a>
@@ -180,7 +178,7 @@
 							<div
 								class="flex flex-col items-center justify-center py-20 bg-white rounded-3xl border border-dashed border-gray-200"
 							>
-								<span class="material-symbols-outlined text-[48px] text-gray-300 mb-4">history</span>
+								<History size={48} class="text-gray-300 mb-4" />
 								<p class="text-gray-500 font-medium">Belum ada riwayat sesi.</p>
 								<a href="/session/select-avatar" class="mt-4 text-primary font-bold"
 									>Mulai sesi pertama Anda</a
@@ -195,9 +193,3 @@
 		<BottomNav />
 	</div>
 </div>
-
-<style>
-	.fill-1 {
-		font-variation-settings: 'FILL' 1;
-	}
-</style>

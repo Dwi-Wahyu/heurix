@@ -14,6 +14,7 @@ from app.models import (
     MasterPosition,
     SessionReport
 )
+from sqlalchemy import desc, func
 from sqlalchemy.orm import Session
 import json
 import uuid
@@ -72,6 +73,15 @@ async def websocket_endpoint(websocket: WebSocket, sessionId: str):
                 elif message["type"] == "END_SESSION":
                     await finish_and_report(websocket, db, interview_session)
                     break
+
+                elif message["type"] == "FACE_METRICS":
+                    metrics = message.get("metrics")
+                    if metrics:
+                        # Ensure it stays as a list in memory before SQLAlchemy handles it
+                        current_metrics = list(interview_session.faceMetrics or [])
+                        current_metrics.append(metrics)
+                        interview_session.faceMetrics = current_metrics
+                        db.commit()
 
             elif "bytes" in message_data:
                 # Binary audio data
@@ -163,6 +173,41 @@ async def finish_and_report(websocket: WebSocket, db: Session, session: Intervie
                 for word, count in t.fillerWords.items():
                     combined_breakdown[word] = combined_breakdown.get(word, 0) + count
 
+        # Process face metrics
+        face_expr_score = 75.0
+        eye_contact_score = 80.0
+        face_expr_feedback = "Ekspresi wajah Anda terlihat cukup tenang dan profesional."
+        eye_contact_feedback = "Kontak mata Anda cukup konsisten selama sesi."
+
+        if session.faceMetrics:
+            metrics_list = session.faceMetrics
+            smile_scores = [m.get("smileScore", 0) for m in metrics_list]
+            eye_contact_samples = [m.get("isLookingAtCamera", True) for m in metrics_list]
+            
+            if smile_scores:
+                # Average smile score (weighted towards positive)
+                avg_smile = sum(smile_scores) / len(smile_scores)
+                face_expr_score = 50 + (avg_smile * 50) # Scale to 50-100
+                if avg_smile > 0.4:
+                    face_expr_feedback = "Anda menunjukkan ekspresi wajah yang sangat positif dan ramah."
+                elif avg_smile > 0.1:
+                    face_expr_feedback = "Ekspresi wajah Anda cukup ramah, pertahankan senyum tipis."
+                else:
+                    face_expr_feedback = "Cobalah untuk lebih sering tersenyum agar terlihat lebih ramah dan tenang."
+            
+            if eye_contact_samples:
+                consistency = sum([1 for x in eye_contact_samples if x]) / len(eye_contact_samples)
+                eye_contact_score = consistency * 100
+                if consistency > 0.8:
+                    eye_contact_feedback = "Kontak mata Anda sangat baik dan konsisten."
+                elif consistency > 0.5:
+                    eye_contact_feedback = "Kontak mata Anda cukup baik, namun sesekali terlihat beralih."
+                else:
+                    eye_contact_feedback = "Usahakan untuk lebih konsisten menatap kamera agar membangun engagement."
+
+        # Mapping dimensions
+        dims = report_data.get("dimensions", {})
+
         # Save to DB
         new_report = SessionReport(
             id=str(uuid.uuid4()),
@@ -172,10 +217,35 @@ async def finish_and_report(websocket: WebSocket, db: Session, session: Intervie
             totalFillerWords=total_fillers,
             fillerWordBreakdown=combined_breakdown,
             overallScore=report_data["overall_score"],
-            communicationScore=report_data["communication_score"],
-            consistencyScore=report_data["consistency_score"],
-            confidenceScore=report_data["confidence_score"],
-            stressResistanceScore=report_data["stress_resistance_score"],
+            communicationScore=dims.get("articulation", {}).get("score", report_data.get("overall_score")),
+            consistencyScore=dims.get("consistency", {}).get("score", report_data.get("overall_score")),
+            confidenceScore=dims.get("confidence", {}).get("score", report_data.get("overall_score")),
+            stressResistanceScore=report_data.get("stress_resistance_score", report_data.get("overall_score")),
+            
+            # New 8 dimensions
+            articulationScore=dims.get("articulation", {}).get("score"),
+            intonationScore=dims.get("intonation", {}).get("score"),
+            pacingScore=dims.get("pacing", {}).get("score"),
+            fillerWordsScore=dims.get("filler_words", {}).get("score"),
+            sentenceStructureScore=dims.get("sentence_structure", {}).get("score"),
+            answerCompletenessScore=dims.get("answer_completeness", {}).get("score"),
+            
+            # Face & Eye Contact
+            facialExpressionScore=face_expr_score,
+            eyeContactScore=eye_contact_score,
+            facialExpressionFeedback=face_expr_feedback,
+            eyeContactFeedback=eye_contact_feedback,
+            
+            # Feedbacks
+            articulationFeedback=dims.get("articulation", {}).get("feedback"),
+            intonationFeedback=dims.get("intonation", {}).get("feedback"),
+            pacingFeedback=dims.get("pacing", {}).get("feedback"),
+            fillerWordsFeedback=dims.get("filler_words", {}).get("feedback"),
+            sentenceStructureFeedback=dims.get("sentence_structure", {}).get("feedback"),
+            answerCompletenessFeedback=dims.get("answer_completeness", {}).get("feedback"),
+            consistencyFeedback=dims.get("consistency", {}).get("feedback"),
+            confidenceFeedback=dims.get("confidence", {}).get("feedback"),
+
             strengths=report_data["strengths"],
             weaknesses=report_data["weaknesses"],
             recommendations=report_data["recommendations"],
@@ -183,11 +253,41 @@ async def finish_and_report(websocket: WebSocket, db: Session, session: Intervie
         )
         db.add(new_report)
         
+        # Update session turns with question analysis
+        qa_list = report_data.get("question_analysis", [])
+        qa_map = {item["turn_number"]: item for item in qa_list if "turn_number" in item}
+        
+        for t in turns:
+            if t.turnNumber in qa_map:
+                analysis = qa_map[t.turnNumber]
+                # Store as JSON string or structured text in llmAnalysis
+                strength = analysis.get("strength", "")
+                improvement = analysis.get("improvement", "")
+                t.llmAnalysis = json.dumps({"strength": strength, "improvement": improvement})
+
         # Update session scores
         session.overallScore = report_data["overall_score"]
-        session.communicationScore = report_data["communication_score"]
-        session.consistencyScore = report_data["consistency_score"]
-        session.confidenceScore = report_data["confidence_score"]
+        session.communicationScore = new_report.communicationScore
+        session.consistencyScore = new_report.consistencyScore
+        session.confidenceScore = new_report.confidenceScore
+        session.facialExpressionScore = new_report.facialExpressionScore
+        session.eyeContactScore = new_report.eyeContactScore
+        
+        # Recalculate User Profile Aggregates
+        if user_profile:
+            stats = db.query(
+                func.count(InterviewSession.id),
+                func.avg(InterviewSession.overallScore),
+                func.sum(InterviewSession.durationSeconds)
+            ).filter(
+                InterviewSession.userId == session.userId,
+                InterviewSession.status == "completed"
+            ).first()
+
+            if stats:
+                user_profile.totalSessions = stats[0] or 0
+                user_profile.avgOverallScore = float(stats[1]) if stats[1] is not None else 0
+                user_profile.totalMinutesPracticed = int((stats[2] or 0) / 60)
         
         db.commit()
 

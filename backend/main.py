@@ -13,6 +13,7 @@ from app.models import (
     SessionReport,
     SessionTurn
 )
+from sqlalchemy import func
 from sqlalchemy.orm import Session
 import uuid
 
@@ -95,6 +96,25 @@ async def get_user_profile(userId: str, db: Session = Depends(get_db)):
         db.add(profile)
         db.commit()
         db.refresh(profile)
+    
+    # Auto-sync stats if they are zero but sessions exist (for existing history)
+    if profile.totalSessions == 0:
+        stats = db.query(
+            func.count(InterviewSession.id),
+            func.avg(InterviewSession.overallScore),
+            func.sum(InterviewSession.durationSeconds)
+        ).filter(
+            InterviewSession.userId == userId,
+            InterviewSession.status == "completed"
+        ).first()
+        
+        if stats and stats[0] > 0:
+            profile.totalSessions = stats[0]
+            profile.avgOverallScore = float(stats[1]) if stats[1] is not None else 0
+            profile.totalMinutesPracticed = int((stats[2] or 0) / 60)
+            db.commit()
+            db.refresh(profile)
+            
     return profile
 
 @app.patch("/api/profile")
@@ -141,7 +161,8 @@ async def get_session(sessionId: str, db: Session = Depends(get_db)):
             "id": session.avatar.id,
             "name": session.avatar.name,
             "glbUrl": session.avatar.glbUrl,
-            "ttsVoiceId": session.avatar.ttsVoiceId
+            "ttsVoiceId": session.avatar.ttsVoiceId,
+            "cameraConfig": session.avatar.cameraConfig
         }
     }
 

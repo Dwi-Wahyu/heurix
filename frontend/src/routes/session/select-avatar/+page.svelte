@@ -1,6 +1,7 @@
 <script lang="ts">
     import { goto } from '$app/navigation';
     import { fade, fly } from 'svelte/transition';
+    import { UserCircle2, Check, ArrowRight } from '@lucide/svelte';
 
     let { data } = $props();
     let avatars = $derived(data.avatars);
@@ -41,17 +42,17 @@
                     <div class="absolute inset-0 bg-primary rounded-3xl blur-xl opacity-0 transition-opacity duration-300 group-hover:opacity-10 {selectedAvatarId === avatar.id ? 'opacity-20' : ''}"></div>
                     
                     <div class="relative bg-white rounded-3xl border-2 transition-all duration-300 overflow-hidden {selectedAvatarId === avatar.id ? 'border-primary shadow-glow scale-[1.02]' : 'border-gray-100 shadow-soft hover:border-gray-200'}">
-                        <!-- Avatar Thumbnail Placeholder -->
-                        <div class="h-48 bg-gray-50 flex items-center justify-center border-b border-gray-100">
+                        <!-- Avatar Thumbnail -->
+                        <div class="h-48 bg-gray-50 flex items-center justify-center border-b border-gray-100 overflow-hidden">
                             {#if avatar.thumbnailUrl}
-                                <img src={avatar.thumbnailUrl} alt={avatar.name} class="w-full h-full object-cover" />
+                                <img src="/{avatar.thumbnailUrl}" alt={avatar.name} class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
                             {:else}
-                                <span class="material-symbols-outlined text-[80px] text-gray-200">account_circle</span>
+                                <UserCircle2 size={80} class="text-gray-200" />
                             {/if}
                             
                             {#if selectedAvatarId === avatar.id}
-                                <div class="absolute top-4 right-4 bg-primary text-white rounded-full p-1" transition:fade>
-                                    <span class="material-symbols-outlined text-sm">check</span>
+                                <div class="absolute top-4 right-4 bg-primary text-white rounded-full p-1 shadow-lg" transition:fade>
+                                    <Check size={16} strokeWidth={3} />
                                 </div>
                             {/if}
                         </div>
@@ -83,7 +84,7 @@
                 class="group flex items-center justify-center gap-3 rounded-2xl bg-primary px-12 py-4 text-xl font-bold text-white shadow-glow transition-all hover:scale-[1.02] hover:shadow-xl active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
             >
                 Pilih & Lanjutkan
-                <span class="material-symbols-outlined transition-transform group-hover:translate-x-1">arrow_forward</span>
+                <ArrowRight size={24} class="transition-transform group-hover:translate-x-1" />
             </button>
         </div>
         

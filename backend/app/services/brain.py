@@ -25,8 +25,8 @@ async def summarize_interview(
     """
     history_text = ""
     for turn in turns:
-        history_text += f"Pewawancara: {turn.questionText}\n"
-        history_text += f"Kandidat: {turn.answerTranscript or '(Tidak menjawab)'}\n"
+        history_text += f"Pertanyaan {turn.turnNumber}: {turn.questionText}\n"
+        history_text += f"Jawaban: {turn.answerTranscript or '(Tidak menjawab)'}\n"
         history_text += f"Skor Kualitas: {turn.answerQuality or 0}\n\n"
 
     system_prompt = f"""
@@ -42,28 +42,48 @@ Tingkat Kesulitan: {session.difficulty}
 {history_text}
 
 === INSTRUKSI EVALUASI ===
-1. Berikan skor 0-100 untuk dimensi berikut:
-   - communication_score: Kejelasan, artikulasi, dan struktur menjawab.
-   - consistency_score: Keselarasan jawaban dari awal hingga akhir.
-   - confidence_score: Keyakinan dalam menjawab (dilihat dari pilihan kata).
-   - stress_resistance_score: Ketahanan saat menghadapi pertanyaan sulit/persona intimidatif.
+1. Berikan skor 0-100 dan feedback singkat (1 kalimat) untuk 8 Dimensi Komunikasi:
+   - articulation: Kejelasan, artikulasi, dan kemudahan dipahami.
+   - intonation: Variasi nada suara dan ekspresi verbal.
+   - pacing: Kecepatan bicara (ideal 130-150 kata/menit).
+   - filler_words: Penggunaan kata pengisi (ee, ehm, dll).
+   - sentence_structure: Struktur kalimat dan penggunaan kosa kata industri.
+   - answer_completeness: Kelengkapan jawaban menggunakan metode STAR.
+   - consistency: Keselarasan jawaban dari awal hingga akhir.
+   - confidence: Keyakinan dalam menjawab.
+
 2. Hitung overall_score sebagai rata-rata tertimbang.
 3. Berikan strengths (minimal 3 poin) dan weaknesses (minimal 3 poin).
 4. Berikan recommendations untuk perbaikan ke depannya.
-5. Berikan evaluation_narrative singkat (2-3 paragraf) yang merangkum performa kandidat.
+5. Berikan evaluation_narrative singkat (2-3 paragraf).
+6. Untuk setiap pertanyaan, berikan analisis singkat berupa "strength" (poin positif) dan "improvement" (area perbaikan).
 
 === FORMAT OUTPUT ===
 Wajib JSON:
 {{
   "overall_score": <angka>,
-  "communication_score": <angka>,
-  "consistency_score": <angka>,
-  "confidence_score": <angka>,
-  "stress_resistance_score": <angka>,
+  "dimensions": {{
+    "articulation": {{ "score": <angka>, "feedback": "..." }},
+    "intonation": {{ "score": <angka>, "feedback": "..." }},
+    "pacing": {{ "score": <angka>, "feedback": "..." }},
+    "filler_words": {{ "score": <angka>, "feedback": "..." }},
+    "sentence_structure": {{ "score": <angka>, "feedback": "..." }},
+    "answer_completeness": {{ "score": <angka>, "feedback": "..." }},
+    "consistency": {{ "score": <angka>, "feedback": "..." }},
+    "confidence": {{ "score": <angka>, "feedback": "..." }}
+  }},
   "strengths": ["...", "...", "..."],
   "weaknesses": ["...", "...", "..."],
   "recommendations": ["...", "..."],
-  "evaluation_narrative": "..."
+  "evaluation_narrative": "...",
+  "question_analysis": [
+    {{
+      "turn_number": 1,
+      "strength": "...",
+      "improvement": "..."
+    }},
+    ...
+  ]
 }}
 """
 
@@ -72,7 +92,7 @@ Wajib JSON:
             model=settings.LLM_MODEL,
             messages=[{"role": "system", "content": system_prompt}],
             response_format={"type": "json_object"},
-            max_tokens=2048,
+            max_tokens=3000,
         )
         return json.loads(response.choices[0].message.content)
     except Exception as e:
@@ -81,14 +101,21 @@ Wajib JSON:
         avg_quality = sum([t.answerQuality or 0 for t in turns]) / len(turns) if turns else 50
         return {
             "overall_score": avg_quality,
-            "communication_score": avg_quality,
-            "consistency_score": avg_quality,
-            "confidence_score": avg_quality,
-            "stress_resistance_score": avg_quality,
+            "dimensions": {
+                "articulation": { "score": avg_quality, "feedback": "Artikulasi cukup jelas." },
+                "intonation": { "score": avg_quality, "feedback": "Intonasi cukup baik." },
+                "pacing": { "score": avg_quality, "feedback": "Kecepatan bicara stabil." },
+                "filler_words": { "score": avg_quality, "feedback": "Penggunaan filler words minim." },
+                "sentence_structure": { "score": avg_quality, "feedback": "Struktur kalimat mudah dipahami." },
+                "answer_completeness": { "score": avg_quality, "feedback": "Jawaban cukup lengkap." },
+                "consistency": { "score": avg_quality, "feedback": "Jawaban konsisten." },
+                "confidence": { "score": avg_quality, "feedback": "Terlihat percaya diri." }
+            },
             "strengths": ["Mampu mengikuti alur wawancara"],
             "weaknesses": ["Perlu analisis lebih mendalam"],
             "recommendations": ["Berlatih lebih sering"],
-            "evaluation_narrative": "Evaluasi otomatis gagal dihasilkan karena kendala teknis."
+            "evaluation_narrative": "Evaluasi otomatis gagal dihasilkan karena kendala teknis.",
+            "question_analysis": []
         }
 
 def build_system_prompt(
@@ -203,6 +230,13 @@ async def generate_next_turn(
     if new_answer_transcript:
         messages.append({"role": "user", "content": new_answer_transcript})
 
+    # Jika messages masih kosong (giliran pertama sekali), tambahkan trigger
+    if not messages:
+        messages.append({
+            "role": "user", 
+            "content": "Halo, saya siap memulai sesi wawancara. Silakan mulai dengan menyapa saya dan ajukan pertanyaan pertama."
+        })
+
     try:
         response = await client.chat.completions.create(
             model=settings.LLM_MODEL,
@@ -220,7 +254,7 @@ async def generate_next_turn(
         return {
             "feedback": "Koneksi terganggu sejenak.",
             "question": "Bisa tolong ulangi atau lanjutkan penjelasan kamu?",
-            "persona_assessment": session.currentPersona,
+            "persona_assessment": str(session.currentPersona),
             "answer_quality_score": 50
         }
 

@@ -7,8 +7,17 @@ export const load: PageServerLoad = async ({ fetch, request }) => {
 	const session = await auth.api.getSession({ headers: request.headers });
 	if (!session) throw redirect(302, '/login');
 
-	const res = await fetch(`${PUBLIC_BACKEND_URL}/api/sessions?userId=${session.user.id}&limit=50`);
-	const sessions = await res.json();
+	const [sessionsRes, profileRes] = await Promise.all([
+		fetch(`${PUBLIC_BACKEND_URL}/api/sessions?userId=${session.user.id}&limit=50`),
+		fetch(`${PUBLIC_BACKEND_URL}/api/profiles?userId=${session.user.id}`)
+	]);
 
-	return { sessions };
+	const sessions = await sessionsRes.json();
+	const profile = profileRes.ok ? await profileRes.json() : null;
+
+	return { 
+		sessions, 
+		user: session.user,
+		profile
+	};
 };

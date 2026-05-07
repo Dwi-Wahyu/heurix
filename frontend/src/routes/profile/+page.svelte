@@ -2,6 +2,8 @@
 	import Sidebar from '$lib/components/Sidebar.svelte';
 	import Header from '$lib/components/Header.svelte';
 	import BottomNav from '$lib/components/BottomNav.svelte';
+	import { sidebarState } from '$lib/sidebar.svelte';
+	import { Award } from '@lucide/svelte';
 
 	let { data } = $props();
 
@@ -48,7 +50,11 @@
 <div class="flex min-h-screen bg-[#f4f7fb]">
 	<Sidebar />
 
-	<div class="flex min-h-screen flex-1 flex-col md:ml-64">
+	<div
+		class="flex min-h-screen flex-1 flex-col transition-all duration-300 {sidebarState.isOpen
+			? 'md:ml-64'
+			: 'md:ml-20'}"
+	>
 		<Header />
 
 		<main class="mx-auto w-full max-w-[1100px] px-5 pt-20 pb-20 md:px-8">
@@ -87,26 +93,6 @@
 
 							<h2 class="text-xl font-bold text-gray-900">{user.name}</h2>
 							<p class="mt-1 text-sm text-gray-500">{user.email}</p>
-
-							<!-- Email verified badge -->
-							{#if user.emailVerified}
-								<span
-									class="mt-3 inline-flex items-center gap-1 rounded-full bg-green-50 px-3 py-1 text-xs font-semibold text-green-700"
-								>
-									<span
-										class="material-symbols-outlined text-[14px]"
-										style="font-variation-settings: 'FILL' 1;">verified</span
-									>
-									Email Terverifikasi
-								</span>
-							{:else}
-								<span
-									class="mt-3 inline-flex items-center gap-1 rounded-full bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-700"
-								>
-									<span class="material-symbols-outlined text-[14px]">warning</span>
-									Email Belum Terverifikasi
-								</span>
-							{/if}
 
 							<p class="mt-4 text-xs text-gray-400">
 								Bergabung sejak {formatDate(user.createdAt)}
@@ -285,18 +271,14 @@
 
 					<!-- Premium Status Card -->
 					<div class="rounded-3xl border border-gray-100 bg-white p-8 shadow-soft">
-						<div class="flex flex-col items-center justify-between md:flex-row">
-							<div class="flex items-center gap-4">
+						<div class="flex flex-col justify-between">
+							<div class="flex items-center">
 								<div
-									class="flex h-12 w-12 items-center justify-center rounded-2xl {profile?.isPremium
+									class="flex h-20 w-14 items-center justify-center rounded-2xl {profile?.isPremium
 										? 'bg-amber-50 text-amber-500'
 										: 'bg-gray-50 text-gray-400'}"
 								>
-									<span
-										class="material-symbols-outlined text-[24px]"
-										style="font-variation-settings: 'FILL' {profile?.isPremium ? 1 : 0};"
-										>workspace_premium</span
-									>
+									<Award />
 								</div>
 								<div>
 									<p class="text-xs font-semibold tracking-wide text-gray-400 uppercase">
@@ -313,11 +295,13 @@
 								</div>
 							</div>
 							{#if !profile?.isPremium}
-								<button
-									class="mt-4 w-full rounded-xl bg-linear-to-r from-amber-400 to-amber-500 px-5 py-2.5 text-sm font-bold text-white shadow-sm transition-all hover:scale-[1.03] hover:shadow-md active:scale-[0.98] md:mt-0"
-								>
-									Upgrade
-								</button>
+								<div class="flex w-full justify-end">
+									<button
+										class=" mt-4 w-full rounded-xl bg-linear-to-r from-primary to-primary/90 px-5 py-2.5 text-sm font-bold text-white shadow-sm transition-all hover:scale-[1.03] hover:shadow-md active:scale-[0.98] md:mt-0 md:w-fit"
+									>
+										Upgrade
+									</button>
+								</div>
 							{/if}
 						</div>
 					</div>

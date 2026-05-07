@@ -15,6 +15,11 @@
 
 	import { browser } from '$app/environment';
 	import { fade } from 'svelte/transition';
+	import { pwaState, installApp } from '$lib/pwa.svelte';
+	import {
+		FaceLandmarker,
+		FilesetResolver
+	} from "@mediapipe/tasks-vision";
 
 	// ── Media ──
 	let videoElementDesktop = $state<HTMLVideoElement | null>(null);
@@ -23,6 +28,11 @@
 	let stream = $state<MediaStream | null>(null);
 	let micMuted = $state(false);
 	let camOff = $state(false);
+
+	// ── Face Analysis (MediaPipe) ──
+	let faceLandmarker: FaceLandmarker | undefined;
+	let lastFaceSampleTime = 0;
+	const FACE_SAMPLE_INTERVAL = 3000; // Sample every 3 seconds
 
 	// ── Session & WebSocket ──
 	let sessionId = $state<string | null>(null);
@@ -34,7 +44,10 @@
 	let messages = $state<Message[]>([]);
 	let isListening = $state(false);
 	let isSpeaking = $state(false);
+	let isThinking = $state(false);
 	let transcriptOpen = $state(false);
+	let autoSend = $state(true);
+	let silenceTimeout: ReturnType<typeof setTimeout> | null = null;
 	let liveTranscript = $state('');
 	let isVoiceActive = $state(false);
 	let messagesContainer = $state<HTMLElement | null>(null);
@@ -111,7 +124,7 @@
 			try {
 				const { PUBLIC_BACKEND_URL } = await import('$env/static/public');
 				let apiUrl = PUBLIC_BACKEND_URL;
-				if (window.location.protocol === 'https:' && apiUrl.startsWith('http://')) {
+				if (browser && window.location.protocol === 'https:' && apiUrl.startsWith('http://')) {
 					apiUrl = apiUrl.replace('http://', 'https://');
 				}
 				
@@ -120,9 +133,10 @@
 				
 				const sessionData = await res.json();
 				const glbUrl = `/${sessionData.avatar.glbUrl}`;
+				const cameraConfig = sessionData.avatar.cameraConfig;
 
 				// 2. Avatar Three.js
-				initAvatar(glbUrl);
+				initAvatar(glbUrl, cameraConfig);
 			} catch (err) {
 				console.error('Failed to load session details:', err);
 				errorMessage = 'Gagal memuat detail sesi.';
@@ -133,18 +147,42 @@
 		}
 
 		// 4. Kamera user
-		navigator.mediaDevices
-			.getUserMedia({ video: true, audio: true })
-			.then((s) => {
-				stream = s;
-			})
-			.catch((e) => {
-				console.error('Camera access failed:', e);
-			});
+		if (browser && navigator.mediaDevices) {
+			navigator.mediaDevices
+				.getUserMedia({ video: true, audio: true })
+				.then((s) => {
+					stream = s;
+				})
+				.catch((e) => {
+					console.error('Camera access failed:', e);
+				});
+		}
 
 		// 5. Live STT (Web Speech API)
 		initSpeechRecognition();
+
+		// 6. MediaPipe Face Analysis
+		await initMediaPipe();
 	});
+
+	async function initMediaPipe() {
+		if (!browser) return;
+		try {
+			const vision = await FilesetResolver.forVisionTasks("/wasm");
+			faceLandmarker = await FaceLandmarker.createFromOptions(vision, {
+				baseOptions: { 
+					modelAssetPath: `/models/face_landmarker.task`, 
+					delegate: "GPU" 
+				},
+				runningMode: "VIDEO",
+				outputFaceBlendshapes: true,
+				numFaces: 1
+			});
+			console.log("MediaPipe FaceLandmarker initialized");
+		} catch (err) {
+			console.error("Failed to init MediaPipe:", err);
+		}
+	}
 
 	function initSpeechRecognition() {
 		if (!browser) return;
@@ -167,6 +205,16 @@
 			}
 			if (currentTranscript.trim()) {
 				liveTranscript = currentTranscript;
+
+				// Auto-send logic
+				if (autoSend) {
+					if (silenceTimeout) clearTimeout(silenceTimeout);
+					silenceTimeout = setTimeout(() => {
+						if (isListening && !isSpeaking && liveTranscript.trim().length > 3) {
+							stopRecording();
+						}
+					}, 2000); // 2 detik setelah selesai bicara
+				}
 			}
 		};
 
@@ -186,15 +234,17 @@
 	}
 
 	onDestroy(() => {
-		document.body.style.overflow = '';
+		if (browser) {
+			document.body.style.overflow = '';
+		}
 		clearInterval(timerInterval);
 		stream?.getTracks().forEach((t) => t.stop());
 		ws?.close();
 		stopBlink?.();
 	});
 
-	async function initAvatar(glbUrl: string) {
-		if (!canvasElement) return;
+	async function initAvatar(glbUrl: string, cameraConfig?: any) {
+		if (!canvasElement || !browser) return;
 
 		const renderer = new THREE.WebGLRenderer({
 			canvas: canvasElement,
@@ -286,21 +336,26 @@
 						const size = box.getSize(new THREE.Vector3());
 						const center = box.getCenter(new THREE.Vector3());
 
+						// Gunakan config dari DB atau default
+						const headHeightRatio = cameraConfig?.headHeightRatio ?? 0.82;
+						const distanceOffset = cameraConfig?.distanceOffset ?? 1.0;
+						const lookAtOffset = cameraConfig?.lookAtOffset ?? 0.05;
+
 						if (size.y < 0.1) {
 							camera.position.set(center.x, center.y + 0.1, center.z + 0.5);
 							camera.lookAt(center.x, center.y + 0.1, center.z);
 						} else {
-							const headBottomY = box.min.y + size.y * 0.82; 
+							const headBottomY = box.min.y + size.y * headHeightRatio; 
 							const headTopY = box.max.y;
 							const focusCenterY = (headBottomY + headTopY) / 2;
 							const focusHeight = headTopY - headBottomY;
 
 							const vFovRad = (camera.fov * Math.PI) / 180;
 							const desiredCoverage = 0.85; 
-							const distance = (focusHeight / 2) / Math.tan(vFovRad / 2) / desiredCoverage;
+							const distance = ((focusHeight / 2) / Math.tan(vFovRad / 2) / desiredCoverage) * distanceOffset;
 
 							camera.position.set(center.x, focusCenterY, center.z + distance);
-							camera.lookAt(center.x, focusCenterY - (focusHeight * 0.05), center.z);
+							camera.lookAt(center.x, focusCenterY - (focusHeight * lookAtOffset), center.z);
 							
 							keyLight.position.set(center.x - 1, focusCenterY + 1, center.z + 2);
 							keyLight.target.position.set(center.x, focusCenterY, center.z);
@@ -335,8 +390,82 @@
 			const delta = (time - lastTime) / 1000;
 			lastTime = time;
 
-			animator?.update(Math.min(delta, 0.1));
+			if (animator) {
+				animator.update(Math.min(delta, 0.1));
+
+				// ── PROCEDURAL IDLE & THINKING ANIMATION ──
+				const t = time / 1000;
+				
+				// 1. Subtle breathing/sway (Always on)
+				// Kecepatan sangat lambat agar tidak mengganggu
+				const swayX = Math.sin(t * 0.5) * 0.015;
+				const swayY = Math.cos(t * 0.8) * 0.01;
+				
+				let targetRotX = swayX;
+				let targetRotY = swayY;
+				let targetRotZ = 0;
+
+				if (isThinking) {
+					// Menoleh sedikit ke samping dan ke atas (pose berpikir)
+					targetRotX += 0.04; 
+					targetRotY += 0.1; 
+					targetRotZ = 0.03;
+					
+					// Naikkan alis sedikit
+					animator.setExpression({
+						'BrowInnerUp': 0.3,
+						'BrowOuterUpLeft': 0.1,
+						'BrowOuterUpRight': 0.1
+					});
+				}
+
+				// Cari model di scene untuk diaplikasikan rotasi
+				// Traversal scene.children untuk menemukan model utama
+				scene.traverse((obj) => {
+					if (obj.name === 'Scene' || (obj.type === 'Group' && obj.parent === scene)) {
+						obj.rotation.x = THREE.MathUtils.lerp(obj.rotation.x, targetRotX, 0.05);
+						obj.rotation.y = THREE.MathUtils.lerp(obj.rotation.y, targetRotY, 0.05);
+						obj.rotation.z = THREE.MathUtils.lerp(obj.rotation.z, targetRotZ, 0.05);
+					}
+				});
+			}
+
 			renderer.render(scene, camera);
+
+			// ── FACE ANALYSIS (MediaPipe) ──
+			if (faceLandmarker && browser && !camOff) {
+				const activeVideo = videoElementDesktop || videoElementMobile;
+				if (activeVideo && activeVideo.readyState >= 2) {
+					const now = performance.now();
+					if (now - lastFaceSampleTime > FACE_SAMPLE_INTERVAL) {
+						lastFaceSampleTime = now;
+						
+						const results = faceLandmarker.detectForVideo(activeVideo, now);
+						if (results.faceBlendshapes?.[0]) {
+							const shapes = results.faceBlendshapes[0].categories;
+							const smileLeft = shapes.find(s => s.categoryName === 'mouthSmileLeft')?.score || 0;
+							const smileRight = shapes.find(s => s.categoryName === 'mouthSmileRight')?.score || 0;
+							const avgSmile = (smileLeft + smileRight) / 2;
+
+							// Eye contact consistency check
+							// We consider consistent eye contact if face is detected and landmarks are present
+							// For more precision, we could check pupil position or head pitch/yaw/roll
+							const hasLandmarks = results.faceLandmarks?.[0]?.length > 0;
+							
+							if (ws && wsStatus === 'connected') {
+								ws.send(JSON.stringify({
+									type: 'FACE_METRICS',
+									metrics: {
+										smileScore: avgSmile,
+										isLookingAtCamera: hasLandmarks, 
+										timestamp: now
+									}
+								}));
+							}
+						}
+					}
+				}
+			}
 		}
 		animate();
 
@@ -398,6 +527,7 @@
 				}
 
 				isSpeaking = true;
+				isThinking = false;
 				try {
 					if (animator) {
 						// Gunakan audio & visemes dari backend jika tersedia untuk menghindari fetch ulang
@@ -428,6 +558,7 @@
 			}
 			case 'PROCESSING':
 				isListening = false;
+				isThinking = true;
 				break;
 			case 'FEEDBACK': {
 				const feedbackText = msg.feedback;
@@ -526,6 +657,10 @@
 	}
 
 	function stopRecording() {
+		if (silenceTimeout) {
+			clearTimeout(silenceTimeout);
+			silenceTimeout = null;
+		}
 		if (mediaRecorder?.state === 'recording') {
 			mediaRecorder.stop();
 			try {
@@ -587,9 +722,6 @@
 		>
 			{#if !avatarReady}
 				<div class="absolute inset-0 z-10 flex flex-col items-center justify-center bg-black/80">
-					<div
-						class="mb-4 h-48 w-32 animate-pulse rounded-2xl border border-white/10 bg-white/5"
-					></div>
 					<div class="h-1.5 w-48 overflow-hidden rounded-full bg-white/10">
 						<div
 							class="h-full bg-primary transition-all duration-300"
@@ -680,9 +812,18 @@
 					</div>
 				</div>
 				<div class="flex items-center gap-2">
+					{#if pwaState.showInstallButton}
+						<button
+							onclick={installApp}
+							class="flex h-10 items-center gap-2 rounded-full border border-primary/50 bg-primary/20 px-4 backdrop-blur-md transition-all hover:bg-primary/40 active:scale-95"
+						>
+							<span class="material-symbols-outlined text-[18px] text-white">download</span>
+							<span class="hidden text-xs font-bold text-white sm:inline">Install App</span>
+						</button>
+					{/if}
 					<button
 						onclick={() => (transcriptOpen = !transcriptOpen)}
-						class="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-black/40 backdrop-blur-md transition-colors active:bg-white/10 md:hidden"
+						class="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-black/40 backdrop-blur-md transition-colors active:bg-white/10"
 					>
 						<span class="material-symbols-outlined text-[20px]"
 							>{transcriptOpen ? 'chat_bubble' : 'chat_bubble_outline'}</span
@@ -737,10 +878,10 @@
 
 		<section
 			class="
-				fixed inset-0 z-[60] flex flex-col bg-black/95 backdrop-blur-2xl
-				transition-all duration-300 md:relative md:inset-auto md:z-30 md:bg-black/80
-				{transcriptOpen ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0 pointer-events-none md:hidden'}
-				md:absolute md:top-6 md:right-6 md:h-[60vh] md:w-[320px] md:translate-y-0 md:rounded-2xl md:opacity-100 md:pointer-events-auto lg:w-[360px]
+				fixed inset-y-0 right-0 z-[60] flex flex-col bg-black/95 backdrop-blur-2xl
+				transition-all duration-300 md:bg-black/80
+				{transcriptOpen ? 'translate-x-0 opacity-100' : 'translate-x-full opacity-0 pointer-events-none'}
+				w-full sm:max-w-[360px] md:w-[320px] lg:w-[380px]
 			"
 		>
 			<div
@@ -864,6 +1005,17 @@
 		>
 			<span class="material-symbols-outlined text-[22px] md:text-[24px]"
 				>{camOff ? 'videocam_off' : 'videocam'}</span
+			>
+		</button>
+
+		<button
+			onclick={() => (autoSend = !autoSend)}
+			title={autoSend ? 'Matikan Kirim Otomatis' : 'Aktifkan Kirim Otomatis'}
+			class="flex h-11 w-11 items-center justify-center rounded-full shadow-lg transition-all active:scale-95 md:h-12 md:w-12
+			       {autoSend ? 'bg-secondary text-white' : 'bg-white text-secondary'}"
+		>
+			<span class="material-symbols-outlined text-[22px] md:text-[24px]"
+				>{autoSend ? 'auto_mode' : 'person_check'}</span
 			>
 		</button>
 

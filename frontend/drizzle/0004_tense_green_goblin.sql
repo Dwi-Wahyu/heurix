@@ -1,0 +1,1 @@
+ALTER TABLE "interview_avatar" ADD COLUMN "camera_config" jsonb;

@@ -23,24 +23,28 @@ class SpeechService:
         if not audio_data:
             return None, None
 
-        # Load audio data dengan librosa
-        # Kita gunakan buffer BytesIO agar tidak perlu menulis ke disk
-        audio_buffer = io.BytesIO(audio_data)
-        y, sr = librosa.load(audio_buffer, sr=None)
-
-        # Ekstrak Root Mean Square (RMS) untuk mendapatkan tingkat kekerasan suara (amplitudo)
-        # Hop_length menentukan "frame rate" viseme kita. 
-        # Misal sr=22050, hop_length=512 -> ~43 fps viseme.
-        rms = librosa.feature.rms(y=y, hop_length=512)[0]
-        
-        # Normalisasi ke 0 - 1
-        if np.max(rms) > 0:
-            visemes = (rms / np.max(rms)).tolist()
-        else:
-            visemes = rms.tolist()
-
-        # Encode audio ke base64 agar mudah dikirim via JSON
         audio_base64 = base64.b64encode(audio_data).decode('utf-8')
+        visemes = []
+
+        try:
+            # Load audio data dengan librosa
+            # Kita gunakan buffer BytesIO agar tidak perlu menulis ke disk
+            audio_buffer = io.BytesIO(audio_data)
+            y, sr = librosa.load(audio_buffer, sr=None)
+
+            # Ekstrak Root Mean Square (RMS) untuk mendapatkan tingkat kekerasan suara (amplitudo)
+            # Hop_length menentukan "frame rate" viseme kita. 
+            # Misal sr=22050, hop_length=512 -> ~43 fps viseme.
+            rms = librosa.feature.rms(y=y, hop_length=512)[0]
+            
+            # Normalisasi ke 0 - 1
+            if np.max(rms) > 0:
+                visemes = (rms / np.max(rms)).tolist()
+            else:
+                visemes = rms.tolist()
+        except Exception as e:
+            print(f"Error generating visemes: {e}")
+            # Fallback: visemes kosong, audio tetap dikirim
 
         return audio_base64, visemes
 

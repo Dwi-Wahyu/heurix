@@ -97,6 +97,9 @@ class InterviewSession(Base):
     communicationScore = Column("communication_score", Float)
     consistencyScore = Column("consistency_score", Float)
     confidenceScore = Column("confidence_score", Float)
+    facialExpressionScore = Column("facial_expression_score", Float)
+    eyeContactScore = Column("eye_contact_score", Float)
+    faceMetrics = Column("face_metrics", JSON) # To store raw samples
     createdAt = Column("created_at", DateTime, default=func.now(), nullable=False)
     updatedAt = Column("updated_at", DateTime, default=func.now(), onupdate=func.now(), nullable=False)
 
@@ -156,6 +159,30 @@ class SessionReport(Base):
     consistencyScore = Column("consistency_score", Float, nullable=False)
     confidenceScore = Column("confidence_score", Float, nullable=False)
     stressResistanceScore = Column("stress_resistance_score", Float)
+    
+    # New 8 dimensions
+    articulationScore = Column("articulation_score", Float)
+    intonationScore = Column("intonation_score", Float)
+    pacingScore = Column("pacing_score", Float)
+    fillerWordsScore = Column("filler_words_score", Float)
+    sentenceStructureScore = Column("sentence_structure_score", Float)
+    answerCompletenessScore = Column("answer_completeness_score", Float)
+    
+    # Feedbacks for 8 dimensions
+    articulationFeedback = Column("articulation_feedback", String)
+    intonationFeedback = Column("intonation_feedback", String)
+    pacingFeedback = Column("pacing_feedback", String)
+    fillerWordsFeedback = Column("filler_words_feedback", String)
+    sentenceStructureFeedback = Column("sentence_structure_feedback", String)
+    answerCompletenessFeedback = Column("answer_completeness_feedback", String)
+    consistencyFeedback = Column("consistency_feedback", String)
+    confidenceFeedback = Column("confidence_feedback", String)
+    facialExpressionFeedback = Column("facial_expression_feedback", String)
+    eyeContactFeedback = Column("eye_contact_feedback", String)
+
+    facialExpressionScore = Column("facial_expression_score", Float)
+    eyeContactScore = Column("eye_contact_score", Float)
+
     strengths = Column(JSON)
     weaknesses = Column(JSON)
     recommendations = Column(JSON)
@@ -184,6 +211,7 @@ class InterviewAvatar(Base):
     promptFriendly = Column("prompt_friendly", String)
     promptFormal = Column("prompt_formal", String)
     promptIntimidating = Column("prompt_intimidating", String)
+    cameraConfig = Column("camera_config", JSON)
     isActive = Column("is_active", Boolean, default=True, nullable=False)
     createdAt = Column("created_at", DateTime, default=func.now(), nullable=False)
 
