@@ -25,3 +25,5 @@ vite.config.ts.timestamp-*
 certs/*
 
 ecosystem.config.cjs
+
+vite.config.ts
