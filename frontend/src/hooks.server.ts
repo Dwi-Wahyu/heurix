@@ -17,14 +17,32 @@ export const handle: Handle = async ({ event, resolve }) => {
 		const backendUrl = PUBLIC_BACKEND_URL;
 		const path = event.url.pathname.replace('/api/proxy', '');
 
-		// Ambil data dari backend asli
-		const response = await fetch(`${backendUrl}${path}${event.url.search}`, {
-			method: event.request.method,
-			headers: event.request.headers,
-			body: event.request.method !== 'GET' ? await event.request.blob() : undefined
-		});
+		// Clone headers
+		const requestHeaders = new Headers(event.request.headers);
+		requestHeaders.delete('host');
+		requestHeaders.delete('connection');
+		requestHeaders.delete('accept-encoding');
 
-		return response;
+		try {
+			// Ambil data dari backend asli
+			const response = await fetch(`${backendUrl}${path}${event.url.search}`, {
+				method: event.request.method,
+				headers: requestHeaders,
+				body: event.request.method !== 'GET' ? await event.request.blob() : undefined
+			});
+
+			const responseHeaders = new Headers(response.headers);
+			responseHeaders.delete('content-encoding');
+			responseHeaders.delete('content-length');
+
+			return new Response(response.body, {
+				status: response.status,
+				headers: responseHeaders
+			});
+		} catch (error) {
+			console.error('Proxy error:', error);
+			return new Response('Proxy Error', { status: 500 });
+		}
 	}
 
 	return resolve(event);
