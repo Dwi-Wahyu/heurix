@@ -100,15 +100,7 @@
 				return;
 			}
 
-			// Create session in backend
-			const { PUBLIC_BACKEND_URL } = await import('$env/static/public');
-			let apiUrl = PUBLIC_BACKEND_URL;
-
-			// Upgrade protocol jika frontend diakses via HTTPS
-			if (window.location.protocol === 'https:' && apiUrl.startsWith('http://')) {
-				apiUrl = apiUrl.replace('http://', 'https://');
-			}
-			const res = await fetch(`${apiUrl}/api/sessions`, {
+			const res = await fetch(`/api/proxy/api/sessions`, {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({

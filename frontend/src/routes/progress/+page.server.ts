@@ -1,6 +1,5 @@
 import { redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
-import { PUBLIC_BACKEND_URL } from '$env/static/public';
 import { auth } from '$lib/server/auth';
 
 export const load: PageServerLoad = async ({ fetch, request }) => {
@@ -11,11 +10,11 @@ export const load: PageServerLoad = async ({ fetch, request }) => {
 
 	try {
 		// 1. Fetch User Profile
-		const profileRes = await fetch(`${PUBLIC_BACKEND_URL}/api/profile/${userId}`);
+		const profileRes = await fetch(`/api/proxy/api/profile/${userId}`);
 		const profile = profileRes.ok ? await profileRes.json() : null;
 
 		// 2. Fetch Sessions for analysis
-		const sessionsRes = await fetch(`${PUBLIC_BACKEND_URL}/api/sessions?userId=${userId}&limit=50`);
+		const sessionsRes = await fetch(`/api/proxy/api/sessions?userId=${userId}&limit=50`);
 		const sessions = sessionsRes.ok ? await sessionsRes.json() : [];
 
 		return {

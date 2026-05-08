@@ -1,6 +1,5 @@
 import type { PageServerLoad, Actions } from './$types';
 import { redirect, fail } from '@sveltejs/kit';
-import { PUBLIC_BACKEND_URL } from '$env/static/public';
 import { auth } from '$lib/server/auth';
 
 export const load: PageServerLoad = async ({ fetch, request }) => {
@@ -8,8 +7,8 @@ export const load: PageServerLoad = async ({ fetch, request }) => {
 	if (!session) throw redirect(302, '/login');
 
 	const [instRes, posRes] = await Promise.all([
-		fetch(`${PUBLIC_BACKEND_URL}/api/institutions`),
-		fetch(`${PUBLIC_BACKEND_URL}/api/positions`)
+		fetch(`/api/proxy/api/institutions`),
+		fetch(`/api/proxy/api/positions`)
 	]);
 
 	return {
@@ -33,7 +32,7 @@ export const actions: Actions = {
 		}
 
 		// Simpan ke profil user via backend
-		await fetch(`${PUBLIC_BACKEND_URL}/api/profile`, {
+		await fetch(`/api/proxy/api/profile`, {
 			method: 'PATCH',
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({

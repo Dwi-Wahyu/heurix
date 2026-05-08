@@ -122,13 +122,7 @@
 		if (sessionId) {
 			// 1. Ambil info sesi & avatar
 			try {
-				const { PUBLIC_BACKEND_URL } = await import('$env/static/public');
-				let apiUrl = PUBLIC_BACKEND_URL;
-				if (browser && window.location.protocol === 'https:' && apiUrl.startsWith('http://')) {
-					apiUrl = apiUrl.replace('http://', 'https://');
-				}
-				
-				const res = await fetch(`${apiUrl}/api/sessions/${sessionId}`);
+				const res = await fetch(`/api/proxy/api/sessions/${sessionId}`);
 				if (!res.ok) throw new Error('Session not found');
 				
 				const sessionData = await res.json();

@@ -62,12 +62,7 @@ export async function speakWithBackend(
       audio = pregeneratedData.audio;
       visemes = pregeneratedData.visemes;
     } else {
-      let apiUrl = PUBLIC_BACKEND_URL;
-      if (typeof window !== 'undefined' && window.location.protocol === 'https:' && apiUrl.startsWith('http://')) {
-        apiUrl = apiUrl.replace('http://', 'https://');
-      }
-
-      const response = await fetch(`${apiUrl}/api/speech`, {
+      const response = await fetch(`/api/proxy/api/speech`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ text }),

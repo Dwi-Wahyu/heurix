@@ -10,8 +10,8 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    ports:
-      - "5002:5002"
+    expose:
+      - "5002"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
       interval: 10s
@@ -31,12 +31,10 @@ services:
     environment:
       DATABASE_URL: ${DATABASE_URL}
       MODEL_PATH: ${MODEL_PATH}
-    ports:
-      - "5001:5001"
+    expose:
+      - "5001"
     volumes:
-      - ./backend:/app
-      # Volume untuk cache model agar tidak download ulang setiap restart
-      - model_cache:/app/models
+      - model_cache:/app/models # Hanya cache model yang perlu persist
 
   # Frontend Service
   frontend:
@@ -52,7 +50,12 @@ services:
       DATABASE_URL: ${DATABASE_URL}
       PUBLIC_BACKEND_URL: ${PUBLIC_BACKEND_URL}
       PUBLIC_BACKEND_WS: ${PUBLIC_BACKEND_WS}
-      PORT: 5000
+      BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET}
+      BETTER_AUTH_URL: ${BETTER_AUTH_URL}
+      ORIGIN: ${ORIGIN}
+      GOOGLE_CLIENT_ID: "${GOOGLE_CLIENT_ID}"
+      GOOGLE_CLIENT_SECRET: "${GOOGLE_CLIENT_SECRET}"
+      PORT: ${FRONTEND_PORT}
       HOST: 0.0.0.0
     ports:
       - "5000:5000"
