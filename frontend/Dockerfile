@@ -3,6 +3,8 @@ FROM oven/bun:1.3.10-alpine AS builder
 # Tentukan folder kerja di container
 WORKDIR /app
 
+RUN apk add --no-cache python3 make g++ build-base libc6-compat
+
 # Ambil build-args dari workflow
 ARG PUBLIC_BACKEND_URL
 ARG PUBLIC_BACKEND_WS
@@ -12,7 +14,7 @@ ENV PUBLIC_BACKEND_URL=$PUBLIC_BACKEND_URL
 ENV PUBLIC_BACKEND_WS=$PUBLIC_BACKEND_WS
 
 # 1. Salin file package saja dulu untuk efisiensi cache
-COPY package.json bun.lockb* ./
+COPY package.json bun.lock* ./
 RUN bun install --frozen-lockfile
 
 # 2. Salin SELURUH isi folder frontend
