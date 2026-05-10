@@ -15,6 +15,14 @@ RUN bun install --frozen-lockfile
 # Salin semua source code
 COPY . .
 
+# Tambahkan ini - deklarasi ARG sebelum digunakan
+ARG PUBLIC_BACKEND_URL
+ARG PUBLIC_BACKEND_WS
+
+# Set sebagai ENV agar Vite bisa membacanya saat build
+ENV PUBLIC_BACKEND_URL=$PUBLIC_BACKEND_URL
+ENV PUBLIC_BACKEND_WS=$PUBLIC_BACKEND_WS
+
 # Build aplikasi menggunakan adapter-bun
 RUN bun run build
 
