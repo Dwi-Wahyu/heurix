@@ -1,20 +1,29 @@
 FROM oven/bun:1.3.10-alpine AS builder
 
+# Tentukan folder kerja di container
 WORKDIR /app
 
-RUN apk add --no-cache python3 make g++
-
-COPY . .
-
-RUN bun install --frozen-lockfile
-
-RUN bunx svelte-kit sync
-
+# Ambil build-args dari workflow
 ARG PUBLIC_BACKEND_URL
 ARG PUBLIC_BACKEND_WS
+
+# Set sebagai ENV agar tersedia saat proses 'bun run build'
 ENV PUBLIC_BACKEND_URL=$PUBLIC_BACKEND_URL
 ENV PUBLIC_BACKEND_WS=$PUBLIC_BACKEND_WS
 
+# 1. Salin file package saja dulu untuk efisiensi cache
+COPY package.json bun.lockb* ./
+RUN bun install --frozen-lockfile
+
+# 2. Salin SELURUH isi folder frontend
+# Ini termasuk svelte.config.js dan vite.config.ts
+COPY . .
+
+# 3. Sinkronisasi SvelteKit (Sangat Penting untuk Svelte 5 / SvelteKit terbaru)
+# Perintah ini menghasilkan file index.html virtual dan manifest yang dibutuhkan Vite
+RUN bunx svelte-kit sync
+
+# 4. Jalankan build
 RUN bun run build
 
 # --- Runtime Stage ---
