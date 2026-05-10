@@ -1,42 +1,41 @@
 FROM oven/bun:1.3.10-alpine AS builder
 
-# Tentukan folder kerja di container
 WORKDIR /app
 
+# Install dependencies sistem
 RUN apk add --no-cache python3 make g++ build-base libc6-compat
 
-# Ambil build-args dari workflow
+# 1. Pastikan build-args didefinisikan SEBELUM digunakan
 ARG PUBLIC_BACKEND_URL
 ARG PUBLIC_BACKEND_WS
 
-# Set sebagai ENV agar tersedia saat proses 'bun run build'
-ENV PUBLIC_BACKEND_URL=$PUBLIC_BACKEND_URL
-ENV PUBLIC_BACKEND_WS=$PUBLIC_BACKEND_WS
-
-# 1. Salin file package saja dulu untuk efisiensi cache
+# 2. Salin file manifest terlebih dahulu (Layer Caching)
 COPY package.json bun.lock* ./
 RUN bun install --frozen-lockfile
 
-# 2. Salin SELURUH isi folder frontend
-# Ini termasuk svelte.config.js dan vite.config.ts
+# 3. Salin SEMUA file (Penting: svelte.config.js & vite.config.ts harus ikut)
 COPY . .
 
-# 3. Sinkronisasi SvelteKit (Sangat Penting untuk Svelte 5 / SvelteKit terbaru)
-# Perintah ini menghasilkan file index.html virtual dan manifest yang dibutuhkan Vite
-RUN bunx svelte-kit sync
+# 4. Set ENV tepat sebelum build (Vite butuh ini saat kompilasi)
+ENV PUBLIC_BACKEND_URL=$PUBLIC_BACKEND_URL
+ENV PUBLIC_BACKEND_WS=$PUBLIC_BACKEND_WS
+ENV NODE_ENV=production
 
-# 4. Jalankan build
-RUN bun run build
+# 5. Jalankan Sync dan Build
+# Tambahkan 'bun run' sebelum svelte-kit sync untuk memastikan path lokal terbaca
+RUN bun exec svelte-kit sync && bun run build
 
 # --- Runtime Stage ---
 FROM oven/bun:1.3.10-alpine
 
 WORKDIR /app
 
+# Ambil hasil build
 COPY --from=builder /app/build ./build
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package.json ./package.json
 
+# Environment Runtime
 ENV NODE_ENV=production
 ENV HOST=0.0.0.0
 ENV PORT=5000
