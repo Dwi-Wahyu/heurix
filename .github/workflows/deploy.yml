@@ -43,6 +43,7 @@ jobs:
           context: ./frontend
           file: ./frontend/Dockerfile
           push: true
+          no-cache: true
           # Build args untuk env yang dibutuhkan saat build-time (Next.js/SvelteKit)
           build-args: |
             PUBLIC_BACKEND_URL=${{ secrets.PUBLIC_BACKEND_URL }}
