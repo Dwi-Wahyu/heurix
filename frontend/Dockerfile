@@ -23,7 +23,7 @@ ENV NODE_ENV=production
 
 # 5. Jalankan Sync dan Build
 # Tambahkan 'bun run' sebelum svelte-kit sync untuk memastikan path lokal terbaca
-RUN bun exec svelte-kit sync && bun run build
+RUN bun run build
 
 # --- Runtime Stage ---
 FROM oven/bun:1.3.10-alpine
