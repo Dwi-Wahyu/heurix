@@ -14,10 +14,6 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      # Tambahan: konversi repository name ke lowercase
-      - name: Set lowercase repository name
-        run: echo "REPO_LOWER=$(echo '${{ github.repository }}' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
-
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
@@ -26,30 +22,34 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          password: ${{ secrets.GHCR_TOKEN }}
 
+      # --- BUILD BACKEND ---
       - name: Build and Push Backend
         uses: docker/build-push-action@v5
         with:
           context: ./backend
           file: ./backend/Dockerfile
           push: true
-          cache-from: type=registry,ref=ghcr.io/${{ env.REPO_LOWER }}/hiready-backend:cache
-          cache-to: type=registry,ref=ghcr.io/${{ env.REPO_LOWER }}/hiready-backend:cache,mode=max
-          tags: ghcr.io/${{ env.REPO_LOWER }}/hiready-backend:latest
+          # Cache agar build python (pip) lebih cepat
+          cache-from: type=registry,ref=ghcr.io/dwi-wahyu/hiready-backend:cache
+          cache-to: type=registry,ref=ghcr.io/dwi-wahyu/hiready-backend:cache,mode=max
+          tags: ghcr.io/dwi-wahyu/hiready-backend:latest
 
+      # --- BUILD FRONTEND ---
       - name: Build and Push Frontend
         uses: docker/build-push-action@v5
         with:
           context: ./frontend
           file: ./frontend/Dockerfile
           push: true
+          # Build args untuk env yang dibutuhkan saat build-time (Next.js/SvelteKit)
           build-args: |
             PUBLIC_BACKEND_URL=${{ secrets.PUBLIC_BACKEND_URL }}
             PUBLIC_BACKEND_WS=${{ secrets.PUBLIC_BACKEND_WS }}
-          cache-from: type=registry,ref=ghcr.io/${{ env.REPO_LOWER }}/hiready-frontend:cache
-          cache-to: type=registry,ref=ghcr.io/${{ env.REPO_LOWER }}/hiready-frontend:cache,mode=max
-          tags: ghcr.io/${{ env.REPO_LOWER }}/hiready-frontend:latest
+          cache-from: type=registry,ref=ghcr.io/dwi-wahyu/hiready-frontend:cache
+          cache-to: type=registry,ref=ghcr.io/dwi-wahyu/hiready-frontend:cache,mode=max
+          tags: ghcr.io/dwi-wahyu/hiready-frontend:latest
 
   deploy:
     needs: build-and-push
@@ -58,7 +58,8 @@ jobs:
       - name: Deploy via SSH
         uses: appleboy/ssh-action@v1.0.3
         env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          # Mapping semua Secrets agar bisa dikirim ke server via SSH
+          DATABASE_URL: ${{ secrets.HIREADY_DATABASE_URL }}
           POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
           POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
@@ -71,18 +72,20 @@ jobs:
           GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
           GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
           FRONTEND_PORT: 5000
-          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GH_ACTOR: ${{ github.actor }}
         with:
           host: ${{ secrets.SERVER_IP }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
-          envs: DATABASE_URL,POSTGRES_DB,POSTGRES_USER,POSTGRES_PASSWORD,GROQ_API_KEY,PUBLIC_BACKEND_URL,PUBLIC_BACKEND_WS,BETTER_AUTH_SECRET,BETTER_AUTH_URL,ORIGIN,GOOGLE_CLIENT_ID,GOOGLE_CLIENT_SECRET,FRONTEND_PORT,GHCR_TOKEN,GH_ACTOR
+          # Mendaftarkan variabel agar tersedia di session shell server
+          envs: DATABASE_URL,POSTGRES_DB,POSTGRES_USER,POSTGRES_PASSWORD,GROQ_API_KEY,PUBLIC_BACKEND_URL,PUBLIC_BACKEND_WS,BETTER_AUTH_SECRET,BETTER_AUTH_URL,ORIGIN,GOOGLE_CLIENT_ID,GOOGLE_CLIENT_SECRET,FRONTEND_PORT
           script: |
             cd /var/www/hiready
 
+            # Podman: login ke GHCR
             echo "$GHCR_TOKEN" | podman login ghcr.io -u "$GH_ACTOR" --password-stdin
 
+            # Tulis .env ke server
+            # (sudah ada karena secrets di-set satu per satu, tapi docker-compose butuh file .env)
             cat > .env << EOF
             DATABASE_URL=$DATABASE_URL
             POSTGRES_DB=$POSTGRES_DB
@@ -99,6 +102,11 @@ jobs:
             FRONTEND_PORT=$FRONTEND_PORT
             EOF
 
+            # Tarik image terbaru
             podman-compose pull
+
+            # Jalankan ulang service
             podman-compose up -d --remove-orphans
+
+            # Hapus image lama
             podman image prune -af
