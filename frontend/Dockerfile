@@ -9,6 +9,8 @@ RUN apk add --no-cache python3 make g++
 # Salin file package dan lockfile
 COPY package.json bun.lock ./
 
+COPY vite.config.ts ./
+
 # Install dependencies
 RUN bun install --frozen-lockfile
 
