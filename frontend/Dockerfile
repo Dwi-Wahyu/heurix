@@ -6,9 +6,9 @@ RUN apk add --no-cache python3 make g++
 
 COPY package.json bun.lock svelte.config.js ./
 
-RUN bun install --frozen-lockfile
-
 COPY . .
+
+RUN bun install --frozen-lockfile
 
 ARG PUBLIC_BACKEND_URL
 ARG PUBLIC_BACKEND_WS
