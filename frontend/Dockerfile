@@ -10,6 +10,8 @@ COPY . .
 
 RUN bun install --frozen-lockfile
 
+RUN bunx svelte-kit sync
+
 ARG PUBLIC_BACKEND_URL
 ARG PUBLIC_BACKEND_WS
 ENV PUBLIC_BACKEND_URL=$PUBLIC_BACKEND_URL
