@@ -4,8 +4,6 @@ WORKDIR /app
 
 RUN apk add --no-cache python3 make g++
 
-COPY package.json bun.lock svelte.config.js ./
-
 COPY . .
 
 RUN bun install --frozen-lockfile
