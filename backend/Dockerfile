@@ -54,4 +54,6 @@ USER appuser
 
 EXPOSE 5001
 
-CMD ["gunicorn", "-w", "4", "-k", "uvicorn.workers.UvicornWorker", "main:app", "--bind", "0.0.0.0:5001", "--timeout", "120"]
+ENV WEB_CONCURRENCY=1
+
+CMD ["sh", "-c", "gunicorn -w ${WEB_CONCURRENCY} -k uvicorn.workers.UvicornWorker main:app --bind 0.0.0.0:5001 --timeout 120"]
