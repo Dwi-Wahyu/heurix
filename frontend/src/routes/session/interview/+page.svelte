@@ -690,7 +690,7 @@
 </script>
 
 <svelte:head>
-	<title>Sesi Interview — HiReady</title>
+	<title>Sesi Interview — Heurix</title>
 </svelte:head>
 
 <div 

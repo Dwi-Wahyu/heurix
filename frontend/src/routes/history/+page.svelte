@@ -10,7 +10,7 @@
 </script>
 
 <svelte:head>
-	<title>Riwayat Sesi — iReady</title>
+	<title>Riwayat Sesi — Heurix</title>
 </svelte:head>
 
 <div class="flex min-h-screen bg-[#F8F9FF]">

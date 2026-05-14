@@ -44,7 +44,7 @@
 </script>
 
 <svelte:head>
-	<title>Profil Saya — HiReady</title>
+	<title>Profil Saya — Heurix</title>
 </svelte:head>
 
 <div class="flex min-h-screen bg-[#f4f7fb]">

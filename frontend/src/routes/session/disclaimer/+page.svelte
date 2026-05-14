@@ -144,7 +144,7 @@
 </script>
 
 <svelte:head>
-	<title>Kesiapan Sebelum Sesi — HiReady</title>
+	<title>Kesiapan Sebelum Sesi — Heurix</title>
 </svelte:head>
 
 <div

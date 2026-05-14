@@ -19,7 +19,7 @@
 </script>
 
 <svelte:head>
-    <title>Pilih Pewawancara — HiReady</title>
+    <title>Pilih Pewawancara — Heurix</title>
 </svelte:head>
 
 <div class="min-h-screen bg-[#f4f7fb] py-12 px-4 sm:px-6 lg:px-8">

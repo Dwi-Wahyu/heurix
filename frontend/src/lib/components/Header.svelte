@@ -47,7 +47,7 @@
 		<!-- Mobile Logo -->
 		<div class="flex items-center gap-0.5 overflow-hidden transition-all duration-300 md:hidden">
 			<img src="/logo.png" alt="" class="h-4 w-3" />
-			<h1 class="font-bold tracking-tight text-primary">iReady</h1>
+			<h1 class="font-bold tracking-tight text-primary">Heurix</h1>
 		</div>
 
 		<!-- Breadcrumbs - Hidden on mobile, shown on md and above -->

@@ -56,7 +56,7 @@
 </script>
 
 <svelte:head>
-	<title>Onboarding — HiReady</title>
+	<title>Onboarding — Heurix</title>
 </svelte:head>
 
 <!-- Hidden form for server action -->
@@ -95,7 +95,7 @@
 				{#if step === 1}
 					<h1 class="font-headline-lg text-headline-lg text-on-surface">
 						Halo!<br />
-						<span class="text-primary">Selamat datang di HiReady</span>
+						<span class="text-primary">Selamat datang di Heurix</span>
 					</h1>
 					<p class="font-body-lg text-body-lg mx-auto max-w-xl text-on-surface-variant md:mx-0">
 						Berlatih wawancara kerja jadi lebih mudah dan efektif dengan pewawancara virtual AI kami
@@ -133,7 +133,7 @@
 					class="flex h-[300px] w-full items-center justify-center overflow-hidden rounded-2xl bg-surface-container-low shadow-sm"
 				>
 					<img
-						alt="HiReady Illustration"
+						alt="Heurix Illustration"
 						class="h-full w-full object-cover opacity-90 mix-blend-multiply"
 						src="/onboarding-logo.png"
 						

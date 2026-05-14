@@ -135,7 +135,7 @@
 </script>
 
 <svelte:head>
-	<title>Progress — iReady</title>
+	<title>Progress — Heurix</title>
 </svelte:head>
 
 <div class="flex min-h-screen bg-[#F8F9FF]">

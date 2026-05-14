@@ -20,3 +20,5 @@ share/python-wheels/
 __pycache__/
 *.py[cod]
 *$py.class
+
+.env

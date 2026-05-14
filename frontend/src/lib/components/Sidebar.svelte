@@ -51,7 +51,7 @@
 				<div class="flex items-end gap-1 overflow-hidden transition-all duration-300">
 					<img src="/logo.png" alt="" class="h-10 w-9 min-w-[36px]" />
 					<h1 class="text-3xl font-extrabold tracking-tight whitespace-nowrap text-primary">
-						iReady
+						Heurix
 					</h1>
 				</div>
 
@@ -82,7 +82,9 @@
 	</div>
 
 	{#if sidebarState.isOpen}
-		<p class="mb-4 px-2 text-xs text-gray-500 transition-opacity duration-300">Career Excellence</p>
+		<p class="mb-4 px-2 text-xs text-gray-500 transition-opacity duration-300">
+			Experience the Pressure. Master the interview
+		</p>
 	{/if}
 
 	<div class="flex flex-col gap-2">

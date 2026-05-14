@@ -79,7 +79,7 @@ export const masterPosition = pgTable('master_position', {
 });
 
 // ============================================================
-// USER PROFILE — Ekstensi data pengguna HiReady
+// USER PROFILE — Ekstensi data pengguna Heurix
 // ============================================================
 
 export const userProfile = pgTable('user_profile', {

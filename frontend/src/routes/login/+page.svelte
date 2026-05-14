@@ -54,9 +54,14 @@
 	<div class="relative flex w-full flex-col bg-white lg:w-1/2">
 		<!-- Branding Logo Top Left -->
 		<div class="absolute mt-6 flex w-full justify-center">
-			<div class="flex items-end gap-1">
-				<img alt="HiReady Logo" class="h-10 w-auto" src="/logo.png" />
-				<span class="text-3xl font-extrabold tracking-tight text-primary"> iReady </span>
+			<div class="flex flex-col items-center">
+				<div class="flex items-end gap-1">
+					<img alt="Heurix Logo" class="h-10 w-auto" src="/logo.png" />
+					<span class="text-3xl font-extrabold tracking-tight text-primary"> Heurix </span>
+				</div>
+				<p class="mt-1 text-xs font-medium text-gray-500">
+					Experience the Pressure. Master the interview
+				</p>
 			</div>
 		</div>
 
@@ -212,7 +217,7 @@
 		<!-- Main illustration/artwork specified by user (needs to be present in static folder) -->
 		<img
 			src="/removed_bg_login_visualization.png"
-			alt="HiReady Dashboard Art"
+			alt="Heurix Dashboard Art"
 			class="absolute inset-0 h-full w-full object-cover object-center"
 		/>
 	</div>

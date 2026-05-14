@@ -141,7 +141,7 @@
 </script>
 
 <svelte:head>
-	<title>Cek Perangkat — HiReady</title>
+	<title>Cek Perangkat — Heurix</title>
 </svelte:head>
 
 <div class="flex min-h-screen flex-col bg-neutral-950 font-sans text-white">

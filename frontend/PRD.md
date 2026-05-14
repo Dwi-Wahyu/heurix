@@ -1,10 +1,10 @@
 web application/stitch/projects/17538407583799903525/screens/b610251088e842d59831705144889624
 
-# Product Requirements Document (PRD): HiReady
+# Product Requirements Document (PRD): Heurix
 
 ## 1. Project Overview
 
-HiReady is an AI-powered interview simulation platform designed for Indonesian students and fresh graduates (ages 20–26). The application provides a safe, realistic environment to practice interviews using a real-time, 3D animated AI Avatar that acts as an interviewer.
+Heurix is an AI-powered interview simulation platform designed for Indonesian students and fresh graduates (ages 20–26). The application provides a safe, realistic environment to practice interviews using a real-time, 3D animated AI Avatar that acts as an interviewer.
 
 **Core Vision:** To be a "practice mirror" that provides objective, constructive feedback to help candidates grow, rather than a judging platform.
 

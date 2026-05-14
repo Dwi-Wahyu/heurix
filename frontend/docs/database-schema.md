@@ -1,4 +1,4 @@
-# HiReady — Database Schema Documentation
+# Heurix — Database Schema Documentation
 
 > For LLM Agent / CLI Agent use. Read this before writing any query, migration, or data operation.
 
@@ -6,11 +6,11 @@
 
 ## CONTEXT
 
-HiReady adalah platform simulasi wawancara imersif berbasis Avatar 3D.
+Heurix adalah platform simulasi wawancara imersif berbasis Avatar 3D.
 Database dibagi dua lapisan:
 
 1. **Auth Layer** — tabel `user`, `session`, `account`, `verification` (dikelola Better Auth, JANGAN dimodifikasi langsung)
-2. **App Layer** — tabel HiReady yang berelasi ke `user.id`
+2. **App Layer** — tabel Heurix yang berelasi ke `user.id`
 
 Stack: **PostgreSQL + Drizzle ORM + SvelteKit**
 
@@ -76,7 +76,7 @@ RULE 6: user_profile dibuat otomatis saat user pertama kali login (1-to-1 dengan
 
 ### `user_profile` ← 1-to-1 dengan user
 
-Dibuat saat user register. Menyimpan data karir dan statistik agregat HiReady.
+Dibuat saat user register. Menyimpan data karir dan statistik agregat Heurix.
 
 | Column                | Type                          | Notes                                                  |
 | --------------------- | ----------------------------- | ------------------------------------------------------ |
