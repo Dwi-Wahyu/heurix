@@ -16,10 +16,7 @@
 	import { browser } from '$app/environment';
 	import { fade } from 'svelte/transition';
 	import { pwaState, installApp } from '$lib/pwa.svelte';
-	import {
-		FaceLandmarker,
-		FilesetResolver
-	} from "@mediapipe/tasks-vision";
+	import { FaceLandmarker, FilesetResolver } from '@mediapipe/tasks-vision';
 	import {
 		Volume2,
 		AlertCircle,
@@ -39,10 +36,13 @@
 		UserCheck
 	} from '@lucide/svelte';
 
-	const backgroundImages = import.meta.glob<any>('$lib/assets/avatar-backgrounds/*.{jpeg,jpg,png,webp}', {
-		eager: true,
-		query: { enhanced: true }
-	});
+	const backgroundImages = import.meta.glob<any>(
+		'$lib/assets/avatar-backgrounds/*.{jpeg,jpg,png,webp}',
+		{
+			eager: true,
+			query: { enhanced: true }
+		}
+	);
 
 	// ── Media ──
 	let videoElementDesktop = $state<HTMLVideoElement | null>(null);
@@ -111,7 +111,7 @@
 		if (sessionStartTime) {
 			const elapsed = Math.floor((Date.now() - sessionStartTime) / 1000);
 			remainingSeconds = Math.max(0, SESSION_LIMIT_SECONDS - elapsed);
-			
+
 			if (remainingSeconds <= 0) {
 				clearInterval(timerInterval);
 				endSession();
@@ -168,7 +168,7 @@
 		if (browser) {
 			document.body.style.overflow = 'hidden';
 		}
-		
+
 		sessionId = page.url.searchParams.get('sessionId');
 
 		if (sessionId) {
@@ -176,7 +176,7 @@
 			try {
 				const res = await fetch(`/api/proxy/api/sessions/${sessionId}`);
 				if (!res.ok) throw new Error('Session not found');
-				
+
 				const sessionData = await res.json();
 				const glbUrl = `/${sessionData.avatar.glbUrl}`;
 				const cameraConfig = sessionData.avatar.cameraConfig;
@@ -185,7 +185,7 @@
 				avatarName = sessionData.avatar.name;
 				avatarDescription = sessionData.avatar.description;
 				avatarThumbnail = `/${sessionData.avatar.thumbnailUrl}`;
-				
+
 				if (sessionData.avatar.backgroundPath) {
 					avatarBackground = `/${sessionData.avatar.backgroundPath}`;
 				}
@@ -233,25 +233,26 @@
 	async function initMediaPipe() {
 		if (!browser) return;
 		try {
-			const vision = await FilesetResolver.forVisionTasks("/wasm");
+			const vision = await FilesetResolver.forVisionTasks('/wasm');
 			faceLandmarker = await FaceLandmarker.createFromOptions(vision, {
-				baseOptions: { 
-					modelAssetPath: `/models/face_landmarker.task`, 
-					delegate: "GPU" 
+				baseOptions: {
+					modelAssetPath: `/models/face_landmarker.task`,
+					delegate: 'GPU'
 				},
-				runningMode: "VIDEO",
+				runningMode: 'VIDEO',
 				outputFaceBlendshapes: true,
 				numFaces: 1
 			});
-			console.log("MediaPipe FaceLandmarker initialized");
+			console.log('MediaPipe FaceLandmarker initialized');
 		} catch (err) {
-			console.error("Failed to init MediaPipe:", err);
+			console.error('Failed to init MediaPipe:', err);
 		}
 	}
 
 	function initSpeechRecognition() {
 		if (!browser) return;
-		const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+		const SpeechRecognition =
+			(window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
 		if (!SpeechRecognition) {
 			console.warn('Speech Recognition not supported in this browser');
 			return;
@@ -278,7 +279,8 @@
 						if (isListening && !isSpeaking && liveTranscript.trim().length > 3) {
 							stopRecording();
 						}
-					}, 2000); // 2 detik setelah selesai bicara
+					}, 1000); // 1 detik setelah selesai bicara
+					// }, 1200); // 1.2 detik setelah selesai bicara
 				}
 			}
 		};
@@ -289,12 +291,13 @@
 		recognition.onerror = (e: any) => {
 			console.error('Speech Recognition Error:', e);
 			isVoiceActive = false;
-			
+
 			if (e.error === 'network') {
 				recognitionRetryCount++;
 				if (recognitionRetryCount > MAX_RECOGNITION_RETRIES) {
 					console.warn('Speech Recognition disabled due to persistent network errors');
-					errorMessage = "Layanan transkrip langsung browser tidak tersedia (Network Error). Anda tetap bisa berbicara, dan jawaban Anda akan diproses setelah selesai.";
+					errorMessage =
+						'Layanan transkrip langsung browser tidak tersedia (Network Error). Anda tetap bisa berbicara, dan jawaban Anda akan diproses setelah selesai.';
 				}
 			}
 		};
@@ -329,7 +332,7 @@
 			antialias: true,
 			powerPreference: 'high-performance'
 		});
-		
+
 		const width = canvasElement.clientWidth || window.innerWidth;
 		const height = canvasElement.clientHeight || window.innerHeight || 1;
 		renderer.setSize(width, height);
@@ -343,12 +346,7 @@
 
 		const scene = new THREE.Scene();
 
-		const camera = new THREE.PerspectiveCamera(
-			25, 
-			width / height,
-			0.01,
-			100
-		);
+		const camera = new THREE.PerspectiveCamera(25, width / height, 0.01, 100);
 		camera.position.set(0, 1.6, 2.0);
 
 		// ── PENCAHAYAAN ──
@@ -366,7 +364,7 @@
 		keyLight.shadow.mapSize.width = 1024;
 		keyLight.shadow.mapSize.height = 1024;
 		scene.add(keyLight);
-		scene.add(keyLight.target); 
+		scene.add(keyLight.target);
 
 		const fillLight = new THREE.DirectionalLight(0xffffff, 0.5);
 		fillLight.position.set(1, 1, 2);
@@ -395,11 +393,11 @@
 							if ((obj as THREE.Mesh).isMesh) {
 								const mesh = obj as THREE.Mesh;
 								const hidden = ['Pants_14249_Shape', 'hnsshoes_6176_Shape', 'Shoes'];
-								if (hidden.some(h => mesh.name.includes(h))) mesh.visible = false;
-								
+								if (hidden.some((h) => mesh.name.includes(h))) mesh.visible = false;
+
 								mesh.castShadow = true;
 								mesh.receiveShadow = true;
-								
+
 								if (mesh.material) {
 									const mat = mesh.material as THREE.MeshStandardMaterial;
 									if (mat.map) mat.map.anisotropy = 16;
@@ -422,23 +420,24 @@
 							camera.position.set(center.x, center.y + 0.1, center.z + 0.5);
 							camera.lookAt(center.x, center.y + 0.1, center.z);
 						} else {
-							const headBottomY = box.min.y + size.y * headHeightRatio; 
+							const headBottomY = box.min.y + size.y * headHeightRatio;
 							const headTopY = box.max.y;
 							const focusCenterY = (headBottomY + headTopY) / 2;
 							const focusHeight = headTopY - headBottomY;
 
 							const vFovRad = (camera.fov * Math.PI) / 180;
-							const desiredCoverage = 0.85; 
-							const distance = ((focusHeight / 2) / Math.tan(vFovRad / 2) / desiredCoverage) * distanceOffset;
+							const desiredCoverage = 0.85;
+							const distance =
+								(focusHeight / 2 / Math.tan(vFovRad / 2) / desiredCoverage) * distanceOffset;
 
 							camera.position.set(center.x, focusCenterY, center.z + distance);
-							camera.lookAt(center.x, focusCenterY - (focusHeight * lookAtOffset), center.z);
-							
+							camera.lookAt(center.x, focusCenterY - focusHeight * lookAtOffset, center.z);
+
 							keyLight.position.set(center.x - 1, focusCenterY + 1, center.z + 2);
 							keyLight.target.position.set(center.x, focusCenterY, center.z);
 							keyLight.target.updateMatrixWorld();
 						}
-						
+
 						camera.updateProjectionMatrix();
 
 						animator = new FaceAnimator(model);
@@ -472,27 +471,27 @@
 
 				// ── PROCEDURAL IDLE & THINKING ANIMATION ──
 				const t = time / 1000;
-				
+
 				// 1. Subtle breathing/sway (Always on)
 				// Kecepatan sangat lambat agar tidak mengganggu
 				const swayX = Math.sin(t * 0.5) * 0.015;
 				const swayY = Math.cos(t * 0.8) * 0.01;
-				
+
 				let targetRotX = swayX;
 				let targetRotY = swayY;
 				let targetRotZ = 0;
 
 				if (isThinking) {
 					// Menoleh sedikit ke samping dan ke atas (pose berpikir)
-					targetRotX += 0.04; 
-					targetRotY += 0.1; 
+					targetRotX += 0.04;
+					targetRotY += 0.1;
 					targetRotZ = 0.03;
-					
+
 					// Naikkan alis sedikit
 					animator.setExpression({
-						'BrowInnerUp': 0.3,
-						'BrowOuterUpLeft': 0.1,
-						'BrowOuterUpRight': 0.1
+						BrowInnerUp: 0.3,
+						BrowOuterUpLeft: 0.1,
+						BrowOuterUpRight: 0.1
 					});
 				}
 
@@ -516,28 +515,31 @@
 					const now = performance.now();
 					if (now - lastFaceSampleTime > FACE_SAMPLE_INTERVAL) {
 						lastFaceSampleTime = now;
-						
+
 						const results = faceLandmarker.detectForVideo(activeVideo, now);
 						if (results.faceBlendshapes?.[0]) {
 							const shapes = results.faceBlendshapes[0].categories;
-							const smileLeft = shapes.find(s => s.categoryName === 'mouthSmileLeft')?.score || 0;
-							const smileRight = shapes.find(s => s.categoryName === 'mouthSmileRight')?.score || 0;
+							const smileLeft = shapes.find((s) => s.categoryName === 'mouthSmileLeft')?.score || 0;
+							const smileRight =
+								shapes.find((s) => s.categoryName === 'mouthSmileRight')?.score || 0;
 							const avgSmile = (smileLeft + smileRight) / 2;
 
 							// Eye contact consistency check
 							// We consider consistent eye contact if face is detected and landmarks are present
 							// For more precision, we could check pupil position or head pitch/yaw/roll
 							const hasLandmarks = results.faceLandmarks?.[0]?.length > 0;
-							
+
 							if (ws && wsStatus === 'connected') {
-								ws.send(JSON.stringify({
-									type: 'FACE_METRICS',
-									metrics: {
-										smileScore: avgSmile,
-										isLookingAtCamera: hasLandmarks, 
-										timestamp: now
-									}
-								}));
+								ws.send(
+									JSON.stringify({
+										type: 'FACE_METRICS',
+										metrics: {
+											smileScore: avgSmile,
+											isLookingAtCamera: hasLandmarks,
+											timestamp: now
+										}
+									})
+								);
 							}
 						}
 					}
@@ -568,7 +570,7 @@
 
 		ws.onclose = () => {
 			wsStatus = 'disconnected';
-			errorMessage = "Koneksi terputus. Silakan muat ulang halaman.";
+			errorMessage = 'Koneksi terputus. Silakan muat ulang halaman.';
 		};
 
 		ws.onmessage = async (event) => {
@@ -613,10 +615,16 @@
 				try {
 					if (animator) {
 						// Gunakan audio & visemes dari backend jika tersedia untuk menghindari fetch ulang
-						await speakWithBackend(text, animator, msg.audio && msg.visemes ? {
-							audio: msg.audio,
-							visemes: msg.visemes
-						} : undefined);
+						await speakWithBackend(
+							text,
+							animator,
+							msg.audio && msg.visemes
+								? {
+										audio: msg.audio,
+										visemes: msg.visemes
+									}
+								: undefined
+						);
 					}
 				} catch (err: any) {
 					console.error('Speech playback failed:', err);
@@ -636,7 +644,7 @@
 			case 'QUESTION_CHUNK': {
 				// Handle streaming chunk
 				const { text, audio, visemes, persona, isLast, turnNumber } = msg;
-				
+
 				// Update transcript history
 				if (text.trim()) {
 					if (turnNumber === currentTurnNumber) {
@@ -649,7 +657,7 @@
 						currentTurnNumber = turnNumber;
 					}
 				}
-				
+
 				errorMessage = null;
 				isThinking = false;
 
@@ -733,7 +741,7 @@
 
 		isSpeaking = false;
 		isProcessingQueue = false;
-		
+
 		if (lastChunkReceived && audioQueue.length === 0) {
 			lastChunkReceived = false;
 			if (!sessionCompleted) {
@@ -749,7 +757,7 @@
 		const audioTracks = stream.getAudioTracks();
 		if (audioTracks.length === 0) {
 			console.error('Tidak ada track audio ditemukan');
-			errorMessage = "Mikrofon tidak terdeteksi.";
+			errorMessage = 'Mikrofon tidak terdeteksi.';
 			return;
 		}
 		audioTracks.forEach((t) => (t.enabled = true));
@@ -764,13 +772,13 @@
 		} catch (e) {}
 
 		const types = [
-			'audio/mp4', 
+			'audio/mp4',
 			'audio/webm;codecs=opus',
 			'audio/webm',
 			'audio/ogg;codecs=opus',
 			'audio/wav'
 		];
-		
+
 		let supportedType = '';
 		for (const type of types) {
 			if (MediaRecorder.isTypeSupported(type)) {
@@ -797,7 +805,10 @@
 
 				if (buffer.byteLength > 0 && ws?.readyState === WebSocket.OPEN) {
 					ws.send(buffer);
-					messages = [...messages, { role: 'user', text: liveTranscript || '...', time: timeDisplay() }];
+					messages = [
+						...messages,
+						{ role: 'user', text: liveTranscript || '...', time: timeDisplay() }
+					];
 					liveTranscript = '';
 				}
 			};
@@ -870,18 +881,25 @@
 	<title>Sesi Interview — Heurix</title>
 </svelte:head>
 
-<div 
+<div
 	class="flex h-[100dvh] w-full flex-col overflow-hidden bg-black font-sans text-white"
 	onclick={handleUserInteraction}
 	onkeydown={handleUserInteraction}
 	role="presentation"
 >
 	{#if !avatarReady}
-		<div class="fixed inset-0 z-[100] flex items-center justify-center bg-[#f8f9ff] text-gray-900" transition:fade>
-			<div class="w-full max-w-2xl overflow-hidden rounded-3xl bg-white p-8 shadow-[0px_20px_50px_rgba(0,0,0,0.1)]">
+		<div
+			class="fixed inset-0 z-[100] flex items-center justify-center bg-[#f8f9ff] text-gray-900"
+			transition:fade
+		>
+			<div
+				class="w-full max-w-2xl overflow-hidden rounded-3xl bg-white p-8 shadow-[0px_20px_50px_rgba(0,0,0,0.1)]"
+			>
 				<div class="flex flex-col gap-8 md:flex-row md:items-center">
 					<!-- Avatar Image -->
-					<div class="relative h-48 w-48 shrink-0 self-center overflow-hidden rounded-2xl bg-gray-100 md:h-56 md:w-56">
+					<div
+						class="relative h-48 w-48 shrink-0 self-center overflow-hidden rounded-2xl bg-gray-100 md:h-56 md:w-56"
+					>
 						{#if avatarThumbnail}
 							<img src={avatarThumbnail} alt={avatarName} class="h-full w-full object-cover" />
 						{:else}
@@ -894,15 +912,22 @@
 
 					<!-- Avatar Info -->
 					<div class="flex flex-1 flex-col justify-center text-center md:text-left">
-						<span class="mb-2 text-[10px] font-bold tracking-[0.2em] text-primary uppercase">Mempersiapkan Sesi</span>
-						<h2 class="mb-3 text-3xl font-extrabold tracking-tight text-gray-900">{avatarName || 'Pewawancara'}</h2>
+						<span class="mb-2 text-[10px] font-bold tracking-[0.2em] text-primary uppercase"
+							>Mempersiapkan Sesi</span
+						>
+						<h2 class="mb-3 text-3xl font-extrabold tracking-tight text-gray-900">
+							{avatarName || 'Pewawancara'}
+						</h2>
 						<p class="mb-8 text-base leading-relaxed text-gray-500">
-							{avatarDescription || 'Sedang memuat data pewawancara profesional Anda. Harap tunggu sejenak.'}
+							{avatarDescription ||
+								'Sedang memuat data pewawancara profesional Anda. Harap tunggu sejenak.'}
 						</p>
 
 						<!-- Progress Bar -->
 						<div class="space-y-3">
-							<div class="flex items-center justify-between text-xs font-bold text-gray-400 uppercase tracking-wider">
+							<div
+								class="flex items-center justify-between text-xs font-bold tracking-wider text-gray-400 uppercase"
+							>
 								<span>Memuat Avatar 3D</span>
 								<span class="text-primary">{avatarLoadProgress}%</span>
 							</div>
@@ -920,10 +945,15 @@
 	{/if}
 
 	{#if processingResult}
-		<div class="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-black/90 backdrop-blur-xl" transition:fade>
+		<div
+			class="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-black/90 backdrop-blur-xl"
+			transition:fade
+		>
 			<div class="relative mb-8 h-24 w-24">
 				<div class="absolute inset-0 animate-ping rounded-full bg-primary/20"></div>
-				<div class="absolute inset-2 animate-spin rounded-full border-4 border-primary border-t-transparent"></div>
+				<div
+					class="absolute inset-2 animate-spin rounded-full border-4 border-primary border-t-transparent"
+				></div>
 			</div>
 			<h2 class="text-2xl font-bold tracking-tight text-white">Memproses Hasil Interview</h2>
 			<p class="mt-2 text-white/50">AI sedang menganalisis performa Anda...</p>
@@ -938,15 +968,15 @@
 			{#if avatarReady}
 				{#if backgroundImages[`/src/lib/assets${avatarBackground}`]}
 					<div class="absolute inset-0 z-[-1] transition-opacity duration-1000" transition:fade>
-						<enhanced:img 
-							src={backgroundImages[`/src/lib/assets${avatarBackground}`].default} 
-							class="absolute inset-0 h-full w-full object-cover" 
-							alt="Background" 
+						<enhanced:img
+							src={backgroundImages[`/src/lib/assets${avatarBackground}`].default}
+							class="absolute inset-0 h-full w-full object-cover"
+							alt="Background"
 						/>
 						<div class="absolute inset-0 bg-black/20 backdrop-blur-[2px]"></div>
 					</div>
 				{:else}
-					<div 
+					<div
 						class="absolute inset-0 z-[-1] bg-cover bg-center transition-opacity duration-1000"
 						style="background-image: url({avatarBackground});"
 						transition:fade
@@ -964,34 +994,38 @@
 			></canvas>
 
 			{#if audioBlocked}
-				<div 
+				<div
 					class="absolute inset-0 z-40 flex items-center justify-center bg-black/20 backdrop-blur-[2px]"
 					transition:fade
 				>
-					<button 
+					<button
 						onclick={handleUserInteraction}
-						class="flex flex-col items-center gap-4 rounded-3xl bg-primary/90 p-8 shadow-2xl animate-bounce border border-white/20"
+						class="flex animate-bounce flex-col items-center gap-4 rounded-3xl border border-white/20 bg-primary/90 p-8 shadow-2xl"
 					>
 						<div class="flex h-16 w-16 items-center justify-center rounded-full bg-white/20">
 							<Volume2 size={40} class="text-white" />
 						</div>
-						<span class="text-sm font-bold uppercase tracking-widest text-white">Klik untuk mengaktifkan suara</span>
+						<span class="text-sm font-bold tracking-widest text-white uppercase"
+							>Klik untuk mengaktifkan suara</span
+						>
 					</button>
 				</div>
 			{/if}
 
 			{#if errorMessage}
-				<div 
+				<div
 					class="absolute top-20 left-1/2 z-50 w-[90%] -translate-x-1/2 rounded-xl bg-error p-4 shadow-2xl md:w-auto md:min-w-[300px]"
 					transition:fade
 				>
 					<div class="flex items-start gap-3">
 						<AlertCircle size={20} class="mt-0.5 text-white" />
 						<div class="flex-1">
-							<p class="text-xs font-bold uppercase tracking-tight text-white/70">Terjadi Kesalahan</p>
+							<p class="text-xs font-bold tracking-tight text-white/70 uppercase">
+								Terjadi Kesalahan
+							</p>
 							<p class="mt-1 text-sm font-medium text-white">{errorMessage}</p>
 						</div>
-						<button onclick={() => errorMessage = null} class="text-white/50 hover:text-white">
+						<button onclick={() => (errorMessage = null)} class="text-white/50 hover:text-white">
 							<X size={16} />
 						</button>
 					</div>
@@ -999,16 +1033,22 @@
 			{/if}
 
 			{#if liveTranscript && isListening}
-				<div 
-					class="absolute bottom-20 left-4 right-4 z-30 flex justify-center pointer-events-none md:bottom-24"
+				<div
+					class="pointer-events-none absolute right-4 bottom-20 left-4 z-30 flex justify-center md:bottom-24"
 					transition:fade
 				>
-					<div class="max-w-2xl rounded-2xl bg-black/60 px-5 py-3 backdrop-blur-xl border border-white/10 shadow-2xl">
-						<div class="flex items-center gap-2 mb-1">
-							<div class="h-1.5 w-1.5 rounded-full bg-blue-500 animate-ping"></div>
-							<span class="text-[10px] font-black text-blue-400 uppercase tracking-widest">Listening</span>
+					<div
+						class="max-w-2xl rounded-2xl border border-white/10 bg-black/60 px-5 py-3 shadow-2xl backdrop-blur-xl"
+					>
+						<div class="mb-1 flex items-center gap-2">
+							<div class="h-1.5 w-1.5 animate-ping rounded-full bg-blue-500"></div>
+							<span class="text-[10px] font-black tracking-widest text-blue-400 uppercase"
+								>Listening</span
+							>
 						</div>
-						<p class="text-sm md:text-base font-medium italic text-white/90 text-center leading-relaxed">
+						<p
+							class="text-center text-sm leading-relaxed font-medium text-white/90 italic md:text-base"
+						>
 							"{liveTranscript}"
 						</p>
 					</div>
@@ -1051,8 +1091,12 @@
 					<div
 						class="flex items-center gap-2 rounded-lg border border-white/10 bg-black/40 px-3 py-1.5 backdrop-blur-md"
 					>
-						<span class="text-[10px] font-bold text-white/50 uppercase tracking-wider">Timer</span>
-						<span class="text-base font-bold tabular-nums {remainingSeconds < 60 ? 'text-error animate-pulse' : 'text-white'}">
+						<span class="text-[10px] font-bold tracking-wider text-white/50 uppercase">Timer</span>
+						<span
+							class="text-base font-bold tabular-nums {remainingSeconds < 60
+								? 'animate-pulse text-error'
+								: 'text-white'}"
+						>
 							{timeDisplay()}
 						</span>
 					</div>
@@ -1060,7 +1104,7 @@
 			</div>
 
 			<div
-				class="absolute bottom-28 right-6 z-20 h-40 w-28 overflow-hidden rounded-xl border border-white/20 shadow-2xl transition-transform duration-300 md:bottom-28 md:left-6 md:h-52 md:w-36 lg:h-64 lg:w-48"
+				class="absolute right-6 bottom-28 z-20 h-40 w-28 overflow-hidden rounded-xl border border-white/20 shadow-2xl transition-transform duration-300 md:bottom-28 md:left-6 md:h-52 md:w-36 lg:h-64 lg:w-48"
 			>
 				<video
 					bind:this={videoElementDesktop}
@@ -1078,7 +1122,9 @@
 				></video>
 
 				{#if camOff}
-					<div class="absolute inset-0 flex flex-col items-center justify-center bg-black/80 text-white/60">
+					<div
+						class="absolute inset-0 flex flex-col items-center justify-center bg-black/80 text-white/60"
+					>
 						<VideoOff size={28} />
 						<p class="mt-1 text-[8px] md:text-[10px]">Kamera mati</p>
 					</div>
@@ -1100,7 +1146,7 @@
 			class="
 				fixed inset-y-0 right-0 z-[60] flex flex-col bg-black/95 backdrop-blur-2xl
 				transition-all duration-300 md:bg-black/80
-				{transcriptOpen ? 'translate-x-0 opacity-100' : 'translate-x-full opacity-0 pointer-events-none'}
+				{transcriptOpen ? 'translate-x-0 opacity-100' : 'pointer-events-none translate-x-full opacity-0'}
 				w-full sm:max-w-[360px] md:w-[320px] lg:w-[380px]
 			"
 		>
@@ -1116,10 +1162,7 @@
 				</button>
 			</div>
 
-			<div
-				bind:this={messagesContainer}
-				class="flex-1 scroll-smooth space-y-4 overflow-y-auto p-4"
-			>
+			<div bind:this={messagesContainer} class="flex-1 space-y-4 overflow-y-auto scroll-smooth p-4">
 				{#each messages as msg, i (i)}
 					{#if msg.role === 'interviewer'}
 						<div class="flex max-w-[90%] gap-3">
@@ -1177,7 +1220,7 @@
 							<div
 								class="rounded-xl rounded-tr-sm border border-dashed border-white/30 bg-white/5 p-3 shadow-sm backdrop-blur-md"
 							>
-								<p class="text-[13px] italic leading-relaxed text-white/70">
+								<p class="text-[13px] leading-relaxed text-white/70 italic">
 									{liveTranscript || 'Mendengarkan...'}
 								</p>
 							</div>
@@ -1246,7 +1289,7 @@
 		{#if isListening}
 			<button
 				onclick={stopRecording}
-				class="flex animate-pulse items-center gap-2 rounded-full bg-secondary py-2.5 px-5 text-white shadow-lg transition-all hover:opacity-90 active:scale-95 md:gap-3 md:py-3 md:px-8"
+				class="flex animate-pulse items-center gap-2 rounded-full bg-secondary px-5 py-2.5 text-white shadow-lg transition-all hover:opacity-90 active:scale-95 md:gap-3 md:px-8 md:py-3"
 			>
 				<Send size={20} />
 				<span class="text-[14px] font-semibold tracking-wide md:text-[16px]">Kirim Jawaban</span>
