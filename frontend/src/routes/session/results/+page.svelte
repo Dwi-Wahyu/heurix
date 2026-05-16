@@ -4,6 +4,23 @@
 	import Header from '$lib/components/Header.svelte';
 	import BottomNav from '$lib/components/BottomNav.svelte';
 	import { sidebarState } from '$lib/sidebar.svelte';
+	import {
+		BarChart3,
+		Calendar,
+		Download,
+		ThumbsUp,
+		TrendingUp,
+		Mic2,
+		AudioLines,
+		Gauge,
+		Activity,
+		Type,
+		CheckSquare,
+		RefreshCw,
+		Medal,
+		Smile,
+		Eye
+	} from '@lucide/svelte';
 
 	let { data } = $props();
 	const { report, sessionTurns, error } = data;
@@ -22,21 +39,21 @@
 					label: 'Tutur Kata',
 					score: Math.round(report.articulationScore || report.communicationScore),
 					feedback: report.articulationFeedback || 'Artikulasi jelas dan mudah dipahami.',
-					icon: 'record_voice_over',
+					icon: Mic2,
 					level: getLevel(report.articulationScore || report.communicationScore)
 				},
 				{
 					label: 'Intonasi',
 					score: Math.round(report.intonationScore || report.overallScore),
 					feedback: report.intonationFeedback || 'Intonasi cukup dinamis dan ekspresif.',
-					icon: 'graphic_eq',
+					icon: AudioLines,
 					level: getLevel(report.intonationScore || report.overallScore)
 				},
 				{
 					label: 'Kecepatan Bicara',
 					score: Math.round(report.pacingScore || 80),
 					feedback: report.pacingFeedback || 'Kecepatan ideal, terdengar tenang.',
-					icon: 'speed',
+					icon: Gauge,
 					level: getLevel(report.pacingScore || 80)
 				},
 				{
@@ -45,14 +62,14 @@
 					feedback:
 						report.fillerWordsFeedback ||
 						`Kamu menggunakan filler words sebanyak ${report.totalFillerWords} kali.`,
-					icon: 'step',
+					icon: Activity,
 					level: getLevel(report.fillerWordsScore || 100 - report.totalFillerWords * 2)
 				},
 				{
 					label: 'Pemilihan Kalimat',
 					score: Math.round(report.sentenceStructureScore || report.communicationScore),
 					feedback: report.sentenceStructureFeedback || 'Struktur kalimat baik dan profesional.',
-					icon: 'translate',
+					icon: Type,
 					level: getLevel(report.sentenceStructureScore || report.communicationScore)
 				},
 				{
@@ -61,21 +78,21 @@
 					feedback:
 						report.answerCompletenessFeedback ||
 						'Menjawab pertanyaan dengan poin-poin yang relevan.',
-					icon: 'task_alt',
+					icon: CheckSquare,
 					level: getLevel(report.answerCompletenessScore || report.overallScore)
 				},
 				{
 					label: 'Konsistensi',
 					score: Math.round(report.consistencyScore),
 					feedback: report.consistencyFeedback || 'Argumen awal dan akhir konsisten.',
-					icon: 'sync',
+					icon: RefreshCw,
 					level: getLevel(report.consistencyScore)
 				},
 				{
 					label: 'Kepercayaan Diri',
 					score: Math.round(report.confidenceScore),
 					feedback: report.confidenceFeedback || 'Nada suara mantap dan meyakinkan.',
-					icon: 'emoji_emotions',
+					icon: Medal,
 					level: getLevel(report.confidenceScore)
 				},
 				{
@@ -84,14 +101,14 @@
 					feedback:
 						report.facialExpressionFeedback ||
 						'Ekspresi wajah Anda terlihat tenang dan profesional.',
-					icon: 'mood',
+					icon: Smile,
 					level: getLevel(report.facialExpressionScore || 75)
 				},
 				{
 					label: 'Kontak Mata',
 					score: Math.round(report.eyeContactScore || 80),
 					feedback: report.eyeContactFeedback || 'Kontak mata Anda cukup konsisten selama sesi.',
-					icon: 'visibility',
+					icon: Eye,
 					level: getLevel(report.eyeContactScore || 80)
 				}
 			]
@@ -127,7 +144,7 @@
 		<main class="mx-auto w-full max-w-6xl px-4 pt-24 pb-32 md:px-8 print:max-w-none print:p-0">
 			{#if error}
 				<div class="no-print flex h-[60vh] flex-col items-center justify-center text-center">
-					<span class="mb-4 material-symbols-outlined text-[64px] text-gray-300">analytics</span>
+					<BarChart3 size={64} class="mb-4 text-gray-300" />
 					<h1 class="text-2xl font-bold text-gray-900">Laporan belum tersedia</h1>
 					<p class="mt-2 text-gray-500">
 						AI kami sedang menyusun laporan evaluasi Anda. Mohon tunggu sebentar.
@@ -149,7 +166,7 @@
 							Simulasi Selesai
 						</h1>
 						<div class="mt-2 flex items-center gap-2 font-medium text-gray-500">
-							<span class="material-symbols-outlined text-lg">calendar_today</span>
+							<Calendar size={18} />
 							<span
 								>{new Date(report.generatedAt).toLocaleDateString('id-ID', {
 									weekday: 'long',
@@ -165,7 +182,7 @@
 							onclick={handleDownload}
 							class="flex items-center gap-2 rounded-xl bg-primary px-5 py-3 text-sm font-bold text-white shadow-lg transition-all hover:bg-red-900"
 						>
-							<span class="material-symbols-outlined text-[20px]">download</span>
+							<Download size={20} />
 							Unduh PDF
 						</button>
 					</div>
@@ -228,7 +245,7 @@
 						<div class="grid grid-cols-1 gap-4 md:grid-cols-2">
 							<div class="rounded-2xl border border-green-100 bg-green-50/50 p-5 print:bg-white">
 								<h4 class="mb-3 flex items-center gap-2 text-sm font-bold text-green-800">
-									<span class="material-symbols-outlined text-lg">thumb_up</span> Kelebihan
+									<ThumbsUp size={18} /> Kelebihan
 								</h4>
 								<ul class="space-y-2">
 									{#each report.strengths || [] as s}
@@ -241,7 +258,7 @@
 							</div>
 							<div class="rounded-2xl border border-red-100 bg-red-50/50 p-5 print:bg-white">
 								<h4 class="mb-3 flex items-center gap-2 text-sm font-bold text-red-800">
-									<span class="material-symbols-outlined text-lg">trending_up</span> Pengembangan
+									<TrendingUp size={18} /> Pengembangan
 								</h4>
 								<ul class="space-y-2">
 									{#each report.weaknesses || [] as w}
@@ -268,7 +285,7 @@
 									<div
 										class="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary"
 									>
-										<span class="material-symbols-outlined text-[22px]">{dim.icon}</span>
+										<dim.icon size={22} />
 									</div>
 									<span
 										class="rounded-full border px-3 py-1 text-[10px] font-bold tracking-wider uppercase {dim
@@ -415,13 +432,6 @@
 <style>
 	:global(body) {
 		font-family: 'Plus Jakarta Sans', sans-serif;
-	}
-	.material-symbols-outlined {
-		font-variation-settings:
-			'FILL' 0,
-			'wght' 400,
-			'GRAD' 0,
-			'opsz' 24;
 	}
 
 	@media print {

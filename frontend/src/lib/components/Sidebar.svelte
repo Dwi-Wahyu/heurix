@@ -43,7 +43,7 @@
 <nav
 	class="fixed top-0 left-0 z-[70] h-screen flex-col gap-2 border-r border-gray-100 bg-white p-4 shadow-xl transition-all duration-300 {sidebarState.isOpen
 		? 'flex w-64 translate-x-0'
-		: 'hidden md:flex w-20'}"
+		: 'hidden w-20 md:flex'}"
 >
 	<div class="mt-4 mb-8 flex items-center justify-between px-2">
 		{#if sidebarState.isOpen}
@@ -51,7 +51,7 @@
 				<div class="flex items-end gap-1 overflow-hidden transition-all duration-300">
 					<img src="/logo.png" alt="" class="h-10 w-9 min-w-[36px]" />
 					<h1 class="text-3xl font-extrabold tracking-tight whitespace-nowrap text-primary">
-						Heurix
+						eurix
 					</h1>
 				</div>
 

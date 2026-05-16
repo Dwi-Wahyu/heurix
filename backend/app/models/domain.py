@@ -32,6 +32,7 @@ class MasterInstitution(Base):
     id = Column(String, primary_key=True)
     name = Column(String, nullable=False)
     track = Column(Enum(InterviewTrack), nullable=False)
+    defaultAvatarId = Column("default_avatar_id", String, ForeignKey("interview_avatar.id"))
     logoUrl = Column("logo_url", String)
     description = Column(String)
     llmContext = Column("llm_context", String)
@@ -41,6 +42,7 @@ class MasterInstitution(Base):
     positions = relationship("MasterPosition", back_populates="institution", cascade="all, delete-orphan")
     userProfiles = relationship("UserProfile", back_populates="targetInstitution")
     questions = relationship("QuestionBank", back_populates="institution")
+    defaultAvatar = relationship("InterviewAvatar")
 
 class MasterPosition(Base):
     __tablename__ = "master_position"

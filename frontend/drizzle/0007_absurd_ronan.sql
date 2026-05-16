@@ -1,0 +1,2 @@
+ALTER TABLE "master_institution" ADD COLUMN "default_avatar_id" text;--> statement-breakpoint
+ALTER TABLE "master_institution" ADD CONSTRAINT "master_institution_default_avatar_id_interview_avatar_id_fk" FOREIGN KEY ("default_avatar_id") REFERENCES "public"."interview_avatar"("id") ON DELETE no action ON UPDATE no action;

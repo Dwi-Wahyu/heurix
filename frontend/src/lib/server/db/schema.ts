@@ -52,6 +52,7 @@ export const masterInstitution = pgTable('master_institution', {
 	id: text('id').primaryKey(),
 	name: text('name').notNull(),
 	track: interviewTrackEnum('track').notNull(),
+	defaultAvatarId: text('default_avatar_id').references(() => interviewAvatar.id),
 	logoUrl: text('logo_url'),
 	description: text('description'), // Penjelasan singkat
 	llmContext: text('llm_context'), // Konteks khusus untuk LLM (budaya, nilai, dll)
@@ -341,10 +342,14 @@ export const questionBank = pgTable(
 // RELATIONS
 // ============================================================
 
-export const masterInstitutionRelations = relations(masterInstitution, ({ many }) => ({
+export const masterInstitutionRelations = relations(masterInstitution, ({ one, many }) => ({
 	positions: many(masterPosition),
 	userProfiles: many(userProfile),
-	questions: many(questionBank)
+	questions: many(questionBank),
+	defaultAvatar: one(interviewAvatar, {
+		fields: [masterInstitution.defaultAvatarId],
+		references: [interviewAvatar.id]
+	})
 }));
 
 export const masterPositionRelations = relations(masterPosition, ({ one, many }) => ({

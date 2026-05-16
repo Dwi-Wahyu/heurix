@@ -11,7 +11,13 @@ class Transcriber:
         self.model = WhisperModel(settings.WHISPER_MODEL, device="cpu", compute_type="int8")
 
     def transcribe_and_detect_fillers(self, audio_path):
-        segments, _ = self.model.transcribe(audio_path, beam_size=5)
+        # Memaksa bahasa ke Indonesia (id) dan memberikan prompt awal untuk mengurangi halusinasi
+        segments, _ = self.model.transcribe(
+            audio_path, 
+            beam_size=5, 
+            language="id",
+            initial_prompt="Ini adalah percakapan simulasi wawancara kerja dalam Bahasa Indonesia yang formal dan profesional."
+        )
         full_text = " ".join([s.text for s in segments]).strip()
 
         # Logika deteksi filler sederhana

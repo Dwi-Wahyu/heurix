@@ -20,49 +20,56 @@ const institutions = [
 		description:
 			'Bank BUMN terbesar di Indonesia berdasarkan total aset. Bergerak di bidang perbankan korporat, komersial, ritel, dan digital banking.',
 		llmContext: `Bank Mandiri adalah bank terbesar Indonesia dengan budaya TIPCE (Trustworthy, Integrity, Professionalism, Customer Focus, Excellence). Wawancara Bank Mandiri sangat menekankan pada: (1) integritas dan anti-korupsi — kandidat wajib mampu menjelaskan situasi etis dengan tegas; (2) orientasi pada nasabah — setiap jawaban idealnya memperlihatkan empati dan solusi; (3) kemampuan analitis dan kerja di bawah tekanan; (4) adaptabilitas terhadap transformasi digital. Pewawancara biasanya menggunakan metode STAR (Situation, Task, Action, Result) dan menggali pengalaman konkret. Hindari jawaban generik — kandidat yang berhasil selalu membawa data atau contoh nyata.`,
-		track: 'corporate' as const
+		track: 'corporate' as const,
+		defaultAvatarId: 'avatar_professional_man'
 	},
 	{
 		name: 'Bank Rakyat Indonesia (BRI)',
 		description:
 			'Bank BUMN fokus pada segmen UMKM dan mikro. Jaringan terluas di Indonesia dengan misi memberdayakan ekonomi rakyat.',
 		llmContext: `BRI memiliki tagline "Melayani dengan Setulus Hati" dan nilai AKHLAK BUMN. Wawancara BRI sangat berfokus pada: (1) semangat melayani — kandidat harus menunjukkan orientasi pelayanan yang tulus bukan sekadar profesional; (2) pemahaman segmen UMKM dan mikro — pewawancara sering bertanya tentang pengalaman berinteraksi dengan masyarakat kecil; (3) ketahanan di lapangan — posisi AO (Account Officer) mikro memerlukan keberanian turun ke desa/pasar; (4) integritas dalam pengelolaan dana. Kandidat yang menonjol biasanya yang memiliki pengalaman sosial atau komunitas dan dapat menghubungkan nilai pelayanan BRI dengan pengalaman pribadi mereka.`,
-		track: 'corporate' as const
+		track: 'corporate' as const,
+		defaultAvatarId: 'avatar_professional_man'
 	},
 	{
 		name: 'Bank Negara Indonesia (BNI)',
 		description:
 			'Bank BUMN fokus pada segmen korporasi dan internasional. Dikenal sebagai bank dengan jaringan global terluas di antara bank BUMN Indonesia.',
 		llmContext: `BNI memiliki budaya "Prihatin, Bangga, Optimis" dan nilai inti Integritas, Profesionalisme, Orientasi Pelanggan, Perbaikan Tiada Henti, dan Sinergi. Wawancara BNI menekankan: (1) orientasi global dan bisnis internasional — kandidat diharapkan familiar dengan transaksi ekspor-impor dan trade finance; (2) profesionalisme tinggi — penampilan, diksi, dan struktur jawaban sangat diperhatikan; (3) kemampuan analisis risiko kredit; (4) leadership potential untuk program Officer Development Program (ODP). Pewawancara BNI dikenal formal dan terstruktur. Jawaban harus ringkas, terukur, dan profesional.`,
-		track: 'corporate' as const
+		track: 'corporate' as const,
+		defaultAvatarId: 'avatar_professional_man'
 	},
 	{
 		name: 'PT Pertamina (Persero)',
 		description:
 			'Perusahaan energi nasional terbesar Indonesia. Bergerak di hulu-hilir migas, energi baru terbarukan, dan petrokimia.',
 		llmContext: `Pertamina memiliki nilai 6C: Clean, Competitive, Confident, Customer Focus, Commercial, Capable. Wawancara Pertamina sangat kompetitif karena rasio pelamar:posisi yang sangat tinggi. Fokus utama: (1) pemahaman industri energi Indonesia — kandidat harus tahu isu ketahanan energi nasional, transisi EBT, dan posisi Pertamina secara geopolitik; (2) safety culture — Pertamina sangat serius soal K3 (Keselamatan dan Kesehatan Kerja); (3) leadership dan pengalaman organisasi yang kuat; (4) kemampuan inovasi — Pertamina mendorong inisiatif digital dan efisiensi. Kandidat dari teknik, ekonomi, dan hukum sama-sama memiliki peluang namun harus menunjukkan relevansi langsung dengan bisnis Pertamina.`,
-		track: 'corporate' as const
+		track: 'corporate' as const,
+		defaultAvatarId: 'avatar_hassan'
 	},
 	{
 		name: 'PT PLN (Persero)',
 		description:
 			'Perusahaan listrik negara yang mengelola pembangkit, transmisi, dan distribusi listrik seluruh Indonesia.',
 		llmContext: `PLN memiliki visi menjadi perusahaan listrik terkemuka se-Asia Tenggara dan pelopor transisi energi. Wawancara PLN berfokus: (1) komitmen terhadap misi layanan publik — listrik adalah kebutuhan dasar, kandidat harus memahami tanggung jawab sosial ini; (2) ketahanan mental untuk penugasan di daerah terpencil (3T) — PLN membuka posisi di seluruh Indonesia termasuk wilayah 3T; (3) pemahaman teknis kelistrikan untuk posisi teknik; (4) nilai AKHLAK BUMN. Pewawancara PLN sering menguji komitmen jangka panjang kandidat dan kesediaan ditempatkan di mana saja.`,
-		track: 'corporate' as const
+		track: 'corporate' as const,
+		defaultAvatarId: 'avatar_hassan'
 	},
 	{
 		name: 'Telkom Indonesia',
 		description:
 			'Perusahaan telekomunikasi dan teknologi digital terbesar di Indonesia. Induk dari Telkomsel dan berbagai anak perusahaan teknologi.',
 		llmContext: `Telkom memiliki nilai "The Telkom Way" — Always The Best (Integrity, Enthusiasm, Totality) dan Always The Star (Solid, Speed, Smart). Budaya Telkom sangat agile dan digital-first. Wawancara Telkom berfokus: (1) mindset digital dan inovasi — kandidat harus antusias terhadap teknologi dan transformasi digital; (2) kolaborasi dan teamwork — Telkom bekerja dalam ekosistem besar; (3) kemampuan berpikir strategis tentang masa depan telekomunikasi; (4) growth mindset yang nyata dari pengalaman belajar mandiri. Kandidat yang menonjol biasanya memiliki portofolio proyek digital, kontribusi open source, atau pengalaman startup.`,
-		track: 'corporate' as const
+		track: 'corporate' as const,
+		defaultAvatarId: 'avatar_young_man'
 	},
 	{
 		name: 'PT Kereta Api Indonesia (KAI)',
 		description:
 			'Operator transportasi kereta api nasional. Mengelola seluruh perkeretaapian di Pulau Jawa, Sumatera, Sulawesi, dan Kalimantan.',
 		llmContext: `KAI memiliki nilai 5 Pilar: Integritas, Profesional, Keselamatan, Inovasi, dan Pelayanan Prima. Safety adalah nilai absolut di KAI — tidak ada kompromi. Wawancara KAI menekankan: (1) komitmen terhadap keselamatan dan prosedur — kandidat harus memahami bahwa SOP adalah harga mati di industri perkeretaapian; (2) orientasi pelayanan publik yang tulus; (3) disiplin dan ketepatan waktu sebagai cerminan budaya KAI; (4) kemampuan bekerja dalam sistem yang terstruktur. Pewawancara KAI biasanya tenang namun detail dalam menggali pemahaman kandidat tentang keselamatan.`,
-		track: 'corporate' as const
+		track: 'corporate' as const,
+		defaultAvatarId: 'avatar_professional_man'
 	},
 
 	// ─── SWASTA — TEKNOLOGI & STARTUP ───────────────────────────
@@ -71,28 +78,32 @@ const institutions = [
 		description:
 			'Super app teknologi terbesar Indonesia. Ekosistem mencakup transportasi, pengiriman, e-commerce, dan fintech.',
 		llmContext: `GoTo memiliki nilai "GoTo DNA": Speed (bias for action), Ownership (think like an owner), Impact (customer obsession), Collaboration, dan Integrity. Wawancara GoTo sangat berbeda dari korporat tradisional — lebih informal namun sangat menuntut kedalaman berpikir. Fokus: (1) problem-solving dengan data — kandidat sering diminta menganalisis masalah nyata GoTo secara real-time; (2) ownership mindset — "apa yang akan kamu lakukan jika ini adalah bisnismu sendiri?"; (3) customer obsession — setiap keputusan dikembalikan ke dampak bagi pengguna; (4) ketidaknyamanan dengan ambiguitas — startup tidak memiliki jawaban pasti. Kandidat terbaik datang dengan riset mendalam tentang bisnis GoTo dan pertanyaan cerdas untuk pewawancara.`,
-		track: 'corporate' as const
+		track: 'corporate' as const,
+		defaultAvatarId: 'avatar_young_man'
 	},
 	{
 		name: 'Tokopedia',
 		description:
 			'Platform e-commerce terbesar Indonesia. Kini bagian dari ekosistem TikTok Shop setelah merger dengan TikTok.',
 		llmContext: `Tokopedia memiliki DNA "Always Be Curious, Always Be Learning" dengan nilai inti Make It Happen, Make It Better, Make It Last. Budaya sangat data-driven dan meritokratis. Wawancara Tokopedia menekankan: (1) analytical thinking — kandidat harus nyaman dengan angka dan bisa membuat keputusan berbasis data; (2) growth mindset yang terbukti — bukan hanya klaim tapi ada portofolio atau cerita konkret; (3) customer centricity dalam setiap keputusan produk; (4) kemampuan berkolaborasi lintas fungsi (cross-functional). Proses seleksi biasanya multi-tahap dengan case study yang kompleks.`,
-		track: 'corporate' as const
+		track: 'corporate' as const,
+		defaultAvatarId: 'avatar_young_man'
 	},
 	{
 		name: 'Astra International',
 		description:
 			'Konglomerat multinasional Indonesia terbesar. Bergerak di otomotif, jasa keuangan, alat berat, agribisnis, infrastruktur, dan teknologi informasi.',
 		llmContext: `Astra memiliki filosofi "Catur Dharma" — Menjadi Milik yang Bermanfaat, Memberikan Pelayanan Terbaik, Menghargai Individu, dan Berusaha Mencapai yang Terbaik. Budaya Astra sangat terstruktur, berbasis kompetensi, dan berorientasi jangka panjang. Wawancara Astra (terutama ADP — Astra Development Program) sangat ketat: (1) leadership competency yang terbukti dalam organisasi; (2) integritas tanpa kompromi — Astra memiliki rekam jejak etika bisnis yang kuat; (3) kemampuan analitis dan strategis; (4) komitmen untuk berkembang bersama perusahaan (bukan job-hopper). Kandidat Astra biasanya dari universitas top dengan rekam jejak organisasi yang solid.`,
-		track: 'corporate' as const
+		track: 'corporate' as const,
+		defaultAvatarId: 'avatar_professional_man'
 	},
 	{
 		name: 'Unilever Indonesia',
 		description:
 			'Perusahaan FMCG (Fast-Moving Consumer Goods) multinasional terbesar di Indonesia. Memiliki ratusan brand konsumen ikonik.',
-		llmContext: `Unilever memiliki "Compass Strategy" dengan purpose "Making Sustainable Living Commonplace." Nilai inti: Integrity, Respect, Responsibility, Pioneering. Wawancara Unilever sangat terstruktur dengan metode STAR yang ketat. Fokus: (1) leadership dengan dampak nyata — bukan sekadar jabatan tapi perubahan yang dibuat; (2) sustainability mindset — kandidat harus memahami dan peduli pada isu lingkungan dan sosial; (3) consumer understanding — empati mendalam terhadap kebutuhan konsumen Indonesia; (4) kemampuan eksekusi di tengah kompleksitas organisasi besar. Unilever sangat menghargai kandidat yang bisa menyeimbangkan ambisi pribadi dengan purpose yang lebih besar.`,
-		track: 'corporate' as const
+		llmContext: `Unilever memiliki "Compass Strategy" dengan purpose "Making Sustainable Living Commonplace." Nilai inti: Integrity, Respect, Responsibility, Pioneering. Wawancara Unilever sangat terstruktur dengan metode STAR yang ketat. Fokus: (1) leadership dengan dampak nyata — bukan sekadar jabatan tapi perubahan yang dibuat; (2) sustainability mindset — kandidat harus memahami dan peduli pada isu lingkungan dan sosial; (3) consumer understanding — empati mendalam terhadap kebutuhan konsumen Indonesia; (4) kemampuan eksekusi di tengah kompleksitas organisasi besar. Unilever sangat menghargai kandidat yang bisa menyeimbangkan ambisi pribadi with purpose yang lebih besar.`,
+		track: 'corporate' as const,
+		defaultAvatarId: 'avatar_professional_man'
 	},
 
 	// ─── INSTANSI KEDINASAN ───────────────────────────────────────
@@ -100,36 +111,41 @@ const institutions = [
 		name: 'Akademi Militer (Akmil)',
 		description:
 			'Lembaga pendidikan tinggi militer TNI Angkatan Darat. Mencetak perwira TNI AD yang profesional, bermoral, dan bela negara.',
-		llmContext: `Akmil adalah salah satu seleksi paling berat di Indonesia. Proses Pantukhir (Panitia Penentuan Akhir) mencakup wawancara Mental Ideologi (MI) yang bersifat ELIMINATIF — satu jawaban yang tidak konsisten bisa langsung menggugurkan kandidat. Konteks wawancara MI Akmil: (1) pengujian ideologi Pancasila dan NKRI — kandidat harus mampu menjelaskan dan mempertahankan pandangan tentang ideologi negara dengan argumen yang kuat dan konsisten; (2) loyalitas absolut terhadap NKRI, TNI, dan institusi — tidak ada ruang untuk keraguan; (3) ketahanan mental di bawah tekanan ekstrem — pewawancara SENGAJA menekan, memojokkan, dan menguji emosi kandidat; (4) konsistensi argumen — jawaban yang berbeda di pertanyaan berbeda namun topik sama akan langsung ditandai; (5) integritas dan moral — riwayat hidup akan digali secara mendalam. Persona pewawancara Akmil biasanya formal, tegas, dan seringkali intimidatif sebagai bagian dari teknik seleksi psikologis.`,
-		track: 'military' as const
+		llmContext: `Akmil adalah salah satu seleksi paling berat di Indonesia. Proses Pantukhir (Panitia Penentuan Akhir) mencakup wawancara Mental Ideologi (MI) yang bersifat ELIMINATIF — satu jawaban yang tidak konsisten bisa langsung menggugurkan kandidat. Konteks wawancara MI Akmil: (1) pengujian ideologi Pancasila dan NKRI — kandidat harus mampu menjelaskan dan mempertahankan pandangan tentang ideologi negara dengan argumen yang kuat dan konsisten; (2) loyalitas absolut terhadap NKRI, TNI, and institusi — tidak ada ruang untuk keraguan; (3) ketahanan mental di bawah tekanan ekstrem — pewawancara SENGAJA menekan, memojokkan, dan menguji emosi kandidat; (4) konsistensi argumen — jawaban yang berbeda di pertanyaan berbeda namun topik sama akan langsung ditandai; (5) integritas dan moral — riwayat hidup akan digali secara mendalam. Persona pewawancara Akmil biasanya formal, tegas, dan seringkali intimidatif sebagai bagian dari teknik seleksi psikologis.`,
+		track: 'military' as const,
+		defaultAvatarId: 'avatar_hassan'
 	},
 	{
 		name: 'Akademi Kepolisian (Akpol)',
 		description:
 			'Lembaga pendidikan tinggi Polri untuk mencetak perwira Polri yang profesional, transparan, dan melayani masyarakat.',
-		llmContext: `Akpol menggunakan pendekatan seleksi yang mirip Akmil namun dengan penekanan pada nilai-nilai kepolisian: Tribrata (Rastra Sewakottama, Nagara Janottama, Yana Anucasana) dan Catur Prasetya. Wawancara Akpol berfokus: (1) motivasi menjadi polisi yang tulus dan berbasis pelayanan masyarakat — bukan karena prestise atau keamanan kerja; (2) pemahaman hukum dan prosedur kepolisian; (3) integritas dan rekam jejak hidup yang bersih; (4) ketahanan mental dan kemampuan menghadapi situasi darurat; (5) kemampuan komunikasi dengan masyarakat dari berbagai latar belakang. Pewawancara Akpol akan menggali riwayat hidup kandidat secara sangat mendalam dan mencari inkonsistensi.`,
-		track: 'military' as const
+		llmContext: `Akpol menggunakan pendekatan seleksi yang mirip Akmil namun dengan penekanan pada nilai-nilai kepolisian: Tribrata (Rastra Sewakottama, Nagara Janottama, Yana Anucasana) and Catur Prasetya. Wawancara Akpol berfokus: (1) motivasi menjadi polisi yang tulus dan berbasis pelayanan masyarakat — bukan karena prestise atau keamanan kerja; (2) pemahaman hukum dan prosedur kepolisian; (3) integritas dan rekam jejak hidup yang bersih; (4) ketahanan mental dan kemampuan menghadapi situasi darurat; (5) kemampuan komunikasi dengan masyarakat dari berbagai latar belakang. Pewawancara Akpol akan menggali riwayat hidup kandidat secara sangat mendalam and mencari inkonsistensi.`,
+		track: 'military' as const,
+		defaultAvatarId: 'avatar_hassan'
 	},
 	{
 		name: 'PKN STAN',
 		description:
 			'Politeknik Keuangan Negara STAN. Sekolah kedinasan di bawah Kementerian Keuangan yang mencetak aparatur negara di bidang keuangan negara.',
-		llmContext: `PKN STAN memiliki seleksi yang sangat kompetitif dengan passing grade tertinggi di antara sekolah kedinasan. Wawancara PKN STAN berbeda dari MI militer — lebih fokus pada: (1) motivasi mengabdi di Kementerian Keuangan — kandidat harus bisa menjelaskan mengapa memilih karir di pengelolaan keuangan negara; (2) integritas dan anti-korupsi — Kemenkeu memiliki zero tolerance terhadap korupsi dan pewawancara akan menguji ini dengan skenario dilema etika; (3) pemahaman dasar keuangan negara, APBN, dan perpajakan; (4) komitmen untuk belajar dan bekerja keras di lingkungan birokrasi yang dinamis; (5) kemampuan analitis dan ketelitian. Pewawancara STAN biasanya lebih tenang dari militer namun sangat detail dan sering mengajukan pertanyaan "bagaimana jika" terkait integritas.`,
-		track: 'stan' as const
+		llmContext: `PKN STAN memiliki seleksi yang sangat kompetitif dengan passing grade tertinggi di antara sekolah kedinasan. Wawancara PKN STAN berbeda dari MI militer — lebih fokus pada: (1) motivasi mengabdi di Kementerian Keuangan — kandidat harus bisa menjelaskan mengapa memilih karir di pengelolaan keuangan negara; (2) integritas dan anti-korupsi — Kemenkeu memiliki zero tolerance terhadap korupsi dan pewawancara akan menguji ini dengan skenario dilema etika; (3) pemahaman dasar keuangan negara, APBN, and perpajakan; (4) komitmen untuk belajar and bekerja keras di lingkungan birokrasi yang dinamis; (5) kemampuan analitis and ketelitian. Pewawancara STAN biasanya lebih tenang dari militer namun sangat detail and sering mengajukan pertanyaan "bagaimana jika" terkait integritas.`,
+		track: 'stan' as const,
+		defaultAvatarId: 'avatar_professional_man'
 	},
 	{
 		name: 'CPNS Kemenkeu',
 		description:
-			'Seleksi Calon Pegawai Negeri Sipil Kementerian Keuangan. Mencakup DJP, DJBC, DJA, DJPB, dan unit eselon 1 lainnya.',
-		llmContext: `Kementerian Keuangan dikenal sebagai salah satu kementerian dengan budaya kerja paling profesional di Indonesia. Wawancara CPNS Kemenkeu sangat menekankan: (1) motivasi pelayanan publik yang genuine — bukan sekadar alasan "PNS aman dan tunjangan besar"; (2) pemahaman fungsi unit yang dilamar (misal: DJP untuk pajak, DJBC untuk bea cukai); (3) integritas dan pemahaman konflik kepentingan — Kemenkeu sangat serius dengan kode etik; (4) kompetensi teknis yang relevan dengan posisi; (5) kemampuan adaptasi dengan regulasi yang terus berubah. Kandidat yang menonjol selalu menghubungkan motivasi mereka dengan dampak nyata pada keuangan negara.`,
-		track: 'civil_service' as const
+			'Seleksi Calon Pegawai Negeri Sipil Kementerian Keuangan. Mencakup DJP, DJBC, DJA, DJPB, and unit eselon 1 lainnya.',
+		llmContext: `Kementerian Keuangan dikenal sebagai salah satu kementerian dengan budaya kerja paling profesional di Indonesia. Wawancara CPNS Kemenkeu sangat menekankan: (1) motivasi pelayanan publik yang genuine — bukan sekadar alasan "PNS aman and tunjangan besar"; (2) pemahaman fungsi unit yang dilamar (misal: DJP untuk pajak, DJBC untuk bea cukai); (3) integritas and pemahaman konflik kepentingan — Kemenkeu sangat serius dengan kode etik; (4) kompetensi teknis yang relevan dengan posisi; (5) kemampuan adaptasi dengan regulasi yang terus berubah. Kandidat yang menonjol selalu menghubungkan motivasi mereka dengan dampak nyata pada keuangan negara.`,
+		track: 'civil_service' as const,
+		defaultAvatarId: 'avatar_professional_man'
 	},
 	{
 		name: 'CPNS Kemendagri',
 		description:
-			'Seleksi CPNS Kementerian Dalam Negeri. Mengelola otonomi daerah, administrasi kependudukan, dan pemerintahan daerah.',
-		llmContext: `Kemendagri berfokus pada pengelolaan pemerintahan dalam negeri dan hubungan pusat-daerah. Wawancara CPNS Kemendagri menekankan: (1) pemahaman sistem otonomi daerah dan desentralisasi fiskal; (2) komitmen pelayanan publik di daerah — kandidat harus siap ditempatkan di seluruh Indonesia; (3) kemampuan koordinasi dan negosiasi antar instansi; (4) pemahaman regulasi pemerintahan daerah; (5) netralitas ASN — kandidat harus menunjukkan pemahaman tentang ASN yang tidak berpihak pada kepentingan politik. Wawancara biasanya lebih relaxed dari kementerian teknis namun tetap menguji kompetensi dan motivasi secara mendalam.`,
-		track: 'civil_service' as const
+			'Seleksi CPNS Kementerian Dalam Negeri. Mengelola otonomi daerah, administrasi kependudukan, and pemerintahan daerah.',
+		llmContext: `Kemendagri berfokus pada pengelolaan pemerintahan dalam negeri and hubungan pusat-daerah. Wawancara CPNS Kemendagri menekankan: (1) pemahaman sistem otonomi daerah and desentralisasi fiskal; (2) komitmen pelayanan publik di daerah — kandidat harus siap ditempatkan di seluruh Indonesia; (3) kemampuan koordinasi and negosiasi antar instansi; (4) pemahaman regulasi pemerintahan daerah; (5) netralitas ASN — kandidat harus menunjukkan pemahaman tentang ASN yang tidak berpihak pada kepentingan politik. Wawancara biasanya lebih relaxed dari kementerian teknis namun tetap menguji kompetensi and motivasi secara mendalam.`,
+		track: 'civil_service' as const,
+		defaultAvatarId: 'avatar_professional_man'
 	}
 ];
 
@@ -483,6 +499,7 @@ async function main() {
 				track: inst.track,
 				description: inst.description,
 				llmContext: inst.llmContext,
+				defaultAvatarId: (inst as any).defaultAvatarId,
 				logoUrl: null // Bisa diisi nanti via admin panel
 			});
 

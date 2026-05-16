@@ -20,6 +20,24 @@
 		FaceLandmarker,
 		FilesetResolver
 	} from "@mediapipe/tasks-vision";
+	import {
+		Volume2,
+		AlertCircle,
+		X,
+		Wifi,
+		Download,
+		MessageSquare,
+		Video,
+		VideoOff,
+		Mic,
+		MicOff,
+		Bot,
+		User,
+		Send,
+		PhoneOff,
+		Zap,
+		UserCheck
+	} from '@lucide/svelte';
 
 	// ── Media ──
 	let videoElementDesktop = $state<HTMLVideoElement | null>(null);
@@ -66,16 +84,37 @@
 	let audioChunks: Blob[] = [];
 	let recognition: any = null;
 
-	// ── Timer ──
-	let seconds = $state(0);
+	// ── Timer & Session Limit ──
+	const SESSION_LIMIT_SECONDS = 300; // 5 Menit
+	let remainingSeconds = $state(SESSION_LIMIT_SECONDS);
+	let sessionStartTime = $state<number | null>(null);
 	let timerInterval: ReturnType<typeof setInterval>;
+
 	const timeDisplay = () => {
-		const m = Math.floor(seconds / 60)
+		const m = Math.floor(remainingSeconds / 60)
 			.toString()
 			.padStart(2, '0');
-		const s = (seconds % 60).toString().padStart(2, '0');
+		const s = (remainingSeconds % 60).toString().padStart(2, '0');
 		return `${m}:${s}`;
 	};
+
+	function updateTimer() {
+		if (sessionStartTime) {
+			const elapsed = Math.floor((Date.now() - sessionStartTime) / 1000);
+			remainingSeconds = Math.max(0, SESSION_LIMIT_SECONDS - elapsed);
+			
+			if (remainingSeconds <= 0) {
+				clearInterval(timerInterval);
+				endSession();
+			}
+		} else if (sessionStarted) {
+			// Jika session sudah started tapi belum ada startTime dari backend (baru mulai)
+			// Kita inisialisasi startTime lokal
+			sessionStartTime = Date.now();
+		}
+	}
+
+	// ── Effect & Lifecycle ──
 
 	// Auto-scroll saat pesan bertambah
 	$effect(() => {
@@ -109,6 +148,10 @@
 		if (wsStatus === 'connected' && avatarReady && ws && !sessionStarted) {
 			sessionStarted = true;
 			ws.send(JSON.stringify({ type: 'START_INTERVIEW', sessionId }));
+			// Mulai timer jika belum diset dari onMount
+			if (!sessionStartTime) {
+				sessionStartTime = Date.now();
+			}
 		}
 	});
 
@@ -116,7 +159,7 @@
 		if (browser) {
 			document.body.style.overflow = 'hidden';
 		}
-		timerInterval = setInterval(() => seconds++, 1000);
+		
 		sessionId = page.url.searchParams.get('sessionId');
 
 		if (sessionId) {
@@ -129,6 +172,13 @@
 				const glbUrl = `/${sessionData.avatar.glbUrl}`;
 				const cameraConfig = sessionData.avatar.cameraConfig;
 
+				// Persistent Timer Logic
+				if (sessionData.startedAt) {
+					sessionStartTime = new Date(sessionData.startedAt).getTime();
+					sessionStarted = true; // Anggap session sudah start jika ada startedAt
+					updateTimer();
+				}
+
 				// 2. Avatar Three.js
 				initAvatar(glbUrl, cameraConfig);
 			} catch (err) {
@@ -139,6 +189,9 @@
 			// 3. WebSocket
 			initWebSocket();
 		}
+
+		// Mulai interval timer
+		timerInterval = setInterval(updateTimer, 1000);
 
 		// 4. Kamera user
 		if (browser && navigator.mediaDevices) {
@@ -212,14 +265,26 @@
 			}
 		};
 
+		let recognitionRetryCount = 0;
+		const MAX_RECOGNITION_RETRIES = 3;
+
 		recognition.onerror = (e: any) => {
 			console.error('Speech Recognition Error:', e);
 			isVoiceActive = false;
+			
+			if (e.error === 'network') {
+				recognitionRetryCount++;
+				if (recognitionRetryCount > MAX_RECOGNITION_RETRIES) {
+					console.warn('Speech Recognition disabled due to persistent network errors');
+					errorMessage = "Layanan transkrip langsung browser tidak tersedia (Network Error). Anda tetap bisa berbicara, dan jawaban Anda akan diproses setelah selesai.";
+				}
+			}
 		};
 
 		recognition.onend = () => {
 			isVoiceActive = false;
-			if (isListening && !micMuted) {
+			// Restart hanya jika tidak sedang dalam error beruntun
+			if (isListening && !micMuted && recognitionRetryCount <= MAX_RECOGNITION_RETRIES) {
 				try {
 					recognition.start();
 				} catch (e) {}
@@ -507,12 +572,17 @@
 		}
 	}
 
+	let currentTurnNumber = $state(0);
+
+	let sessionCompleted = $state(false);
+
 	async function handleBackendMessage(msg: any) {
 		switch (msg.type) {
 			case 'QUESTION': {
 				const text = msg.text;
 				messages = [...messages, { role: 'interviewer', text, time: timeDisplay() }];
 				errorMessage = null;
+				currentTurnNumber = msg.turnNumber;
 
 				if (msg.persona === 'intimidating' && animator) {
 					animator.setExpression(EMOTIONS.angry);
@@ -539,8 +609,35 @@
 					}
 				} finally {
 					isSpeaking = false;
-					startRecording();
+					if (!sessionCompleted) {
+						startRecording();
+					}
 				}
+				break;
+			}
+			case 'QUESTION_CHUNK': {
+				// Handle streaming chunk
+				const { text, audio, visemes, persona, isLast, turnNumber } = msg;
+				
+				// Update transcript history
+				if (text.trim()) {
+					if (turnNumber === currentTurnNumber) {
+						const lastMsg = messages[messages.length - 1];
+						if (lastMsg && lastMsg.role === 'interviewer') {
+							lastMsg.text += ' ' + text;
+						}
+					} else {
+						messages = [...messages, { role: 'interviewer', text, time: timeDisplay() }];
+						currentTurnNumber = turnNumber;
+					}
+				}
+				
+				errorMessage = null;
+				isThinking = false;
+
+				// Push to queue and process
+				audioQueue.push({ text, audio, visemes, persona, isLast });
+				processAudioQueue();
 				break;
 			}
 			case 'TRANSCRIPT': {
@@ -561,11 +658,69 @@
 				}
 				break;
 			}
+			case 'SESSION_COMPLETED':
+				sessionCompleted = true;
+				break;
 			case 'SESSION_END':
 				stopRecording();
-				processingResult = false;
-				goto(`/session/results?sessionId=${sessionId}`);
+				if (isSpeaking || audioQueue.length > 0 || lastChunkReceived) {
+					// Tunggu sebentar jika masih berbicara
+					setTimeout(() => {
+						processingResult = false;
+						goto(`/session/results?sessionId=${sessionId}`);
+					}, 2000);
+				} else {
+					processingResult = false;
+					goto(`/session/results?sessionId=${sessionId}`);
+				}
 				break;
+		}
+	}
+
+	let audioQueue: any[] = [];
+	let isProcessingQueue = false;
+	let lastChunkReceived = false;
+
+	async function processAudioQueue() {
+		if (isProcessingQueue || audioQueue.length === 0) return;
+		isProcessingQueue = true;
+		isSpeaking = true;
+
+		while (audioQueue.length > 0) {
+			const chunk = audioQueue.shift()!;
+			if (chunk.isLast) lastChunkReceived = true;
+
+			// Handle persona
+			if (chunk.persona === 'intimidating' && animator) {
+				animator.setExpression(EMOTIONS.angry);
+			} else if (chunk.persona === 'friendly' && animator) {
+				animator.setExpression(EMOTIONS.happy);
+			}
+
+			try {
+				if (animator && chunk.audio && chunk.visemes) {
+					await speakWithBackend(chunk.text, animator, {
+						audio: chunk.audio,
+						visemes: chunk.visemes
+					});
+				}
+			} catch (err: any) {
+				console.error('Queue speech failed:', err);
+				if (err.message === 'AUTOPLAY_BLOCKED') {
+					audioBlocked = true;
+					break;
+				}
+			}
+		}
+
+		isSpeaking = false;
+		isProcessingQueue = false;
+		
+		if (lastChunkReceived && audioQueue.length === 0) {
+			lastChunkReceived = false;
+			if (!sessionCompleted) {
+				startRecording();
+			}
 		}
 	}
 
@@ -685,7 +840,11 @@
 	async function endSession() {
 		stopRecording();
 		processingResult = true;
-		ws?.send(JSON.stringify({ type: 'END_SESSION', sessionId }));
+		if (ws && ws.readyState === WebSocket.OPEN) {
+			ws.send(JSON.stringify({ type: 'END_SESSION', sessionId }));
+		} else {
+			goto(`/session/results?sessionId=${sessionId}`);
+		}
 	}
 </script>
 
@@ -743,7 +902,7 @@
 						class="flex flex-col items-center gap-4 rounded-3xl bg-primary/90 p-8 shadow-2xl animate-bounce border border-white/20"
 					>
 						<div class="flex h-16 w-16 items-center justify-center rounded-full bg-white/20">
-							<span class="material-symbols-outlined text-4xl text-white">volume_up</span>
+							<Volume2 size={40} class="text-white" />
 						</div>
 						<span class="text-sm font-bold uppercase tracking-widest text-white">Klik untuk mengaktifkan suara</span>
 					</button>
@@ -756,13 +915,13 @@
 					transition:fade
 				>
 					<div class="flex items-start gap-3">
-						<span class="material-symbols-outlined mt-0.5 text-white">error</span>
+						<AlertCircle size={20} class="mt-0.5 text-white" />
 						<div class="flex-1">
 							<p class="text-xs font-bold uppercase tracking-tight text-white/70">Terjadi Kesalahan</p>
 							<p class="mt-1 text-sm font-medium text-white">{errorMessage}</p>
 						</div>
 						<button onclick={() => errorMessage = null} class="text-white/50 hover:text-white">
-							<span class="material-symbols-outlined text-sm">close</span>
+							<X size={16} />
 						</button>
 					</div>
 				</div>
@@ -796,10 +955,7 @@
 					<div
 						class="hidden items-center gap-1.5 rounded-full border border-white/10 bg-black/40 px-3 py-1.5 backdrop-blur-md sm:flex"
 					>
-						<span
-							class="material-symbols-outlined text-[13px] text-secondary-container"
-							style="font-variation-settings:'FILL' 1;">wifi</span
-						>
+						<Wifi size={13} class="text-secondary-container" fill="currentColor" fillOpacity={0.2} />
 						<span class="text-[11px] font-semibold text-secondary-container"
 							>{wsStatus === 'connected' ? 'STABIL' : 'MENGHUBUNGKAN...'}</span
 						>
@@ -811,7 +967,7 @@
 							onclick={installApp}
 							class="flex h-10 items-center gap-2 rounded-full border border-primary/50 bg-primary/20 px-4 backdrop-blur-md transition-all hover:bg-primary/40 active:scale-95"
 						>
-							<span class="material-symbols-outlined text-[18px] text-white">download</span>
+							<Download size={18} class="text-white" />
 							<span class="hidden text-xs font-bold text-white sm:inline">Install App</span>
 						</button>
 					{/if}
@@ -819,14 +975,15 @@
 						onclick={() => (transcriptOpen = !transcriptOpen)}
 						class="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-black/40 backdrop-blur-md transition-colors active:bg-white/10"
 					>
-						<span class="material-symbols-outlined text-[20px]"
-							>{transcriptOpen ? 'chat_bubble' : 'chat_bubble_outline'}</span
-						>
+						<MessageSquare size={20} class="text-white" />
 					</button>
 					<div
-						class="rounded-lg border border-white/10 bg-black/40 px-3 py-1.5 backdrop-blur-md"
+						class="flex items-center gap-2 rounded-lg border border-white/10 bg-black/40 px-3 py-1.5 backdrop-blur-md"
 					>
-						<span class="text-base font-bold text-white tabular-nums">{timeDisplay()}</span>
+						<span class="text-[10px] font-bold text-white/50 uppercase tracking-wider">Timer</span>
+						<span class="text-base font-bold tabular-nums {remainingSeconds < 60 ? 'text-error animate-pulse' : 'text-white'}">
+							{timeDisplay()}
+						</span>
 					</div>
 				</div>
 			</div>
@@ -850,21 +1007,19 @@
 				></video>
 
 				{#if camOff}
-					<div class="absolute inset-0 flex flex-col items-center justify-center bg-black/80">
-						<span class="material-symbols-outlined text-[20px] text-white/60 md:text-[28px]"
-							>videocam_off</span
-						>
-						<p class="mt-1 text-[8px] text-white/60 md:text-[10px]">Kamera mati</p>
+					<div class="absolute inset-0 flex flex-col items-center justify-center bg-black/80 text-white/60">
+						<VideoOff size={28} />
+						<p class="mt-1 text-[8px] md:text-[10px]">Kamera mati</p>
 					</div>
 				{/if}
 				<div
 					class="absolute bottom-1.5 left-1.5 flex items-center gap-1 rounded bg-black/60 px-1.5 py-0.5 backdrop-blur-sm md:bottom-2 md:left-2 md:rounded-md md:px-2 md:py-1"
 				>
-					<span
-						class="material-symbols-outlined text-[11px] md:text-[13px] {micMuted
-							? 'text-red-400'
-							: 'text-white'}">{micMuted ? 'mic_off' : 'mic'}</span
-					>
+					{#if micMuted}
+						<MicOff size={11} class="text-red-400" />
+					{:else}
+						<Mic size={11} class="text-white" />
+					{/if}
 					<span class="text-[9px] text-white md:text-[11px]">Kamu</span>
 				</div>
 			</div>
@@ -886,7 +1041,7 @@
 					onclick={() => (transcriptOpen = false)}
 					class="rounded-full p-2 text-white/80 transition-colors hover:bg-white/10"
 				>
-					<span class="material-symbols-outlined text-[24px] md:text-[20px]">close</span>
+					<X size={20} />
 				</button>
 			</div>
 
@@ -900,7 +1055,7 @@
 							<div
 								class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary"
 							>
-								<span class="material-symbols-outlined text-[18px] text-white">smart_toy</span>
+								<Bot size={18} class="text-white" />
 							</div>
 							<div class="flex flex-col gap-1">
 								<div class="flex items-baseline gap-2">
@@ -919,7 +1074,7 @@
 							<div
 								class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-tertiary"
 							>
-								<span class="material-symbols-outlined text-[18px] text-white">person</span>
+								<User size={18} class="text-white" />
 							</div>
 							<div class="flex flex-col items-end gap-1">
 								<div class="flex items-baseline gap-2">
@@ -941,9 +1096,7 @@
 						<div
 							class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-white/20 bg-white/5"
 						>
-							<span class="material-symbols-outlined animate-pulse text-[16px] text-white/70"
-								>mic</span
-							>
+							<Mic size={16} class="animate-pulse text-white/70" />
 						</div>
 						<div class="flex flex-col items-end gap-1">
 							<div class="flex items-baseline gap-2">
@@ -966,9 +1119,7 @@
 						<div
 							class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-white/20 bg-white/5"
 						>
-							<span class="material-symbols-outlined animate-pulse text-[16px] text-white/70"
-								>volume_up</span
-							>
+							<Volume2 size={16} class="animate-pulse text-white/70" />
 						</div>
 						<span class="text-[13px] text-white/70">Pewawancara sedang berbicara...</span>
 					</div>
@@ -986,9 +1137,11 @@
 			class="flex h-11 w-11 items-center justify-center rounded-full shadow-lg transition-all active:scale-95 md:h-12 md:w-12
 			       {micMuted ? 'bg-error text-white' : 'bg-white text-primary'}"
 		>
-			<span class="material-symbols-outlined text-[22px] md:text-[24px]"
-				>{micMuted ? 'mic_off' : 'mic'}</span
-			>
+			{#if micMuted}
+				<MicOff size={24} />
+			{:else}
+				<Mic size={24} />
+			{/if}
 		</button>
 
 		<button
@@ -997,9 +1150,11 @@
 			class="flex h-11 w-11 items-center justify-center rounded-full shadow-lg transition-all active:scale-95 md:h-12 md:w-12
 			       {camOff ? 'bg-error text-white' : 'bg-white text-primary'}"
 		>
-			<span class="material-symbols-outlined text-[22px] md:text-[24px]"
-				>{camOff ? 'videocam_off' : 'videocam'}</span
-			>
+			{#if camOff}
+				<VideoOff size={24} />
+			{:else}
+				<Video size={24} />
+			{/if}
 		</button>
 
 		<button
@@ -1008,9 +1163,11 @@
 			class="flex h-11 w-11 items-center justify-center rounded-full shadow-lg transition-all active:scale-95 md:h-12 md:w-12
 			       {autoSend ? 'bg-secondary text-white' : 'bg-white text-secondary'}"
 		>
-			<span class="material-symbols-outlined text-[22px] md:text-[24px]"
-				>{autoSend ? 'auto_mode' : 'person_check'}</span
-			>
+			{#if autoSend}
+				<Zap size={24} />
+			{:else}
+				<UserCheck size={24} />
+			{/if}
 		</button>
 
 		<div class="mx-1 h-7 w-px bg-white/20 md:mx-2 md:h-8"></div>
@@ -1020,7 +1177,7 @@
 				onclick={stopRecording}
 				class="flex animate-pulse items-center gap-2 rounded-full bg-secondary py-2.5 px-5 text-white shadow-lg transition-all hover:opacity-90 active:scale-95 md:gap-3 md:py-3 md:px-8"
 			>
-				<span class="material-symbols-outlined text-[20px] md:text-[22px]">send</span>
+				<Send size={20} />
 				<span class="text-[14px] font-semibold tracking-wide md:text-[16px]">Kirim Jawaban</span>
 			</button>
 		{/if}
@@ -1029,10 +1186,7 @@
 			onclick={endSession}
 			class="flex items-center gap-2 rounded-full bg-primary py-2.5 pr-5 pl-4 text-white shadow-lg transition-all hover:bg-on-primary-fixed-variant active:scale-95 md:gap-3 md:py-3 md:pr-8 md:pl-6"
 		>
-			<span
-				class="material-symbols-outlined text-[20px] md:text-[22px]"
-				style="font-variation-settings:'FILL' 1;">call_end</span
-			>
+			<PhoneOff size={20} />
 			<span class="text-[14px] font-semibold tracking-wide md:text-[16px]">Akhiri Sesi</span>
 		</button>
 	</nav>

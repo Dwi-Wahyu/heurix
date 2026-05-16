@@ -157,6 +157,7 @@ async def get_session(sessionId: str, db: Session = Depends(get_db)):
         "avatarId": session.avatarId,
         "track": session.track,
         "status": session.status,
+        "startedAt": session.startedAt.isoformat() if session.startedAt else None,
         "avatar": {
             "id": session.avatar.id,
             "name": session.avatar.name,

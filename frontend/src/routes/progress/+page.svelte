@@ -3,6 +3,19 @@
 	import Header from '$lib/components/Header.svelte';
 	import BottomNav from '$lib/components/BottomNav.svelte';
 	import { fade } from 'svelte/transition';
+	import {
+		Sparkles,
+		Mic2,
+		MessageSquare,
+		AudioLines,
+		Gauge,
+		Type,
+		CheckSquare,
+		RefreshCw,
+		Medal,
+		Smile,
+		Eye
+	} from '@lucide/svelte';
 
 	// Chart.js
 	import { Line } from 'svelte-chartjs';
@@ -83,17 +96,17 @@
 		}
 	};
 
-	const dimensionIcons: Record<string, string> = {
-		'Filler Words': 'record_voice_over',
-		'Tutur Kata': 'forum',
-		'Intonasi': 'graphic_eq',
-		'Kecepatan Bicara': 'speed',
-		'Pemilihan Kalimat': 'match_word',
-		'Kelengkapan Jawaban': 'checklist',
-		'Konsistensi': 'sync',
-		'Kepercayaan Diri': 'self_improvement',
-		'Raut Wajah': 'mood',
-		'Kontak Mata': 'visibility'
+	const dimensionIcons: Record<string, any> = {
+		'Filler Words': Mic2,
+		'Tutur Kata': MessageSquare,
+		'Intonasi': AudioLines,
+		'Kecepatan Bicara': Gauge,
+		'Pemilihan Kalimat': Type,
+		'Kelengkapan Jawaban': CheckSquare,
+		'Konsistensi': RefreshCw,
+		'Kepercayaan Diri': Medal,
+		'Raut Wajah': Smile,
+		'Kontak Mata': Eye
 	};
 
 	// ── CHART DATA ──
@@ -173,7 +186,7 @@
 				<section class="rounded-4xl border border-gray-100 bg-white p-8 shadow-sm">
 					<!-- AI Insight Box -->
 					<div class="mb-10 flex items-start gap-4 rounded-2xl border border-primary/20 bg-primary/5 p-6">
-						<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1">auto_awesome</span>
+						<Sparkles class="text-primary" size={24} />
 						<div>
 							<span class="mb-1 block text-[10px] font-black tracking-widest text-primary uppercase">Insight AI</span>
 							<p class="text-sm font-bold text-gray-800 leading-relaxed">
@@ -212,10 +225,11 @@
 						{#each dimensions as dim}
 							{@const score = dimensionDataMap[dim] || 0}
 							{@const level = getLevel(score)}
+							{@const Icon = dimensionIcons[dim]}
 							<div class="flex flex-col gap-4 rounded-3xl border border-gray-100 bg-white p-6 shadow-sm transition-all hover:shadow-md">
 								<div class="flex items-center gap-4">
 									<div class="flex h-10 w-10 items-center justify-center rounded-full bg-primary/5 text-primary">
-										<span class="material-symbols-outlined text-[20px]">{dimensionIcons[dim]}</span>
+										<Icon size={20} />
 									</div>
 									<span class="text-xs font-bold text-gray-900 leading-tight">{dim}</span>
 								</div>

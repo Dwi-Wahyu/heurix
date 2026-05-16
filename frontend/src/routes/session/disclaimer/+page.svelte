@@ -1,9 +1,25 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { onMount, onDestroy } from 'svelte';
+	import {
+		Video,
+		VideoOff,
+		Mic,
+		MicOff,
+		CheckCircle,
+		XCircle,
+		AlertCircle,
+		RotateCcw,
+		Headphones,
+		Wifi,
+		VolumeX,
+		Check,
+		X,
+		AlertCircleIcon
+	} from '@lucide/svelte';
 
 	let { data } = $props();
-	const { avatar } = data;
+	const { avatar, track } = data;
 
 	let confirmed = $state(false);
 
@@ -106,12 +122,12 @@
 				body: JSON.stringify({
 					userId: session.data.user.id,
 					avatarId: avatar.id,
-					track: 'corporate' // Or get from user profile
+					track: track || 'corporate'
 				})
 			});
 
 			const { id } = await res.json();
-			goto(`/session/pre-check?sessionId=${id}`);
+			goto(`/session/interview?sessionId=${id}`);
 		} catch (err) {
 			console.error('Failed to start session:', err);
 			permError = 'Gagal memulai sesi. Silakan coba lagi nanti.';
@@ -121,22 +137,22 @@
 
 	const checklistItems = [
 		{
-			icon: 'headset_mic',
+			icon: Headphones,
 			title: 'Gunakan headset',
 			desc: 'Mikrofon headset menghasilkan suara lebih jernih untuk analisis ucapan.'
 		},
 		{
-			icon: 'videocam',
+			icon: Video,
 			title: 'Aktifkan kamera',
 			desc: 'Wajah perlu terlihat selama sesi berlangsung.'
 		},
 		{
-			icon: 'wifi',
+			icon: Wifi,
 			title: 'Pastikan koneksi stabil',
 			desc: 'Sesi video call membutuhkan internet yang tidak terputus.'
 		},
 		{
-			icon: 'volume_off',
+			icon: VolumeX,
 			title: 'Cari tempat tenang',
 			desc: 'Hindari kebisingan latar belakang.'
 		}
@@ -173,20 +189,14 @@
 							? 'bg-red-50'
 							: 'bg-surface-container-low'}"
 				>
-					<span
-						class="material-symbols-outlined text-[22px] {camPerm === 'granted'
-							? 'text-green-600'
-							: camPerm === 'denied'
-								? 'text-error'
-								: 'text-on-surface-variant'}"
-						style="font-variation-settings: 'FILL' {camPerm === 'granted' ? 1 : 0};"
-					>
-						{camPerm === 'granted'
-							? 'videocam'
-							: camPerm === 'denied'
-								? 'videocam_off'
-								: 'videocam'}
-					</span>
+					{#if camPerm === 'granted'}
+						<Video size={22} class="text-green-600" />
+					{:else}
+						<VideoOff
+							size={22}
+							class={camPerm === 'denied' ? 'text-error' : 'text-on-surface-variant'}
+						/>
+					{/if}
 					<div class="min-w-0">
 						<p class="text-xs font-semibold text-on-surface">Kamera</p>
 						<p
@@ -210,15 +220,9 @@
 							class="ml-auto h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent"
 						></div>
 					{:else if camPerm === 'granted'}
-						<span
-							class="ml-auto material-symbols-outlined text-[18px] text-green-600"
-							style="font-variation-settings: 'FILL' 1;">check_circle</span
-						>
+						<Check size={18} class="ml-auto text-green-600" fill="currentColor" />
 					{:else if camPerm === 'denied'}
-						<span
-							class="ml-auto material-symbols-outlined text-[18px] text-error"
-							style="font-variation-settings: 'FILL' 1;">cancel</span
-						>
+						<X size={18} class="ml-auto text-error" fill="currentColor" />
 					{/if}
 				</div>
 
@@ -230,16 +234,14 @@
 							? 'bg-red-50'
 							: 'bg-surface-container-low'}"
 				>
-					<span
-						class="material-symbols-outlined text-[22px] {micPerm === 'granted'
-							? 'text-green-600'
-							: micPerm === 'denied'
-								? 'text-error'
-								: 'text-on-surface-variant'}"
-						style="font-variation-settings: 'FILL' {micPerm === 'granted' ? 1 : 0};"
-					>
-						{micPerm === 'granted' ? 'mic' : micPerm === 'denied' ? 'mic_off' : 'mic'}
-					</span>
+					{#if micPerm === 'granted'}
+						<Mic size={22} class="text-green-600" />
+					{:else}
+						<MicOff
+							size={22}
+							class={micPerm === 'denied' ? 'text-error' : 'text-on-surface-variant'}
+						/>
+					{/if}
 					<div class="min-w-0">
 						<p class="text-xs font-semibold text-on-surface">Mikrofon</p>
 						<p
@@ -263,22 +265,16 @@
 							class="ml-auto h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent"
 						></div>
 					{:else if micPerm === 'granted'}
-						<span
-							class="ml-auto material-symbols-outlined text-[18px] text-green-600"
-							style="font-variation-settings: 'FILL' 1;">check_circle</span
-						>
+						<Check size={18} class="ml-auto text-green-600" fill="currentColor" />
 					{:else if micPerm === 'denied'}
-						<span
-							class="ml-auto material-symbols-outlined text-[18px] text-error"
-							style="font-variation-settings: 'FILL' 1;">cancel</span
-						>
+						<X size={18} class="ml-auto text-error" fill="currentColor" />
 					{/if}
 				</div>
 			</div>
 
 			{#if permError}
 				<div class="mt-3 flex items-start gap-2 rounded-lg bg-red-50 p-3 text-xs text-error">
-					<span class="mt-0.5 material-symbols-outlined shrink-0 text-[16px]">error</span>
+					<AlertCircleIcon size={16} class="shrink-0" />
 					<span>{permError}</span>
 				</div>
 			{/if}
@@ -288,7 +284,7 @@
 					onclick={requestPermissions}
 					class="mt-3 flex items-center gap-1.5 rounded-lg border border-primary px-4 py-2 text-xs font-semibold text-primary transition-colors hover:bg-red-50"
 				>
-					<span class="material-symbols-outlined text-[16px]">refresh</span>
+					<RotateCcw size={16} />
 					Coba Lagi
 				</button>
 			{/if}
@@ -300,11 +296,8 @@
 				<div
 					class="flex items-start gap-4 rounded-xl border border-outline-variant bg-surface-container-low p-4"
 				>
-					<div class="mt-0.5 shrink-0">
-						<span
-							class="material-symbols-outlined text-primary"
-							style="font-variation-settings: 'FILL' 1;">{item.icon}</span
-						>
+					<div class="mt-0.5 shrink-0 text-primary">
+						<item.icon size={24} />
 					</div>
 					<div>
 						<h3 class="mb-1 font-label-bold text-label-bold text-on-surface">{item.title}</h3>

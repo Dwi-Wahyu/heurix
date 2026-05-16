@@ -1,5 +1,19 @@
+import json
+import uuid
+import os
+import base64
+import re
+from datetime import datetime
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect, Depends
-from app.services.brain import generate_next_turn, should_shift_persona, summarize_interview
+from sqlalchemy import desc, func
+from sqlalchemy.orm import Session
+
+from app.services.brain import (
+    generate_next_turn, 
+    generate_next_turn_stream,
+    should_shift_persona, 
+    summarize_interview
+)
 from app.services.speech import speech_service
 from app.services.transcriber import transcriber
 from app.core.database import SessionLocal
@@ -14,15 +28,15 @@ from app.models import (
     MasterPosition,
     SessionReport
 )
-from sqlalchemy import desc, func
-from sqlalchemy.orm import Session
-import json
-import uuid
-import os
-import base64
-from datetime import datetime
 
 router = APIRouter()
+
+def split_into_sentences(text):
+    """
+    Sederhana membagi teks menjadi kalimat berdasarkan tanda baca.
+    """
+    sentences = re.split(r'(?<=[.!?])\s+', text)
+    return [s.strip() for s in sentences if s.strip()]
 
 @router.websocket("/ws/{sessionId}")
 async def websocket_endpoint(websocket: WebSocket, sessionId: str):
@@ -57,17 +71,17 @@ async def websocket_endpoint(websocket: WebSocket, sessionId: str):
                     interview_session.startedAt = datetime.now()
                     db.commit()
                     
-                    # If we already have turns, just resume (maybe re-send last question or send next)
+                    # If we already have turns, just resume
                     if question_count > 0:
                         last_turn = db.query(SessionTurn).filter(SessionTurn.sessionId == sessionId).order_by(SessionTurn.turnNumber.desc()).first()
                         if last_turn and not last_turn.answerTranscript:
                              await re_send_last_question(websocket, db, last_turn, interview_session)
                         else:
-                             await send_next_question(websocket, db, interview_session, question_count + 1)
+                             await send_next_question_stream(websocket, db, interview_session, question_count + 1)
                              question_count += 1
                     else:
                         # Generate first question
-                        await send_next_question(websocket, db, interview_session, question_count + 1)
+                        await send_next_question_stream(websocket, db, interview_session, question_count + 1)
                         question_count += 1
 
                 elif message["type"] == "END_SESSION":
@@ -293,59 +307,126 @@ async def finish_and_report(websocket: WebSocket, db: Session, session: Intervie
 
     await websocket.send_json({"type": "SESSION_END", "sessionId": session.id})
 
-async def send_next_question(websocket: WebSocket, db: Session, session: InterviewSession, turn_num: int, feedback: str = ""):
+async def send_next_question_stream(websocket: WebSocket, db: Session, session: InterviewSession, turn_num: int, user_transcript: str | None = None, current_question: str | None = None, phase_override=None):
+    """
+    Menghasilkan pertanyaan berikutnya secara streaming dan mengirim audio per kalimat.
+    """
     avatar = db.query(InterviewAvatar).filter(InterviewAvatar.id == session.avatarId).first()
     user_profile = db.query(UserProfile).filter(UserProfile.userId == session.userId).first()
     institution = db.query(MasterInstitution).filter(MasterInstitution.id == user_profile.targetInstitutionId).first() if user_profile else None
     position = db.query(MasterPosition).filter(MasterPosition.id == user_profile.targetPositionId).first() if user_profile else None
     
-    # Fallback
     if not institution: institution = MasterInstitution(name="Umum", llmContext="")
     if not position: position = MasterPosition(name="Umum", llmContext="")
     
     past_turns = db.query(SessionTurn).filter(SessionTurn.sessionId == session.id).order_by(SessionTurn.turnNumber).all()
     
-    llm_result = await generate_next_turn(
+    stream = await generate_next_turn_stream(
         session=session,
         institution=institution,
         position=position,
         avatar=avatar,
         past_turns=past_turns,
-        new_answer_transcript=None
+        new_answer_transcript=user_transcript,
+        current_question=current_question,
+        phase_override=phase_override,
     )
     
-    question_text = llm_result["question"]
-    full_text = f"{feedback} {question_text}".strip()
+    full_response = ""
+    question_started = False
+    current_sentence_buffer = ""
     
-    # Save turn
+    score = 50
+    persona_assessment = str(session.currentPersona)
+    feedback = ""
+    full_question_text = ""
+
+    async for chunk in stream:
+        token = chunk.choices[0].delta.content or ""
+        full_response += token
+        
+        if not question_started:
+            if "[QUESTION]" in full_response:
+                question_started = True
+                parts = full_response.split("[QUESTION]")
+                metadata_part = parts[0]
+                current_sentence_buffer = parts[1]
+                
+                # Parse metadata
+                score_match = re.search(r'\[SCORE\]\s*(\d+)', metadata_part)
+                if score_match: score = int(score_match.group(1))
+                
+                feedback_match = re.search(r'\[FEEDBACK\]\s*(.*?)(\[|$)', metadata_part, re.DOTALL)
+                if feedback_match: feedback = feedback_match.group(1).strip()
+                
+                assessment_match = re.search(r'\[ASSESSMENT\]\s*(\w+)', metadata_part)
+                if assessment_match: persona_assessment = assessment_match.group(1).strip()
+                
+                # Send Feedback & Score early
+                await websocket.send_json({
+                    "type": "FEEDBACK",
+                    "score": score,
+                    "feedback": feedback
+                })
+        else:
+            current_sentence_buffer += token
+            # Cek jika ada kalimat lengkap (tanda baca di token saat ini)
+            if any(p in token for p in [".", "!", "?", "\n"]):
+                sentences = split_into_sentences(current_sentence_buffer)
+                if len(sentences) > 1:
+                    # Proses semua kecuali yang terakhir (karena mungkin belum lengkap)
+                    for i in range(len(sentences) - 1):
+                        sentence = sentences[i]
+                        full_question_text += sentence + " "
+                        audio, visemes = await speech_service.generate_speech_with_visemes(sentence)
+                        await websocket.send_json({
+                            "type": "QUESTION_CHUNK",
+                            "text": sentence,
+                            "audio": audio,
+                            "visemes": visemes,
+                            "turnNumber": turn_num,
+                            "persona": session.currentPersona
+                        })
+                    current_sentence_buffer = sentences[-1]
+
+    # Sisa buffer (kalimat terakhir)
+    final_sentence = current_sentence_buffer.strip()
+    if final_sentence:
+        full_question_text += final_sentence
+        audio, visemes = await speech_service.generate_speech_with_visemes(final_sentence)
+        await websocket.send_json({
+            "type": "QUESTION_CHUNK",
+            "text": final_sentence,
+            "audio": audio,
+            "visemes": visemes,
+            "turnNumber": turn_num,
+            "persona": session.currentPersona,
+            "isLast": True
+        })
+    else:
+        # Kirim sinyal isLast meskipun tidak ada teks sisa
+        await websocket.send_json({
+            "type": "QUESTION_CHUNK",
+            "text": "",
+            "audio": None,
+            "visemes": None,
+            "turnNumber": turn_num,
+            "persona": session.currentPersona,
+            "isLast": True
+        })
+    
+    # Save turn to DB
     new_turn = SessionTurn(
         id=str(uuid.uuid4()),
         sessionId=session.id,
         turnNumber=turn_num,
-        questionText=question_text,
+        questionText=full_question_text.strip(),
         personaAtTurn=session.currentPersona or PersonaType.friendly,
     )
     db.add(new_turn)
     db.commit()
 
-    # TTS
-    audio_base64, visemes = await speech_service.generate_speech_with_visemes(full_text)
-    
-    await websocket_endpoint_send_json(websocket, {
-        "type": "QUESTION",
-        "text": full_text,
-        "persona": session.currentPersona,
-        "turnNumber": turn_num,
-        "audio": audio_base64,
-        "visemes": visemes
-    })
-
-# Helper for sending JSON safely
-async def websocket_endpoint_send_json(websocket: WebSocket, data: dict):
-    try:
-        await websocket.send_json(data)
-    except Exception as e:
-        print(f"Error sending JSON: {e}")
+    return score
 
 async def handle_user_answer(websocket: WebSocket, db: Session, session: InterviewSession, transcript: str, question_count: int, filler_count: int, filler_breakdown: dict):
     # Update current turn
@@ -360,65 +441,60 @@ async def handle_user_answer(websocket: WebSocket, db: Session, session: Intervi
         current_turn.fillerWords = filler_breakdown
         db.commit()
 
-    # Get feedback and shift persona if needed
-    avatar = db.query(InterviewAvatar).filter(InterviewAvatar.id == session.avatarId).first()
-    user_profile = db.query(UserProfile).filter(UserProfile.userId == session.userId).first()
-    institution = db.query(MasterInstitution).filter(MasterInstitution.id == user_profile.targetInstitutionId).first() if user_profile else None
-    position = db.query(MasterPosition).filter(MasterPosition.id == user_profile.targetPositionId).first() if user_profile else None
-    
-    # Ambil past_turns KECUALI turn yang sedang dijawab sekarang (karena transcript-nya dikirim terpisah di generate_next_turn)
+    # Persona Shift Logic (based on score from previous turn, but we'll get it from the stream)
+    # Get all past turns except current one for context
     past_turns = db.query(SessionTurn).filter(
         SessionTurn.sessionId == session.id,
         SessionTurn.turnNumber < question_count
     ).order_by(SessionTurn.turnNumber).all()
     
-    # Dapatkan pertanyaan turn yang sedang dijawab untuk melengkapi konteks
     current_turn_obj = db.query(SessionTurn).filter(
         SessionTurn.sessionId == session.id,
         SessionTurn.turnNumber == question_count
     ).first()
-    
-    llm_result = await generate_next_turn(
-        session=session,
-        institution=institution,
-        position=position,
-        avatar=avatar,
-        past_turns=past_turns, # History turn-turn sebelumnya
-        new_answer_transcript=transcript, # Jawaban dari turn saat ini
-        current_question=current_turn_obj.questionText if current_turn_obj else None # Pertanyaan dari turn saat ini
-    )
-    
-    score = llm_result.get("answer_quality_score", 50)
-    feedback = llm_result.get("feedback", "")
-    
-    if current_turn:
-        current_turn.answerQuality = score
-        db.commit()
 
-    # Persona Shift Logic
-    new_persona = should_shift_persona(session, score)
-    if new_persona:
-        session.currentPersona = new_persona
-        session.personaShiftCount += 1
-        db.commit()
-
-    await websocket_endpoint_send_json(websocket, {
-        "type": "FEEDBACK",
-        "score": score,
-        "feedback": feedback
-    })
-    
     # Limit to 10 questions
     if question_count >= 10:
+        # Generate ucapan penutup (farewell) dulu sebelum menutup sesi
+        # Agar kandidat mendapat closing statement yang proper, bukan langsung redirect
+        from app.services.brain import InterviewPhase
+        await send_next_question_stream(
+            websocket=websocket,
+            db=db,
+            session=session,
+            turn_num=question_count + 1,
+            user_transcript=transcript,
+            current_question=current_turn_obj.questionText if current_turn_obj else None,
+            phase_override=InterviewPhase.farewell,
+        )
+        # Kirim sinyal bahwa turn terakhir sudah selesai digenerate
+        await websocket.send_json({"type": "SESSION_COMPLETED"})
         await finish_and_report(websocket, db, session)
     else:
-        await send_next_question(websocket, db, session, question_count + 1, feedback)
+        score = await send_next_question_stream(
+            websocket=websocket,
+            db=db,
+            session=session,
+            turn_num=question_count + 1,
+            user_transcript=transcript,
+            current_question=current_turn_obj.questionText if current_turn_obj else None
+        )
+        
+        if current_turn:
+            current_turn.answerQuality = score
+            db.commit()
+
+        # Persona Shift Logic
+        new_persona = should_shift_persona(session, score)
+        if new_persona:
+            session.currentPersona = new_persona
+            session.personaShiftCount += 1
+            db.commit()
 
 async def re_send_last_question(websocket: WebSocket, db: Session, last_turn: SessionTurn, session: InterviewSession):
-    # TTS
+    # Untuk resume, kita tetap pakai QUESTION biasa saja untuk kemudahan
     audio_base64, visemes = await speech_service.generate_speech_with_visemes(last_turn.questionText)
-    
-    await websocket_endpoint_send_json(websocket, {
+    await websocket.send_json({
         "type": "QUESTION",
         "text": last_turn.questionText,
         "persona": last_turn.personaAtTurn,

@@ -1,5 +1,17 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import {
+		CheckCircle,
+		Building2,
+		Landmark,
+		Search,
+		Building,
+		SearchX,
+		Briefcase,
+		AlertCircle,
+		ArrowLeft,
+		ArrowRight
+	} from '@lucide/svelte';
 
 	let { data, form } = $props();
 
@@ -152,9 +164,7 @@
 					>
 						{#if path === 'corporate'}
 							<div class="absolute top-6 right-6 text-primary">
-								<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;"
-									>check_circle</span
-								>
+								<CheckCircle size={20} fill="currentColor" fillOpacity={0.2} />
 							</div>
 						{/if}
 						<div
@@ -163,7 +173,7 @@
 								? 'bg-primary-container text-on-primary-container'
 								: 'bg-surface-variant text-on-surface-variant group-hover:bg-primary-fixed group-hover:text-on-primary-fixed'}"
 						>
-							<span class="material-symbols-outlined text-[28px]">domain</span>
+							<Building2 size={28} />
 						</div>
 						<h2 class="font-headline-md text-headline-md mb-1 text-on-surface">
 							Swasta / Korporat
@@ -183,9 +193,7 @@
 					>
 						{#if path && path !== 'corporate'}
 							<div class="absolute top-6 right-6 text-primary">
-								<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;"
-									>check_circle</span
-								>
+								<CheckCircle size={20} fill="currentColor" fillOpacity={0.2} />
 							</div>
 						{/if}
 						<div
@@ -194,7 +202,7 @@
 								? 'bg-primary-container text-on-primary-container'
 								: 'bg-surface-variant text-on-surface-variant group-hover:bg-primary-fixed group-hover:text-on-primary-fixed'}"
 						>
-							<span class="material-symbols-outlined text-[28px]">account_balance</span>
+							<Landmark size={28} />
 						</div>
 						<h2 class="font-headline-md text-headline-md mb-1 text-on-surface">Kedinasan</h2>
 						<p class="font-body-md text-body-md text-on-surface-variant">
@@ -207,10 +215,10 @@
 				<div class="flex flex-col gap-6">
 					<!-- Search -->
 					<div class="relative w-full max-w-lg">
-						<span
-							class="pointer-events-none absolute top-1/2 left-4 material-symbols-outlined -translate-y-1/2 text-outline"
-							>search</span
-						>
+						<Search
+							size={20}
+							class="pointer-events-none absolute top-1/2 left-4 -translate-y-1/2 text-outline"
+						/>
 						<input
 							bind:value={institutionSearch}
 							class="font-body-md w-full rounded-xl border border-outline-variant bg-surface py-3.5 pr-4 pl-12 text-on-surface shadow-inner transition-all outline-none placeholder:text-outline focus:border-primary focus:ring-2 focus:ring-primary/20"
@@ -235,10 +243,12 @@
 									: 'border-outline-variant bg-surface hover:border-primary-fixed hover:bg-surface-container-low'}"
 							>
 								{#if selectedInstitutionId === inst.id}
-									<span
-										class="absolute top-2 right-2 material-symbols-outlined text-[18px] text-primary"
-										style="font-variation-settings: 'FILL' 1;">check_circle</span
-									>
+									<CheckCircle
+										size={18}
+										class="absolute top-2 right-2 text-primary"
+										fill="currentColor"
+										fillOpacity={0.2}
+									/>
 								{/if}
 								<div
 									class="mb-2 flex h-14 w-14 items-center justify-center overflow-hidden rounded-full bg-surface-container-lowest p-2 shadow-sm"
@@ -250,7 +260,7 @@
 											src={inst.logoUrl}
 										/>
 									{:else}
-										<span class="material-symbols-outlined text-outline">business</span>
+										<Building class="text-outline" size={24} />
 									{/if}
 								</div>
 								<span
@@ -266,9 +276,7 @@
 
 						{#if filteredInstitutions.length === 0}
 							<div class="col-span-full py-8 text-center">
-								<span class="mb-2 material-symbols-outlined text-[40px] text-outline"
-									>search_off</span
-								>
+								<SearchX size={40} class="mb-2 inline-block text-outline" />
 								<p class="font-body-md text-body-md text-on-surface-variant">
 									Tidak ada hasil ditemukan.
 								</p>
@@ -281,10 +289,10 @@
 				<div class="flex flex-col gap-6">
 					<!-- Search -->
 					<div class="relative w-full max-w-lg">
-						<span
-							class="pointer-events-none absolute top-1/2 left-4 material-symbols-outlined -translate-y-1/2 text-outline"
-							>search</span
-						>
+						<Search
+							size={20}
+							class="pointer-events-none absolute top-1/2 left-4 -translate-y-1/2 text-outline"
+						/>
 						<input
 							bind:value={positionSearch}
 							class="font-body-md w-full rounded-xl border border-outline-variant bg-surface py-3.5 pr-4 pl-12 text-on-surface shadow-inner transition-all outline-none placeholder:text-outline focus:border-primary focus:ring-2 focus:ring-primary/20"
@@ -305,10 +313,7 @@
 							>
 								{#if selectedPositionId === pos.id}
 									<div class="absolute top-4 right-4">
-										<span
-											class="material-symbols-outlined text-primary"
-											style="font-variation-settings: 'FILL' 1;">check_circle</span
-										>
+										<CheckCircle size={18} class="text-primary" fill="currentColor" fillOpacity={0.2} />
 									</div>
 								{/if}
 								<div
@@ -317,7 +322,7 @@
 										? 'bg-surface-container-lowest text-primary'
 										: 'bg-surface-container text-on-surface-variant group-hover:bg-primary-fixed group-hover:text-primary'}"
 								>
-									<span class="material-symbols-outlined">work</span>
+									<Briefcase size={20} />
 								</div>
 								<div class="flex flex-col pr-8 text-left">
 									<span
@@ -342,9 +347,7 @@
 
 						{#if filteredPositions.length === 0}
 							<div class="col-span-full py-8 text-center">
-								<span class="mb-2 material-symbols-outlined text-[40px] text-outline"
-									>search_off</span
-								>
+								<SearchX size={40} class="mb-2 inline-block text-outline" />
 								<p class="font-body-md text-body-md text-on-surface-variant">
 									Tidak ada posisi ditemukan.
 								</p>
@@ -359,7 +362,7 @@
 		<footer class="flex flex-col gap-3 border-t border-outline-variant pt-6">
 			{#if form?.message}
 				<div class="flex items-center gap-2 rounded-lg bg-red-50 px-4 py-3 text-sm text-error">
-					<span class="material-symbols-outlined text-[18px]">error</span>
+					<AlertCircle size={18} />
 					{form.message}
 				</div>
 			{/if}
@@ -370,7 +373,7 @@
 						onclick={prevStep}
 						class="font-label-bold flex items-center gap-2 rounded-lg px-6 py-3 text-sm font-semibold text-on-surface-variant transition-colors hover:text-on-surface"
 					>
-						<span class="material-symbols-outlined text-[20px]">arrow_back</span>
+						<ArrowLeft size={20} />
 						Kembali
 					</button>
 				{/if}
@@ -380,19 +383,9 @@
 					class="font-label-bold flex items-center gap-2 rounded-lg bg-primary px-10 py-[14px] text-sm font-semibold text-on-primary shadow-[0px_4px_20px_rgba(87,0,0,0.2)] transition-all outline-none hover:bg-on-primary-fixed-variant active:scale-[0.98]"
 				>
 					{step === 4 ? 'Selesai' : 'Lanjutkan'}
-					<span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+					<ArrowRight size={18} />
 				</button>
 			</div>
 		</footer>
 	</main>
 </div>
-
-<style>
-	:global(.material-symbols-outlined) {
-		font-variation-settings:
-			'FILL' 0,
-			'wght' 400,
-			'GRAD' 0,
-			'opsz' 24;
-	}
-</style>

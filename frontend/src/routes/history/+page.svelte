@@ -3,6 +3,7 @@
 	import Header from '$lib/components/Header.svelte';
 	import BottomNav from '$lib/components/BottomNav.svelte';
 	import { fade } from 'svelte/transition';
+	import { Landmark, Briefcase, ChevronRight, History } from '@lucide/svelte';
 
 	let { data } = $props();
 	let sessions = $derived(data.sessions || []);
@@ -38,9 +39,11 @@
 							<div
 								class="h-14 w-14 bg-red-50 flex items-center justify-center rounded-2xl text-primary shadow-sm transition-all duration-300 group-hover:scale-105 group-hover:bg-primary group-hover:text-white"
 							>
-								<span class="material-symbols-outlined text-[28px]">
-									{session.track === 'military' ? 'account_balance' : 'business_center'}
-								</span>
+								{#if session.track === 'military'}
+									<Landmark size={28} />
+								{:else}
+									<Briefcase size={28} />
+								{/if}
 							</div>
 							<div>
 								<div class="mb-1.5 flex items-center gap-3">
@@ -66,17 +69,14 @@
 							<div
 								class="flex h-10 w-10 items-center justify-center rounded-full bg-gray-50 transition-colors group-hover:bg-primary/10"
 							>
-								<span
-									class="material-symbols-outlined text-[20px] text-gray-400 transition-colors group-hover:text-primary"
-									>arrow_forward_ios</span
-								>
+								<ChevronRight size={20} class="text-gray-400 transition-colors group-hover:text-primary" />
 							</div>
 						</div>
 					</a>
 				{:else}
 					<div class="flex flex-col items-center justify-center py-24 bg-white rounded-4xl border-2 border-dashed border-gray-200" in:fade>
 						<div class="mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-red-50 text-primary">
-							<span class="material-symbols-outlined text-4xl">history</span>
+							<History size={40} />
 						</div>
 						<h3 class="text-xl font-bold text-gray-900">Belum ada riwayat sesi</h3>
 						<p class="mt-2 text-gray-500 font-medium">Selesaikan sesi latihan pertamamu untuk melihat riwayat di sini.</p>

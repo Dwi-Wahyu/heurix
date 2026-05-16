@@ -9,6 +9,7 @@
 		FilesetResolver,
 		DrawingUtils
 	} from "@mediapipe/tasks-vision";
+	import { VideoOff, Mic, Info, ArrowRight } from '@lucide/svelte';
 
 	// ── Props & State ──
 	let sessionId = $state<string | null>(null);
@@ -164,7 +165,7 @@
 
 				{#if error}
 					<div class="absolute inset-0 flex flex-col items-center justify-center bg-neutral-900/90 z-30 p-6 text-center">
-						<span class="material-symbols-outlined text-5xl text-error mb-4">videocam_off</span>
+						<VideoOff size={48} class="text-error mb-4" />
 						<p class="text-error font-medium">{error}</p>
 						<button onclick={() => window.location.reload()} class="mt-6 rounded-full bg-white/10 px-6 py-2 text-sm font-semibold hover:bg-white/20 transition-colors">
 							Muat Ulang Halaman
@@ -199,7 +200,7 @@
 			<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 				<div class="rounded-2xl border border-white/5 bg-white/5 p-6 backdrop-blur-sm">
 					<h3 class="flex items-center gap-2 text-sm font-bold uppercase tracking-widest text-neutral-500 mb-4">
-						<span class="material-symbols-outlined text-lg">mic</span>
+						<Mic size={18} />
 						Indikator Suara
 					</h3>
 					<div class="flex items-center gap-4">
@@ -224,7 +225,7 @@
 				<div class="rounded-2xl border border-white/5 bg-white/5 p-4 backdrop-blur-sm flex flex-col justify-center">
 					<div class="flex items-start gap-4">
 						<div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
-							<span class="material-symbols-outlined">info</span>
+							<Info size={20} />
 						</div>
 						<div>
 							<h4 class="text-sm font-bold">Analisis Mimik Wajah</h4>
@@ -250,7 +251,7 @@
 					class="w-full sm:w-auto flex items-center justify-center gap-3 rounded-full bg-primary px-12 py-4 font-bold text-white shadow-xl transition-all hover:scale-105 active:scale-95 disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:scale-100"
 				>
 					<span>Lanjutkan ke Interview</span>
-					<span class="material-symbols-outlined">arrow_forward</span>
+					<ArrowRight size={20} />
 				</button>
 			</div>
 		</div>

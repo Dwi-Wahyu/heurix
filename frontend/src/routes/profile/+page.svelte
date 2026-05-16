@@ -3,7 +3,18 @@
 	import Header from '$lib/components/Header.svelte';
 	import BottomNav from '$lib/components/BottomNav.svelte';
 	import { sidebarState } from '$lib/sidebar.svelte';
-	import { Award } from '@lucide/svelte';
+	import {
+		Award,
+		Brain,
+		Timer,
+		Star,
+		UserPlus,
+		Pencil,
+		Compass,
+		Building2,
+		Briefcase,
+		Info
+	} from '@lucide/svelte';
 
 	let { data } = $props();
 
@@ -69,7 +80,7 @@
 				<div class="flex flex-col gap-6 lg:col-span-1">
 					<!-- Avatar & Name Card -->
 					<div
-						class="relative overflow-hidden rounded-3xl border border-gray-100 bg-white p-8 text-center shadow-soft"
+						class="relative overflow-hidden rounded-3xl border border-gray-100 bg-white p-8 shadow-soft text-center"
 					>
 						<!-- Background decoration -->
 						<div
@@ -106,7 +117,7 @@
 						<div class="flex flex-col gap-4">
 							<div class="flex items-center justify-between">
 								<div class="flex items-center gap-2 text-gray-500">
-									<span class="material-symbols-outlined text-[18px] text-primary">psychology</span>
+									<Brain size={18} class="text-primary" />
 									<span class="text-sm">Total Sesi</span>
 								</div>
 								<span class="text-lg font-bold text-gray-900">{profile?.totalSessions ?? 0}</span>
@@ -114,7 +125,7 @@
 							<div class="h-px bg-gray-100"></div>
 							<div class="flex items-center justify-between">
 								<div class="flex items-center gap-2 text-gray-500">
-									<span class="material-symbols-outlined text-[18px] text-primary">timer</span>
+									<Timer size={18} class="text-primary" />
 									<span class="text-sm">Menit Berlatih</span>
 								</div>
 								<span class="text-lg font-bold text-gray-900"
@@ -124,7 +135,7 @@
 							<div class="h-px bg-gray-100"></div>
 							<div class="flex items-center justify-between">
 								<div class="flex items-center gap-2 text-gray-500">
-									<span class="material-symbols-outlined text-[18px] text-primary">star</span>
+									<Star size={18} class="text-primary" />
 									<span class="text-sm">Skor Rata-rata</span>
 								</div>
 								<span class="text-lg font-bold text-gray-900">
@@ -151,7 +162,7 @@
 								<div
 									class="mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-white/20"
 								>
-									<span class="material-symbols-outlined text-[24px] text-white">person_add</span>
+									<UserPlus size={24} class="text-white" />
 								</div>
 								<h3 class="mb-2 text-xl font-bold">Profil Belum Lengkap</h3>
 								<p class="mb-6 max-w-md text-sm leading-relaxed text-red-100">
@@ -162,7 +173,7 @@
 									href="/onboarding"
 									class="inline-flex items-center gap-2 rounded-xl bg-white px-6 py-3 text-sm font-bold text-primary shadow-md transition-all hover:scale-[1.03] hover:shadow-lg active:scale-[0.98]"
 								>
-									<span class="material-symbols-outlined text-[18px]">edit</span>
+									<Pencil size={18} />
 									Lengkapi Profil
 								</a>
 							</div>
@@ -178,7 +189,7 @@
 									href="/onboarding"
 									class="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold text-primary transition-colors hover:bg-red-50"
 								>
-									<span class="material-symbols-outlined text-[16px]">edit</span>
+									<Pencil size={16} />
 									Edit
 								</a>
 							{/if}
@@ -191,7 +202,7 @@
 									<div
 										class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-red-50 text-primary"
 									>
-										<span class="material-symbols-outlined text-[20px]">route</span>
+										<Compass size={20} />
 									</div>
 									<div>
 										<p class="text-xs font-semibold tracking-wide text-gray-400 uppercase">
@@ -217,7 +228,7 @@
 												class="h-7 w-7 object-contain"
 											/>
 										{:else}
-											<span class="material-symbols-outlined text-[20px]">domain</span>
+											<Building2 size={20} />
 										{/if}
 									</div>
 									<div>
@@ -237,7 +248,7 @@
 									<div
 										class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-red-50 text-primary"
 									>
-										<span class="material-symbols-outlined text-[20px]">work</span>
+										<Briefcase size={20} />
 									</div>
 									<div>
 										<p class="text-xs font-semibold tracking-wide text-gray-400 uppercase">
@@ -259,7 +270,7 @@
 								<div
 									class="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-gray-50 text-gray-300"
 								>
-									<span class="material-symbols-outlined text-[32px]">info</span>
+									<Info size={32} />
 								</div>
 								<p class="text-sm font-medium text-gray-500">Belum ada preferensi karir.</p>
 								<p class="mt-1 text-xs text-gray-400">
