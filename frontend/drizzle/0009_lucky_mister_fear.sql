@@ -1,0 +1,1 @@
+ALTER TABLE "interview_avatar" ADD COLUMN "background_path" text;

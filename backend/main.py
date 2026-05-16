@@ -161,7 +161,10 @@ async def get_session(sessionId: str, db: Session = Depends(get_db)):
         "avatar": {
             "id": session.avatar.id,
             "name": session.avatar.name,
+            "description": session.avatar.description,
             "glbUrl": session.avatar.glbUrl,
+            "backgroundPath": session.avatar.backgroundPath,
+            "thumbnailUrl": session.avatar.thumbnailUrl,
             "ttsVoiceId": session.avatar.ttsVoiceId,
             "cameraConfig": session.avatar.cameraConfig
         }

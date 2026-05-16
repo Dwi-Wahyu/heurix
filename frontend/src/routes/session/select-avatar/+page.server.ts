@@ -1,7 +1,7 @@
 import { db } from '$lib/server/db';
 import * as schema from '$lib/server/db/schema';
 import { eq } from 'drizzle-orm';
-import { error, redirect } from '@sveltejs/kit';
+import { error, redirect, isRedirect } from '@sveltejs/kit';
 import { auth } from '$lib/server/auth';
 
 export const load = async ({ request }) => {
@@ -17,8 +17,25 @@ export const load = async ({ request }) => {
             }
         });
 
+        // Always redirect if we can find an avatar
         if (profile?.targetInstitution?.defaultAvatarId) {
              throw redirect(302, `/session/disclaimer?avatarId=${profile.targetInstitution.defaultAvatarId}`);
+        }
+
+        // Fallback: Pick the first active avatar for the track
+        const track = profile?.preferredTrack || profile?.targetInstitution?.track || 'corporate';
+        const fallbackAvatar = await db.query.interviewAvatar.findFirst({
+            where: eq(schema.interviewAvatar.track, track as any),
+        });
+
+        if (fallbackAvatar) {
+            throw redirect(302, `/session/disclaimer?avatarId=${fallbackAvatar.id}`);
+        }
+
+        // Final fallback: any active avatar
+        const anyAvatar = await db.query.interviewAvatar.findFirst();
+        if (anyAvatar) {
+            throw redirect(302, `/session/disclaimer?avatarId=${anyAvatar.id}`);
         }
 
         const avatars = await db.select({
@@ -35,7 +52,7 @@ export const load = async ({ request }) => {
             avatars
         };
     } catch (e) {
-        if (e instanceof redirect) throw e;
+        if (isRedirect(e)) throw e;
         console.error('Failed to load avatars:', e);
         throw error(500, 'Internal Server Error');
     }

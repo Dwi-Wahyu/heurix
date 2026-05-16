@@ -203,8 +203,10 @@ class InterviewAvatar(Base):
 
     id = Column(String, primary_key=True)
     name = Column(String, nullable=False)
+    description = Column(String)
     track = Column(Enum(InterviewTrack), nullable=False)
     glbUrl = Column("glb_url", String, nullable=False)
+    backgroundPath = Column("background_path", String)
     thumbnailUrl = Column("thumbnail_url", String)
     ttsVoiceId = Column("tts_voice_id", String, nullable=False)
     ttsFriendlyParams = Column("tts_friendly_params", JSON)

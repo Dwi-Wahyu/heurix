@@ -3,6 +3,8 @@
 	import { sidebarState, toggleSidebar } from '$lib/sidebar.svelte';
 	import { PanelLeftClose, PanelLeftOpen, Home, Brain, History, User, X } from '@lucide/svelte';
 
+	import logo from '$lib/assets/logo.png?enhanced';
+
 	import { onMount } from 'svelte';
 
 	const navItems = [
@@ -49,7 +51,7 @@
 		{#if sidebarState.isOpen}
 			<div class="flex items-center gap-3">
 				<div class="flex items-end gap-1 overflow-hidden transition-all duration-300">
-					<img src="/logo.png" alt="" class="h-10 w-9 min-w-[36px]" />
+					<enhanced:img src={logo} alt="" class="h-10 w-9 min-w-[36px]" />
 					<h1 class="text-3xl font-extrabold tracking-tight whitespace-nowrap text-primary">
 						eurix
 					</h1>

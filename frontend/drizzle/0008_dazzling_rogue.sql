@@ -1,0 +1,1 @@
+ALTER TABLE "interview_avatar" ADD COLUMN "description" text;

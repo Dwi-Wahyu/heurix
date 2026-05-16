@@ -57,6 +57,20 @@
       "when": 1778938100671,
       "tag": "0007_absurd_ronan",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1778939773122,
+      "tag": "0008_dazzling_rogue",
+      "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1778951021001,
+      "tag": "0009_lucky_mister_fear",
+      "breakpoints": true
     }
   ]
 }

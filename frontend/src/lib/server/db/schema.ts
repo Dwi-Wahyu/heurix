@@ -286,8 +286,10 @@ export const interviewAvatar = pgTable('interview_avatar', {
 	id: text('id').primaryKey(),
 
 	name: text('name').notNull(), // "Pak Budi", "Kolonel Ahmad"
+	description: text('description'),
 	track: interviewTrackEnum('track').notNull(),
 	glbUrl: text('glb_url').notNull(), // URL model .glb
+	backgroundPath: text('background_path'),
 	thumbnailUrl: text('thumbnail_url'),
 
 	// Konfigurasi TTS per persona

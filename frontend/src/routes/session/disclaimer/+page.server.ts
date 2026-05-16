@@ -1,7 +1,7 @@
 import { db } from '$lib/server/db';
 import * as schema from '$lib/server/db/schema';
 import { eq } from 'drizzle-orm';
-import { error, redirect } from '@sveltejs/kit';
+import { error, redirect, isRedirect } from '@sveltejs/kit';
 import { auth } from '$lib/server/auth';
 
 export const load = async ({ url, request }) => {
@@ -35,7 +35,7 @@ export const load = async ({ url, request }) => {
             track: profile?.targetInstitution?.track || profile?.preferredTrack || 'corporate'
         };
     } catch (e) {
-        if (e instanceof redirect) throw e;
+        if (isRedirect(e)) throw e;
         console.error('Failed to load disclaimer data:', e);
         throw error(500, 'Internal Server Error');
     }

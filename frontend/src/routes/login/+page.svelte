@@ -2,6 +2,8 @@
 	import { authClient } from '$lib/auth-client';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
+	import logo from '$lib/assets/logo.png?enhanced';
+	import loginArt from '$lib/assets/login-art.png?enhanced';
 
 	let activeTab = $state(page.url.searchParams.get('tab') === 'register' ? 'register' : 'login');
 	let email = $state('');
@@ -15,25 +17,25 @@
 		error = null;
 
 		if (activeTab === 'register') {
-			const { error: signUpError } = await authClient.signUp.email({
+			const result = await authClient.signUp.email({
 				email,
 				password,
 				name,
 				callbackURL: '/onboarding'
 			});
-			if (signUpError) {
-				error = signUpError.message || 'Pendaftaran gagal';
+			if (result.error) {
+				error = result.error.message || 'Pendaftaran gagal';
 				loading = false;
 			} else {
 				await goto('/onboarding');
 			}
 		} else {
-			const { error: signInError } = await authClient.signIn.email({
+			const result = await authClient.signIn.email({
 				email,
 				password
 			});
-			if (signInError) {
-				error = signInError.message || 'Masuk gagal';
+			if (result.error) {
+				error = result.error.message || 'Masuk gagal';
 				loading = false;
 			} else {
 				await goto('/dashboard');
@@ -56,8 +58,8 @@
 		<div class="absolute mt-6 flex w-full justify-center">
 			<div class="flex flex-col items-center">
 				<div class="flex items-end gap-1">
-					<img alt="Heurix Logo" class="h-10 w-auto" src="/logo.png" />
-					<span class="text-3xl font-extrabold tracking-tight text-primary"> Heurix </span>
+					<enhanced:img alt="Heurix Logo" class="h-10 w-auto" src={logo} />
+					<span class="text-3xl font-extrabold tracking-tight text-primary"> eurix </span>
 				</div>
 				<p class="mt-1 text-xs font-medium text-gray-500">
 					Experience the Pressure. Master the interview
@@ -215,8 +217,8 @@
 		></div>
 
 		<!-- Main illustration/artwork specified by user (needs to be present in static folder) -->
-		<img
-			src="/removed_bg_login_visualization.png"
+		<enhanced:img
+			src={loginArt}
 			alt="Heurix Dashboard Art"
 			class="absolute inset-0 h-full w-full object-cover object-center"
 		/>

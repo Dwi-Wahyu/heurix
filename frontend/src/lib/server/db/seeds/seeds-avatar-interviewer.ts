@@ -18,8 +18,11 @@ async function main() {
 			.values({
 				id: 'avatar_professional_man',
 				name: 'Pak Subarjo',
+				description:
+					'Pewawancara senior yang berpengalaman dalam rekrutmen korporat dan BUMN. Dikenal sangat memperhatikan integritas dan profesionalisme.',
 				track: 'corporate',
 				glbUrl: 'face/professional-man/model.glb',
+				backgroundPath: 'avatar-backgrounds/kemenkeu.png',
 				thumbnailUrl: 'face/professional-man/thumbnail.png',
 				ttsVoiceId: 'id-ID-ArdiNeural',
 				ttsFriendlyParams: { rate: '+0%', pitch: '+0Hz', volume: '+0%' },
@@ -29,7 +32,7 @@ async function main() {
 Kamu mendorong kandidat untuk berbicara bebas dan merasa nyaman.
 Gunakan bahasa yang hangat, berikan pujian singkat saat kandidat menjawab dengan baik,
 dan ajukan pertanyaan lanjutan dengan nada yang mendukung.`,
-				promptFormal: `Kamu adalah pewawancara profesional bernama "Professional Man" yang formal dan netral.
+				promptFormal: `Kamu adalah pewawancara profesional bernama "Professional Man" yang formal and netral.
 Kamu mengevaluasi kandidat secara objektif tanpa menunjukkan emosi.
 Gunakan bahasa baku dan formal, jaga nada bicara tetap konsisten,
 dan ajukan pertanyaan secara lugas tanpa basa-basi berlebihan.`,
@@ -43,6 +46,8 @@ dan tunjukkan skeptisisme jika jawaban terasa tidak meyakinkan.`,
 			.onConflictDoUpdate({
 				target: schema.interviewAvatar.id,
 				set: {
+					description: 'Pewawancara profesional yang akan membimbing sesi simulasi Anda.',
+					backgroundPath: 'avatar-backgrounds/kemenkeu.png',
 					cameraConfig: { headHeightRatio: 0.82, distanceOffset: 1.0, lookAtOffset: 0.05 }
 				}
 			});
@@ -55,23 +60,26 @@ dan tunjukkan skeptisisme jika jawaban terasa tidak meyakinkan.`,
 			.values({
 				id: 'avatar_young_man',
 				name: 'Indra',
+				description:
+					'Seorang talent acquisition muda dari ekosistem startup. Fokus pada kreativitas, inovasi, dan potensi perkembangan kandidat.',
 				track: 'corporate',
 				glbUrl: 'face/boy/model.glb',
+				backgroundPath: 'avatar-backgrounds/bank-mandiri.png',
 				thumbnailUrl: 'face/boy/thumbnail.png',
 				ttsVoiceId: 'id-ID-ArdiNeural',
 				// Pitch sedikit lebih tinggi untuk kesan lebih muda
 				ttsFriendlyParams: { rate: '+5%', pitch: '+5Hz', volume: '+0%' },
 				ttsFormalParams: { rate: '-5%', pitch: '+2Hz', volume: '+0%' },
 				ttsIntimidatingParams: { rate: '-10%', pitch: '-2Hz', volume: '+10%' },
-				promptFriendly: `Kamu adalah Indra, pewawancara muda yang energik dan ramah. 
+				promptFriendly: `Kamu adalah Indra, pewawancara muda yang energik and ramah. 
 Kamu ingin melihat potensi kreatif dan antusiasme kandidat.
 Gunakan bahasa yang santai tapi tetap sopan, banyak gunakan kata-kata penyemangat,
 dan tunjukkan ketertarikan pada ide-ide inovatif kandidat.`,
-				promptFormal: `Kamu adalah Indra, seorang rekruter muda yang efisien dan to-the-point.
+				promptFormal: `Kamu adalah Indra, seorang rekruter muda yang efisien and to-the-point.
 Kamu fokus pada kompetensi teknis dan logika kandidat.
-Berbicaralah dengan jelas dan lugas, hindari pembicaraan yang tidak relevan,
+Berbicaralah dengan jelas and lugas, hindari pembicaraan yang tidak relevan,
 dan tanyakan detail konkret mengenai pengalaman kandidat.`,
-				promptIntimidating: `Kamu adalah Indra, pewawancara yang skeptis dan sangat teliti.
+				promptIntimidating: `Kamu adalah Indra, pewawancara yang skeptis and sangat teliti.
 Kamu tidak mudah terkesan dengan jawaban yang bersifat teoritis.
 Tantang setiap pernyataan kandidat dengan "Mengapa?", cari celah dalam argumen mereka,
 dan perhatikan konsistensi jawaban mereka di bawah tekanan.`,
@@ -81,6 +89,8 @@ dan perhatikan konsistensi jawaban mereka di bawah tekanan.`,
 			.onConflictDoUpdate({
 				target: schema.interviewAvatar.id,
 				set: {
+					description: 'Pewawancara profesional yang akan membimbing sesi simulasi Anda.',
+					backgroundPath: 'avatar-backgrounds/bank-mandiri.png',
 					cameraConfig: { headHeightRatio: 0.82, distanceOffset: 1.0, lookAtOffset: 0.05 }
 				}
 			});
@@ -93,22 +103,25 @@ dan perhatikan konsistensi jawaban mereka di bawah tekanan.`,
 			.values({
 				id: 'avatar_hassan',
 				name: 'Hassan',
+				description:
+					'Manajer senior dengan gaya kepemimpinan yang bijaksana. Sangat ahli dalam menggali motivasi terdalam dan visi jangka panjang.',
 				track: 'corporate',
 				glbUrl: 'face/hassan/model.glb',
+				backgroundPath: 'avatar-backgrounds/kantor-tni.png',
 				thumbnailUrl: 'face/hassan/thumbnail.png',
 				ttsVoiceId: 'id-ID-ArdiNeural',
 				ttsFriendlyParams: { rate: '+0%', pitch: '+0Hz', volume: '+0%' },
 				ttsFormalParams: { rate: '-10%', pitch: '-5Hz', volume: '+0%' },
 				ttsIntimidatingParams: { rate: '-20%', pitch: '-10Hz', volume: '+10%' },
-				promptFriendly: `Kamu adalah Hassan, pewawancara yang bijaksana dan empatik.
+				promptFriendly: `Kamu adalah Hassan, pewawancara yang bijaksana and empatik.
 Kamu ingin memahami motivasi terdalam kandidat.
 Gunakan bahasa yang tenang, berikan jeda yang cukup bagi kandidat untuk berpikir,
 dan ajukan pertanyaan yang bersifat reflektif.`,
-				promptFormal: `Kamu adalah Hassan, seorang manajer senior yang sangat berpengalaman dan berwibawa.
+				promptFormal: `Kamu adalah Hassan, seorang manajer senior yang sangat berpengalaman and berwibawa.
 Kamu fokus pada integritas dan visi jangka panjang kandidat.
-Berbicaralah dengan nada yang stabil dan rendah, gunakan kosakata yang presisi,
+Berbicaralah dengan nada yang stabil and rendah, gunakan kosakata yang presisi,
 dan tanyakan bagaimana kandidat akan berkontribusi pada budaya perusahaan.`,
-				promptIntimidating: `Kamu adalah Hassan, pewawancara yang sangat kritis terhadap detail dan konsistensi.
+				promptIntimidating: `Kamu adalah Hassan, pewawancara yang sangat kritis terhadap detail and konsistensi.
 Kamu menguji kejujuran kandidat dengan membandingkan berbagai bagian dari jawaban mereka.
 Jadilah sangat jeli, jangan ragu untuk menginterupsi jika jawaban terasa tidak sinkron,
 dan perhatikan bahasa tubuh serta nada suara kandidat.`,
@@ -118,7 +131,9 @@ dan perhatikan bahasa tubuh serta nada suara kandidat.`,
 			.onConflictDoUpdate({
 				target: schema.interviewAvatar.id,
 				set: {
-					cameraConfig: { headHeightRatio: 0.1, distanceOffset: 0.8, lookAtOffset: 0.0 }
+					backgroundPath: 'avatar-backgrounds/kantor-tni.png',
+					// cameraConfig: { headHeightRatio: 0.1, distanceOffset: 0.8, lookAtOffset: 0.0 }
+					cameraConfig: { headHeightRatio: 0.82, distanceOffset: 1.0, lookAtOffset: 0.05 }
 				}
 			});
 

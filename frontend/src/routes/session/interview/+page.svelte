@@ -39,6 +39,11 @@
 		UserCheck
 	} from '@lucide/svelte';
 
+	const backgroundImages = import.meta.glob<any>('$lib/assets/avatar-backgrounds/*.{jpeg,jpg,png,webp}', {
+		eager: true,
+		query: { enhanced: true }
+	});
+
 	// ── Media ──
 	let videoElementDesktop = $state<HTMLVideoElement | null>(null);
 	let videoElementMobile = $state<HTMLVideoElement | null>(null);
@@ -78,6 +83,10 @@
 	let stopBlink: (() => void) | null = null;
 	let avatarReady = $state(false);
 	let avatarLoadProgress = $state(0);
+	let avatarName = $state('');
+	let avatarDescription = $state('');
+	let avatarThumbnail = $state('');
+	let avatarBackground = $state('/avatar-backgrounds/default.jpg');
 
 	// ── STT (MediaRecorder & Web Speech API) ──
 	let mediaRecorder: MediaRecorder | null = null;
@@ -85,7 +94,7 @@
 	let recognition: any = null;
 
 	// ── Timer & Session Limit ──
-	const SESSION_LIMIT_SECONDS = 300; // 5 Menit
+	const SESSION_LIMIT_SECONDS = 120; // 2 Menit
 	let remainingSeconds = $state(SESSION_LIMIT_SECONDS);
 	let sessionStartTime = $state<number | null>(null);
 	let timerInterval: ReturnType<typeof setInterval>;
@@ -171,6 +180,15 @@
 				const sessionData = await res.json();
 				const glbUrl = `/${sessionData.avatar.glbUrl}`;
 				const cameraConfig = sessionData.avatar.cameraConfig;
+
+				// Store avatar info for loading screen
+				avatarName = sessionData.avatar.name;
+				avatarDescription = sessionData.avatar.description;
+				avatarThumbnail = `/${sessionData.avatar.thumbnailUrl}`;
+				
+				if (sessionData.avatar.backgroundPath) {
+					avatarBackground = `/${sessionData.avatar.backgroundPath}`;
+				}
 
 				// Persistent Timer Logic
 				if (sessionData.startedAt) {
@@ -858,6 +876,49 @@
 	onkeydown={handleUserInteraction}
 	role="presentation"
 >
+	{#if !avatarReady}
+		<div class="fixed inset-0 z-[100] flex items-center justify-center bg-[#f8f9ff] text-gray-900" transition:fade>
+			<div class="w-full max-w-2xl overflow-hidden rounded-3xl bg-white p-8 shadow-[0px_20px_50px_rgba(0,0,0,0.1)]">
+				<div class="flex flex-col gap-8 md:flex-row md:items-center">
+					<!-- Avatar Image -->
+					<div class="relative h-48 w-48 shrink-0 self-center overflow-hidden rounded-2xl bg-gray-100 md:h-56 md:w-56">
+						{#if avatarThumbnail}
+							<img src={avatarThumbnail} alt={avatarName} class="h-full w-full object-cover" />
+						{:else}
+							<div class="flex h-full w-full items-center justify-center bg-gray-200">
+								<Bot size={64} class="text-gray-400" />
+							</div>
+						{/if}
+						<div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
+					</div>
+
+					<!-- Avatar Info -->
+					<div class="flex flex-1 flex-col justify-center text-center md:text-left">
+						<span class="mb-2 text-[10px] font-bold tracking-[0.2em] text-primary uppercase">Mempersiapkan Sesi</span>
+						<h2 class="mb-3 text-3xl font-extrabold tracking-tight text-gray-900">{avatarName || 'Pewawancara'}</h2>
+						<p class="mb-8 text-base leading-relaxed text-gray-500">
+							{avatarDescription || 'Sedang memuat data pewawancara profesional Anda. Harap tunggu sejenak.'}
+						</p>
+
+						<!-- Progress Bar -->
+						<div class="space-y-3">
+							<div class="flex items-center justify-between text-xs font-bold text-gray-400 uppercase tracking-wider">
+								<span>Memuat Avatar 3D</span>
+								<span class="text-primary">{avatarLoadProgress}%</span>
+							</div>
+							<div class="h-2 w-full overflow-hidden rounded-full bg-gray-100">
+								<div
+									class="h-full bg-primary transition-all duration-300"
+									style="width: {avatarLoadProgress || 10}%"
+								></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	{/if}
+
 	{#if processingResult}
 		<div class="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-black/90 backdrop-blur-xl" transition:fade>
 			<div class="relative mb-8 h-24 w-24">
@@ -873,16 +934,26 @@
 		<section
 			class="group relative z-0 h-full w-full overflow-hidden bg-inverse-surface md:absolute md:inset-0"
 		>
-			{#if !avatarReady}
-				<div class="absolute inset-0 z-10 flex flex-col items-center justify-center bg-black/80">
-					<div class="h-1.5 w-48 overflow-hidden rounded-full bg-white/10">
-						<div
-							class="h-full bg-primary transition-all duration-300"
-							style="width: {avatarLoadProgress || 10}%"
-						></div>
+			<!-- Background Image -->
+			{#if avatarReady}
+				{#if backgroundImages[`/src/lib/assets${avatarBackground}`]}
+					<div class="absolute inset-0 z-[-1] transition-opacity duration-1000" transition:fade>
+						<enhanced:img 
+							src={backgroundImages[`/src/lib/assets${avatarBackground}`].default} 
+							class="absolute inset-0 h-full w-full object-cover" 
+							alt="Background" 
+						/>
+						<div class="absolute inset-0 bg-black/20 backdrop-blur-[2px]"></div>
 					</div>
-					<p class="mt-2 text-xs text-white/50">Memuat pewawancara...</p>
-				</div>
+				{:else}
+					<div 
+						class="absolute inset-0 z-[-1] bg-cover bg-center transition-opacity duration-1000"
+						style="background-image: url({avatarBackground});"
+						transition:fade
+					>
+						<div class="absolute inset-0 bg-black/20 backdrop-blur-[2px]"></div>
+					</div>
+				{/if}
 			{/if}
 
 			<canvas
@@ -955,7 +1026,7 @@
 					<div
 						class="hidden items-center gap-1.5 rounded-full border border-white/10 bg-black/40 px-3 py-1.5 backdrop-blur-md sm:flex"
 					>
-						<Wifi size={13} class="text-secondary-container" fill="currentColor" fillOpacity={0.2} />
+						<Wifi size={13} class="text-secondary-container" fill="currentColor" />
 						<span class="text-[11px] font-semibold text-secondary-container"
 							>{wsStatus === 'connected' ? 'STABIL' : 'MENGHUBUNGKAN...'}</span
 						>
