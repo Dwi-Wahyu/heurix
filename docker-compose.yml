@@ -27,8 +27,7 @@ services:
       # Di compose, kita tembak host 'db', bukan 'localhost'
       DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
     depends_on:
-      db:
-        condition: service_healthy # Menunggu postgres benar-benar siap menerima koneksi
+      - db
 
   # ==========================================
   # BACKEND (FASTAPI)
@@ -48,8 +47,7 @@ services:
     ports:
       - 5001:8000
     depends_on:
-      migrator:
-        condition: service_completed_successfully # Tunggu migrasi & seeder SUKSES selesai
+      - migrator
     restart: always
 
   # ==========================================
@@ -65,6 +63,5 @@ services:
     ports:
       - 5000:5000 # Sesuai nodePort kamu sebelumnya (akses lewat port 30000)
     depends_on:
-      migrator:
-        condition: service_completed_successfully # Tunggu migrasi selesai juga
+      - migrator
     restart: always
