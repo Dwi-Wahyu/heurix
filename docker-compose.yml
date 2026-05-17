@@ -14,7 +14,7 @@ services:
     volumes:
       - /var/www/heurix/data/postgres_data:/var/lib/postgresql/data
     ports:
-      - "5432:5432"
+      - "5002:5432"
     restart: always
 
   # ==========================================
@@ -46,7 +46,7 @@ services:
       GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
       MODEL_PATH: /app/models
     ports:
-      - "8000:8000"
+      - "5001:8000"
     depends_on:
       migrator:
         condition: service_completed_successfully # Tunggu migrasi & seeder SUKSES selesai
@@ -63,7 +63,7 @@ services:
       PUBLIC_BACKEND_WS: ${PUBLIC_BACKEND_WS}
       PORT: ${FRONTEND_PORT}
     ports:
-      - "30000:5000" # Sesuai nodePort kamu sebelumnya (akses lewat port 30000)
+      - "5000:5000" # Sesuai nodePort kamu sebelumnya (akses lewat port 30000)
     depends_on:
       migrator:
         condition: service_completed_successfully # Tunggu migrasi selesai juga
