@@ -11,7 +11,7 @@ ARG PUBLIC_BACKEND_WS
 
 # 2. Salin file manifest terlebih dahulu (Layer Caching)
 COPY package.json bun.lock* ./
-RUN bun install --frozen-lockfile
+RUN bun install --frozen-lockfile --force
 
 # 3. Salin SEMUA file (Penting: svelte.config.js & vite.config.ts harus ikut)
 COPY . .
@@ -23,7 +23,7 @@ ENV NODE_ENV=production
 
 # 5. Jalankan Sync dan Build
 # Tambahkan 'bun run' sebelum svelte-kit sync untuk memastikan path lokal terbaca
-RUN bun run build
+RUN PUBLIC_BACKEND_URL=$PUBLIC_BACKEND_URL PUBLIC_BACKEND_WS=$PUBLIC_BACKEND_WS bun run build
 
 # --- Runtime Stage ---
 FROM oven/bun:1.3.10-alpine
