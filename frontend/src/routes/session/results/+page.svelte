@@ -23,7 +23,9 @@
 	} from '@lucide/svelte';
 
 	let { data } = $props();
-	const { report, sessionTurns, error } = data;
+	let report = $derived(data.report);
+	let sessionTurns = $derived(data.sessionTurns);
+	let error = $derived(data.error);
 
 	function getLevel(score: number) {
 		if (score >= 80)
@@ -33,7 +35,7 @@
 		return { label: 'Perlu Latihan', class: 'bg-orange-100 text-orange-800 border-orange-200' };
 	}
 
-	const dimensions = report
+	const dimensions = $derived(report
 		? [
 				{
 					label: 'Tutur Kata',
@@ -112,7 +114,7 @@
 					level: getLevel(report.eyeContactScore || 80)
 				}
 			]
-		: [];
+		: []);
 
 	function parseAnalysis(analysis: string) {
 		try {

@@ -19,7 +19,8 @@
 	} from '@lucide/svelte';
 
 	let { data } = $props();
-	const { avatar, track } = data;
+	let avatar = $derived(data.avatar);
+	let track = $derived(data.track);
 
 	let confirmed = $state(false);
 

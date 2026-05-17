@@ -32,7 +32,12 @@ jobs:
           build-args: |
             PUBLIC_BACKEND_URL=${{ secrets.PUBLIC_BACKEND_URL }}
             PUBLIC_BACKEND_WS=${{ secrets.PUBLIC_BACKEND_WS }}
+            INTERNAL_BACKEND_URL=${{ secrets.INTERNAL_BACKEND_URL }}
+            ORIGIN=${{ secrets.ORIGIN }}
             DATABASE_URL=${{ secrets.DATABASE_URL }}
+            BETTER_AUTH_SECRET=${{ secrets.BETTER_AUTH_SECRET }}
+            GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}
+            GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}
 
       # Build & Push Migrator
       - name: Build and Push Migrator
