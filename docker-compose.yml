@@ -1,5 +1,6 @@
 version: "3.8"
 
+name: heurix
 services:
   # ==========================================
   # DATABASE (POSTGRES)
