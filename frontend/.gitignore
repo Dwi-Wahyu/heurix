@@ -26,4 +26,4 @@ certs/*
 
 ecosystem.config.cjs
 
-vite.config.ts
+# vite.config.ts
