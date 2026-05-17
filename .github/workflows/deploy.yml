@@ -35,7 +35,8 @@ jobs:
             INTERNAL_BACKEND_URL=${{ secrets.INTERNAL_BACKEND_URL }}
             ORIGIN=${{ secrets.ORIGIN }}
             DATABASE_URL=${{ secrets.DATABASE_URL }}
-            BETTER_AUTH_SECRET=${{ secrets.BETTER_AUTH_SECRET }}
+            BETTER_AUTH_SECRET=mock-better-auth-secret-for-build
+            # BETTER_AUTH_SECRET=${{ secrets.BETTER_AUTH_SECRET }}
             GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}
             GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}
 
