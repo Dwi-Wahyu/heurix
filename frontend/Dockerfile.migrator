@@ -16,4 +16,4 @@ COPY . .
 ENV NODE_ENV=production
 
 # Perintah default untuk menjalankan migrasi dan seeding
-CMD ["sh", "-c", "bun run db:push && bun run db:seed"]
+CMD ["sh", "-c", "bun run db:push && bun run db:seed-avatar && bun run db:seed-institution"]

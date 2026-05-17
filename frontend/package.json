@@ -12,7 +12,7 @@
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"lint": "prettier --check .",
 		"format": "prettier --write .",
-		"db:push": "drizzle-kit push",
+		"db:push": "drizzle-kit push --yes",
 		"db:seed-institution": "bun run src/lib/server/db/seeds/seed-institutions.ts",
 		"db:seed-avatar": "bun run src/lib/server/db/seeds/seeds-avatar-interviewer.ts",
 		"db:generate": "drizzle-kit generate",
