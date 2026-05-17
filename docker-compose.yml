@@ -45,7 +45,7 @@ services:
       GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
       MODEL_PATH: /app/models
     ports:
-      - 5001:8000
+      - 5001:5001
     restart: always
 
   # ==========================================
