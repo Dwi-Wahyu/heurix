@@ -21,6 +21,15 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GHCR_TOKEN }}
 
+      # Build & Push Frontend
+      - name: Build and Push Frontend
+        uses: docker/build-push-action@v5
+        with:
+          context: ./frontend
+          file: ./frontend/Dockerfile
+          push: true
+          tags: ghcr.io/dwi-wahyu/heurix-frontend:latest
+
       # Build & Push Migrator
       - name: Build and Push Migrator
         uses: docker/build-push-action@v5
@@ -38,15 +47,6 @@ jobs:
           file: ./backend/Dockerfile
           push: true
           tags: ghcr.io/dwi-wahyu/heurix-backend:latest
-
-      # Build & Push Frontend
-      - name: Build and Push Frontend
-        uses: docker/build-push-action@v5
-        with:
-          context: ./frontend
-          file: ./frontend/Dockerfile
-          push: true
-          tags: ghcr.io/dwi-wahyu/heurix-frontend:latest
 
   deploy:
     runs-on: ubuntu-latest
