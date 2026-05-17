@@ -32,9 +32,9 @@ jobs:
           file: ./backend/Dockerfile
           push: true
           # Cache agar build python (pip) lebih cepat
-          cache-from: type=registry,ref=ghcr.io/dwi-wahyu/hiready-backend:cache
-          cache-to: type=registry,ref=ghcr.io/dwi-wahyu/hiready-backend:cache,mode=max
-          tags: ghcr.io/dwi-wahyu/hiready-backend:latest
+          cache-from: type=registry,ref=ghcr.io/dwi-wahyu/heurix-backend:cache
+          cache-to: type=registry,ref=ghcr.io/dwi-wahyu/heurix-backend:cache,mode=max
+          tags: ghcr.io/dwi-wahyu/heurix-backend:latest
 
       # --- BUILD FRONTEND ---
       - name: Build and Push Frontend
@@ -48,7 +48,16 @@ jobs:
           build-args: |
             PUBLIC_BACKEND_URL=${{ secrets.PUBLIC_BACKEND_URL }}
             PUBLIC_BACKEND_WS=${{ secrets.PUBLIC_BACKEND_WS }}
-          tags: ghcr.io/dwi-wahyu/hiready-frontend:latest
+          tags: ghcr.io/dwi-wahyu/heurix-frontend:latest
+
+      # --- BUILD MIGRATOR (Perbaikan: Ditambahkan) ---
+      - name: Build and Push Migrator
+        uses: docker/build-push-action@v5
+        with:
+          context: ./frontend # sesuaikan jika source db/skema berada di root atau subfolder
+          file: ./frontend/Dockerfile.migrator
+          push: true
+          tags: ghcr.io/dwi-wahyu/heurix-migrator:latest
 
   deploy:
     needs: build-and-push
@@ -58,7 +67,7 @@ jobs:
         uses: appleboy/ssh-action@v1.0.3
         env:
           # Mapping semua Secrets agar bisa dikirim ke server via SSH
-          DATABASE_URL: ${{ secrets.HIREADY_DATABASE_URL }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
           POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
           POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
@@ -78,7 +87,7 @@ jobs:
           # Mendaftarkan variabel agar tersedia di session shell server
           envs: DATABASE_URL,POSTGRES_DB,POSTGRES_USER,POSTGRES_PASSWORD,GROQ_API_KEY,PUBLIC_BACKEND_URL,PUBLIC_BACKEND_WS,BETTER_AUTH_SECRET,BETTER_AUTH_URL,ORIGIN,GOOGLE_CLIENT_ID,GOOGLE_CLIENT_SECRET,FRONTEND_PORT
           script: |
-            cd /var/www/hiready
+            cd /var/www/heurix
 
             # Podman: login ke GHCR
             echo "$GHCR_TOKEN" | podman login ghcr.io -u "$GH_ACTOR" --password-stdin
@@ -101,11 +110,12 @@ jobs:
             FRONTEND_PORT=$FRONTEND_PORT
             EOF
 
-            # Tarik image terbaru
-            podman-compose pull
+            # Hentikan pod yang lama jika sedang berjalan sebelum diganti yang baru
+            podman pod stop heurix-pod || true
+            podman pod rm heurix-pod || true
 
-            # Jalankan ulang service
-            podman-compose up -d --remove-orphans
+            # Jalankan deployment menggunakan Kube YAML dengan menyuntikkan .env file
+            podman play kube --env-file /var/www/heurix/.env podman.yaml
 
-            # Hapus image lama
-            podman image prune -af
+            # Bersihkan sisa-sisa dangling images/cache lama yang menumpuk di server
+            podman image prune -f
