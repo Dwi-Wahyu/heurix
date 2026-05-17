@@ -46,8 +46,6 @@ services:
       MODEL_PATH: /app/models
     ports:
       - 5001:8000
-    depends_on:
-      - migrator
     restart: always
 
   # ==========================================
