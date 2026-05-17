@@ -1,5 +1,6 @@
 import { dev } from '$app/environment';
 import { PUBLIC_BACKEND_URL } from '$env/static/public';
+import { env } from '$env/dynamic/private';
 
 // Allow self-signed certificates for server-side fetches in dev and preview
 // This is necessary because both frontend and backend use local self-signed certs
@@ -14,7 +15,8 @@ import type { Handle } from '@sveltejs/kit';
 export const handle: Handle = async ({ event, resolve }) => {
 	// Jika request dimulai dengan /api/proxy
 	if (event.url.pathname.startsWith('/api/proxy')) {
-		const backendUrl = PUBLIC_BACKEND_URL;
+		// Gunakan INTERNAL_BACKEND_URL (e.g. http://127.0.0.1:5001) jika ada di environment
+		const backendUrl = env.INTERNAL_BACKEND_URL || PUBLIC_BACKEND_URL;
 		const path = event.url.pathname.replace('/api/proxy', '');
 
 		// Clone headers
