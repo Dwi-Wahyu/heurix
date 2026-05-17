@@ -6,7 +6,8 @@ build/
 
 # --- Tambahan untuk Docker ---
 .dockerignore
-# (Tapi biasanya Dockerfile tetap di-commit)
+
+deployment.md
 
 # --- Tambahan untuk Log & Temp ---
 *.log

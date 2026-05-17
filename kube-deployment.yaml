@@ -5,6 +5,21 @@ metadata:
   labels:
     app: heurix
 spec:
+  # Berjalan sekali sampai selesai
+  initContainers:
+    - name: database-migrator
+      image: ghcr.io/dwi-wahyu/hiready-migrator:latest
+      env:
+        # Migrator butuh akses ke DB, jalankan lewat localhost karena satu Pod
+        - name: DATABASE_URL
+          value: "postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@localhost:5432/${POSTGRES_DB}"
+        - name: POSTGRES_DB
+          value: "${POSTGRES_DB}"
+        - name: POSTGRES_USER
+          value: "${POSTGRES_USER}"
+        - name: POSTGRES_PASSWORD
+          value: "${POSTGRES_PASSWORD}"
+
   containers:
     # DATABASE CONTAINER (POSTGRES)
     - name: postgres
@@ -63,7 +78,7 @@ spec:
   volumes:
     - name: postgres-data
       hostPath:
-        path: /var/lib/heurix/postgres_data
+        path: /var/www/heurix/postgres_data
         type: DirectoryOrCreate
 
 ---
