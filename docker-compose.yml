@@ -1,52 +1,70 @@
+version: "3.8"
+
 services:
-  postgres:
+  # ==========================================
+  # DATABASE (POSTGRES)
+  # ==========================================
+  db:
     image: postgres:16-alpine
-    restart: unless-stopped
-    env_file: .env
+    container_name: heurix-db
     environment:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
-      - postgres_data:/var/lib/postgresql/data
-    networks:
-      - hiready_network
+      - /var/www/heurix/data/postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    restart: always
 
-  backend:
-    image: ghcr.io/dwi-wahyu/hiready-backend:latest
-    build: ./backend
-    restart: unless-stopped
-    env_file: .env
+  # ==========================================
+  # MIGRATOR (Jalan sekali sampai sukses)
+  # ==========================================
+  migrator:
+    image: ghcr.io/dwi-wahyu/heurix-migrator:latest
+    container_name: heurix-migrator
     environment:
-      DATABASE_URL: ${DATABASE_URL}
+      # Di compose, kita tembak host 'db', bukan 'localhost'
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
+    depends_on:
+      db:
+        condition: service_healthy # Menunggu postgres benar-benar siap menerima koneksi
+
+  # ==========================================
+  # BACKEND (FASTAPI)
+  # ==========================================
+  backend:
+    image: ghcr.io/dwi-wahyu/heurix-backend:latest
+    container_name: heurix-backend
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
       GROQ_API_KEY: ${GROQ_API_KEY}
       BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET}
       BETTER_AUTH_URL: ${BETTER_AUTH_URL}
       ORIGIN: ${ORIGIN}
       GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
       GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
+      MODEL_PATH: /app/models
+    ports:
+      - "8000:8000"
     depends_on:
-      - postgres
-    networks:
-      - hiready_network
+      migrator:
+        condition: service_completed_successfully # Tunggu migrasi & seeder SUKSES selesai
+    restart: always
 
+  # ==========================================
+  # FRONTEND (SVELTEKIT)
+  # ==========================================
   frontend:
-    image: ghcr.io/dwi-wahyu/hiready-frontend:latest
-    build: ./frontend
-    restart: unless-stopped
-    env_file: .env
+    image: ghcr.io/dwi-wahyu/heurix-frontend:latest
+    container_name: heurix-frontend
     environment:
       PUBLIC_BACKEND_URL: ${PUBLIC_BACKEND_URL}
       PUBLIC_BACKEND_WS: ${PUBLIC_BACKEND_WS}
+      PORT: ${FRONTEND_PORT}
     ports:
-      - "5000:5000"
+      - "30000:5000" # Sesuai nodePort kamu sebelumnya (akses lewat port 30000)
     depends_on:
-      - backend
-    networks:
-      - hiready_network
-
-volumes:
-  postgres_data:
-
-networks:
-  hiready_network:
+      migrator:
+        condition: service_completed_successfully # Tunggu migrasi selesai juga
+    restart: always
