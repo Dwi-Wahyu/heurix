@@ -110,7 +110,7 @@ async def websocket_endpoint(websocket: WebSocket, sessionId: str):
 
                 await websocket.send_json({"type": "PROCESSING"})
                 
-                temp_filename = f"temp_{sessionId}_{question_count}.webm"
+                temp_filename = f"/tmp/temp_{sessionId}_{question_count}.webm"
                 print(f"Processing audio: {temp_filename} ({len(audio_data)} bytes)")
                 
                 with open(temp_filename, "wb") as f:
