@@ -21,3 +21,5 @@ frontend/certs/cert.pem
 frontend/certs/key.pem
 
 backend/models/hub/models--Systran--faster-whisper-small/blobs/*
+
+docker-compose.yml
