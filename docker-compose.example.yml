@@ -20,7 +20,7 @@ services:
   # MIGRATOR (Jalan sekali sampai sukses)
   # ==========================================
   migrator:
-    image: ghcr.io/dwi-wahyu/heurix-migrator:latest
+    build: ./migrator
     container_name: heurix-migrator
     environment:
       # Di compose, kita tembak host 'db', bukan 'localhost'
@@ -32,7 +32,7 @@ services:
   # BACKEND (FASTAPI)
   # ==========================================
   backend:
-    image: ghcr.io/dwi-wahyu/heurix-backend:latest
+    build: ./backend
     container_name: heurix-backend
     environment:
       DATABASE_URL: ${DATABASE_URL}
@@ -53,7 +53,7 @@ services:
   # FRONTEND (SVELTEKIT)
   # ==========================================
   frontend:
-    image: ghcr.io/dwi-wahyu/heurix-frontend:latest
+    build: ./frontend
     container_name: heurix-frontend
     environment:
       PUBLIC_BACKEND_URL: ${PUBLIC_BACKEND_URL}
