@@ -52,7 +52,7 @@ RUN mkdir -p /app/models && chown appuser:appuser /app/models
 
 USER appuser
 
-EXPOSE 5001
+EXPOSE 3124
 
 ENV WEB_CONCURRENCY=1
 
