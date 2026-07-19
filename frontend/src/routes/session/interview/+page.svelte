@@ -57,6 +57,14 @@
 	let lastFaceSampleTime = 0;
 	const FACE_SAMPLE_INTERVAL = 3000; // Sample every 3 seconds
 
+	// ── Three.js resources (lifted to component scope for cleanup in onDestroy) ──
+	let renderer: THREE.WebGLRenderer | undefined;
+	let scene: THREE.Scene | undefined;
+	let camera: THREE.PerspectiveCamera | undefined;
+	let resizeObserver: ResizeObserver | undefined;
+	let animationFrameId: number | undefined;
+	let modelRoot: THREE.Object3D | undefined;
+
 	// ── Session & WebSocket ──
 	let sessionId = $state<string | null>(null);
 	let ws = $state<WebSocket | null>(null);
@@ -214,7 +222,10 @@
 		// 4. Kamera user
 		if (browser && navigator.mediaDevices) {
 			navigator.mediaDevices
-				.getUserMedia({ video: true, audio: true })
+				.getUserMedia({
+					video: { width: { ideal: 1280 }, height: { ideal: 720 } },
+					audio: true
+				})
 				.then((s) => {
 					stream = s;
 				})
@@ -321,40 +332,79 @@
 		stream?.getTracks().forEach((t) => t.stop());
 		ws?.close();
 		stopBlink?.();
+
+		// ── Added: stop the render loop ──
+		if (animationFrameId !== undefined) {
+			cancelAnimationFrame(animationFrameId);
+		}
+
+		// ── Added: disconnect the ResizeObserver ──
+		resizeObserver?.disconnect();
+
+		// ── Added: release MediaPipe WASM/GPU resources ──
+		faceLandmarker?.close();
+		faceLandmarker = undefined;
+
+		// ── Added: release Three.js GPU resources ──
+		if (scene) {
+			scene.traverse((obj: any) => {
+				if (obj.geometry) obj.geometry.dispose();
+				if (obj.material) {
+					const materials = Array.isArray(obj.material) ? obj.material : [obj.material];
+					for (const mat of materials) {
+						for (const key of Object.keys(mat)) {
+							const value = mat[key];
+							if (value && typeof value.dispose === 'function') {
+								value.dispose(); // textures
+							}
+						}
+						mat.dispose();
+					}
+				}
+			});
+		}
+		renderer?.dispose();
+		renderer = undefined;
+		scene = undefined;
+		camera = undefined;
+		modelRoot = undefined;
 	});
 
 	async function initAvatar(glbUrl: string, cameraConfig?: any) {
 		if (!canvasElement || !browser) return;
 
-		const renderer = new THREE.WebGLRenderer({
+		const localRenderer = new THREE.WebGLRenderer({
 			canvas: canvasElement,
 			alpha: true,
 			antialias: true,
 			powerPreference: 'high-performance'
 		});
+		renderer = localRenderer;
 
 		const width = canvasElement.clientWidth || window.innerWidth;
 		const height = canvasElement.clientHeight || window.innerHeight || 1;
-		renderer.setSize(width, height);
-		renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+		localRenderer.setSize(width, height);
+		localRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
 		// Tone mapping for better visuals
-		renderer.toneMapping = THREE.ACESFilmicToneMapping;
-		renderer.toneMappingExposure = 1.2;
-		renderer.shadowMap.enabled = true;
-		renderer.shadowMap.type = THREE.PCFShadowMap;
+		localRenderer.toneMapping = THREE.ACESFilmicToneMapping;
+		localRenderer.toneMappingExposure = 1.2;
+		localRenderer.shadowMap.enabled = true;
+		localRenderer.shadowMap.type = THREE.PCFShadowMap;
 
-		const scene = new THREE.Scene();
+		const localScene = new THREE.Scene();
+		scene = localScene;
 
-		const camera = new THREE.PerspectiveCamera(25, width / height, 0.01, 100);
-		camera.position.set(0, 1.6, 2.0);
+		const localCamera = new THREE.PerspectiveCamera(25, width / height, 0.01, 100);
+		localCamera.position.set(0, 1.6, 2.0);
+		camera = localCamera;
 
 		// ── PENCAHAYAAN ──
 		const ambient = new THREE.AmbientLight(0xffffff, 0.8);
-		scene.add(ambient);
+		localScene.add(ambient);
 
 		const hemiLight = new THREE.HemisphereLight(0xffffff, 0x444444, 0.6);
-		scene.add(hemiLight);
+		localScene.add(hemiLight);
 
 		const keyLight = new THREE.DirectionalLight(0xffffff, 1.2);
 		keyLight.position.set(-1, 2, 4);
@@ -363,16 +413,16 @@
 		keyLight.shadow.normalBias = 0.05;
 		keyLight.shadow.mapSize.width = 1024;
 		keyLight.shadow.mapSize.height = 1024;
-		scene.add(keyLight);
-		scene.add(keyLight.target);
+		localScene.add(keyLight);
+		localScene.add(keyLight.target);
 
 		const fillLight = new THREE.DirectionalLight(0xffffff, 0.5);
 		fillLight.position.set(1, 1, 2);
-		scene.add(fillLight);
+		localScene.add(fillLight);
 
 		const rimLight = new THREE.DirectionalLight(0xffffff, 0.7);
 		rimLight.position.set(0, 2, -3);
-		scene.add(rimLight);
+		localScene.add(rimLight);
 
 		const dracoLoader = new DRACOLoader();
 		dracoLoader.setDecoderPath('/draco/');
@@ -387,7 +437,7 @@
 					glbUrl,
 					(gltf) => {
 						const model = gltf.scene;
-						scene.add(model);
+						localScene.add(model);
 
 						model.traverse((obj) => {
 							if ((obj as THREE.Mesh).isMesh) {
@@ -417,30 +467,31 @@
 						const lookAtOffset = cameraConfig?.lookAtOffset ?? 0.05;
 
 						if (size.y < 0.1) {
-							camera.position.set(center.x, center.y + 0.1, center.z + 0.5);
-							camera.lookAt(center.x, center.y + 0.1, center.z);
+							localCamera.position.set(center.x, center.y + 0.1, center.z + 0.5);
+							localCamera.lookAt(center.x, center.y + 0.1, center.z);
 						} else {
 							const headBottomY = box.min.y + size.y * headHeightRatio;
 							const headTopY = box.max.y;
 							const focusCenterY = (headBottomY + headTopY) / 2;
 							const focusHeight = headTopY - headBottomY;
 
-							const vFovRad = (camera.fov * Math.PI) / 180;
+							const vFovRad = (localCamera.fov * Math.PI) / 180;
 							const desiredCoverage = 0.85;
 							const distance =
 								(focusHeight / 2 / Math.tan(vFovRad / 2) / desiredCoverage) * distanceOffset;
 
-							camera.position.set(center.x, focusCenterY, center.z + distance);
-							camera.lookAt(center.x, focusCenterY - focusHeight * lookAtOffset, center.z);
+							localCamera.position.set(center.x, focusCenterY, center.z + distance);
+							localCamera.lookAt(center.x, focusCenterY - focusHeight * lookAtOffset, center.z);
 
 							keyLight.position.set(center.x - 1, focusCenterY + 1, center.z + 2);
 							keyLight.target.position.set(center.x, focusCenterY, center.z);
 							keyLight.target.updateMatrixWorld();
 						}
 
-						camera.updateProjectionMatrix();
+						localCamera.updateProjectionMatrix();
 
 						animator = new FaceAnimator(model);
+						modelRoot = model;
 						stopBlink = startAutoBlink(animator);
 						avatarReady = true;
 						resolve();
@@ -461,7 +512,8 @@
 
 		let lastTime = performance.now();
 		function animate() {
-			requestAnimationFrame(animate);
+			if (!renderer || !scene || !camera) return;
+			animationFrameId = requestAnimationFrame(animate);
 			const time = performance.now();
 			const delta = (time - lastTime) / 1000;
 			lastTime = time;
@@ -496,14 +548,12 @@
 				}
 
 				// Cari model di scene untuk diaplikasikan rotasi
-				// Traversal scene.children untuk menemukan model utama
-				scene.traverse((obj) => {
-					if (obj.name === 'Scene' || (obj.type === 'Group' && obj.parent === scene)) {
-						obj.rotation.x = THREE.MathUtils.lerp(obj.rotation.x, targetRotX, 0.05);
-						obj.rotation.y = THREE.MathUtils.lerp(obj.rotation.y, targetRotY, 0.05);
-						obj.rotation.z = THREE.MathUtils.lerp(obj.rotation.z, targetRotZ, 0.05);
-					}
-				});
+				// Cache direct reference to modelRoot to save scene traversal every frame
+				if (modelRoot) {
+					modelRoot.rotation.x = THREE.MathUtils.lerp(modelRoot.rotation.x, targetRotX, 0.05);
+					modelRoot.rotation.y = THREE.MathUtils.lerp(modelRoot.rotation.y, targetRotY, 0.05);
+					modelRoot.rotation.z = THREE.MathUtils.lerp(modelRoot.rotation.z, targetRotZ, 0.05);
+				}
 			}
 
 			renderer.render(scene, camera);
@@ -548,13 +598,13 @@
 		}
 		animate();
 
-		const ro = new ResizeObserver(() => {
+		resizeObserver = new ResizeObserver(() => {
 			if (!canvasElement) return;
-			camera.aspect = canvasElement.clientWidth / canvasElement.clientHeight;
-			camera.updateProjectionMatrix();
-			renderer.setSize(canvasElement.clientWidth, canvasElement.clientHeight);
+			localCamera.aspect = canvasElement.clientWidth / canvasElement.clientHeight;
+			localCamera.updateProjectionMatrix();
+			localRenderer.setSize(canvasElement.clientWidth, canvasElement.clientHeight);
 		});
-		ro.observe(canvasElement);
+		resizeObserver.observe(canvasElement);
 	}
 
 	function initWebSocket() {
