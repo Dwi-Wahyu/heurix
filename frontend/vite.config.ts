@@ -15,9 +15,9 @@ export default defineConfig({
 			registerType: 'autoUpdate',
 			injectRegister: 'script',
 			manifest: {
-				name: 'HiReady - Solnetz Dev',
-				short_name: 'HiReady',
-				description: 'Deskripsi aplikasi HiReady',
+				name: 'Heurix - Pejantan Tangguh',
+				short_name: 'Heurix',
+				description: 'Simulasi Wawancara Immersif Dengan AI',
 				theme_color: '#ffffff',
 				background_color: '#ffffff',
 				display: 'standalone',

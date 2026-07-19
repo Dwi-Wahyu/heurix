@@ -33,7 +33,8 @@
 		Send,
 		PhoneOff,
 		Zap,
-		UserCheck
+		UserCheck,
+		RefreshCw
 	} from '@lucide/svelte';
 
 	const backgroundImages = import.meta.glob<any>(
@@ -51,6 +52,7 @@
 	let stream = $state<MediaStream | null>(null);
 	let micMuted = $state(false);
 	let camOff = $state(false);
+	let facingMode = $state<'user' | 'environment'>('user');
 
 	// ── Face Analysis (MediaPipe) ──
 	let faceLandmarker: FaceLandmarker | undefined;
@@ -223,7 +225,11 @@
 		if (browser && navigator.mediaDevices) {
 			navigator.mediaDevices
 				.getUserMedia({
-					video: { width: { ideal: 1280 }, height: { ideal: 720 } },
+					video: {
+						width: { ideal: 1280 },
+						height: { ideal: 720 },
+						facingMode: 'user'
+					},
 					audio: true
 				})
 				.then((s) => {
@@ -916,6 +922,46 @@
 		stream.getVideoTracks().forEach((t) => (t.enabled = !camOff));
 	}
 
+	async function switchCamera() {
+		if (!browser || !navigator.mediaDevices || !stream) return;
+
+		const nextFacingMode = facingMode === 'user' ? 'environment' : 'user';
+
+		try {
+			// Stop current video tracks
+			stream.getVideoTracks().forEach((track) => track.stop());
+
+			// Request new stream with nextFacingMode
+			const newStream = await navigator.mediaDevices.getUserMedia({
+				video: {
+					width: { ideal: 1280 },
+					height: { ideal: 720 },
+					facingMode: nextFacingMode
+				},
+				audio: false
+			});
+
+			// Replace video track in current stream
+			const newVideoTrack = newStream.getVideoTracks()[0];
+			const oldVideoTrack = stream.getVideoTracks()[0];
+			if (oldVideoTrack) {
+				stream.removeTrack(oldVideoTrack);
+			}
+			stream.addTrack(newVideoTrack);
+			facingMode = nextFacingMode;
+
+			// Update HTML video element sources to reflect change
+			if (videoElementDesktop) {
+				videoElementDesktop.srcObject = stream;
+			}
+			if (videoElementMobile) {
+				videoElementMobile.srcObject = stream;
+			}
+		} catch (err) {
+			console.error('Gagal mengganti arah kamera:', err);
+		}
+	}
+
 	async function endSession() {
 		stopRecording();
 		processingResult = true;
@@ -1320,6 +1366,16 @@
 				<Video size={24} />
 			{/if}
 		</button>
+
+		{#if !camOff}
+			<button
+				onclick={switchCamera}
+				title="Ganti Arah Kamera"
+				class="flex h-11 w-11 items-center justify-center rounded-full bg-white text-primary shadow-lg transition-all active:scale-95 md:hidden"
+			>
+				<RefreshCw size={24} />
+			</button>
+		{/if}
 
 		<button
 			onclick={() => (autoSend = !autoSend)}
