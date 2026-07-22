@@ -11,7 +11,8 @@ from app.models import (
     InterviewTrack,
     UserProfile,
     SessionReport,
-    SessionTurn
+    SessionTurn,
+    ScenarioType
 )
 from sqlalchemy import func
 from sqlalchemy.orm import Session
@@ -54,9 +55,18 @@ async def create_session(
     userId = payload.get("userId")
     avatarId = payload.get("avatarId")
     track = payload.get("track")
+    scenario_str = payload.get("scenario", "friendly")
     
     if not all([userId, avatarId, track]):
         raise HTTPException(status_code=400, detail="Missing required fields")
+    
+    try:
+        scenario = ScenarioType(scenario_str)
+    except ValueError:
+        scenario = ScenarioType.friendly
+        
+    user_profile = db.query(UserProfile).filter(UserProfile.userId == userId).first()
+    pressure_level = (user_profile.nextPressureLevel if user_profile else 1) or 1
     
     session_id = str(uuid.uuid4())
     new_session = InterviewSession(
@@ -64,6 +74,8 @@ async def create_session(
         userId=userId,
         avatarId=avatarId,
         track=track,
+        scenario=scenario,
+        pressureLevel=pressure_level,
         status="waiting"
     )
     db.add(new_session)
@@ -141,9 +153,44 @@ async def update_user_profile(payload: dict = Body(...), db: Session = Depends(g
 
 @app.get("/api/sessions")
 async def get_sessions(userId: str, limit: int = 10, db: Session = Depends(get_db)):
-    return db.query(InterviewSession).filter(InterviewSession.userId == userId)\
+    results = db.query(InterviewSession, SessionReport)\
+        .outerjoin(SessionReport, InterviewSession.id == SessionReport.sessionId)\
+        .filter(InterviewSession.userId == userId)\
         .order_by(InterviewSession.createdAt.desc())\
         .limit(limit).all()
+    
+    sessions_list = []
+    for session, report in results:
+        session_dict = {
+            "id": session.id,
+            "userId": session.userId,
+            "track": session.track,
+            "difficulty": session.difficulty,
+            "avatarId": session.avatarId,
+            "sessionContext": session.sessionContext,
+            "status": session.status,
+            "startedAt": session.startedAt.isoformat() if session.startedAt else None,
+            "completedAt": session.completedAt.isoformat() if session.completedAt else None,
+            "durationSeconds": session.durationSeconds,
+            "currentPersona": session.currentPersona,
+            "personaShiftCount": session.personaShiftCount,
+            "scenario": session.scenario,
+            "pressureLevel": session.pressureLevel,
+            "overallScore": session.overallScore,
+            "communicationScore": session.communicationScore,
+            "consistencyScore": session.consistencyScore,
+            "confidenceScore": session.confidenceScore,
+            "facialExpressionScore": session.facialExpressionScore,
+            "eyeContactScore": session.eyeContactScore,
+            "createdAt": session.createdAt.isoformat() if session.createdAt else None,
+            "updatedAt": session.updatedAt.isoformat() if session.updatedAt else None,
+            "sriScore": report.sriScore if report else None,
+            "stressResistanceScore": report.stressResistanceScore if report else None,
+            "avgWordsPerMinute": report.avgWordsPerMinute if report else None,
+            "totalFillerWords": report.totalFillerWords if report else None,
+        }
+        sessions_list.append(session_dict)
+    return sessions_list
 
 @app.get("/api/sessions/{sessionId}")
 async def get_session(sessionId: str, db: Session = Depends(get_db)):

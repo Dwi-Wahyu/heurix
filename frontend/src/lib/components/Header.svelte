@@ -3,6 +3,8 @@
 	import { pwaState, installApp } from '$lib/pwa.svelte';
 	import { sidebarState } from '$lib/sidebar.svelte';
 	import { ChevronRight, Download, LogOut } from '@lucide/svelte';
+	import logo from '$lib/assets/logo.png?enhanced';
+
 
 	const breadcrumbMap: Record<string, string> = {
 		'/dashboard': 'Beranda',
@@ -46,7 +48,9 @@
 	<div class="flex items-center gap-2 overflow-hidden">
 		<!-- Mobile Logo -->
 		<div class="flex items-center gap-0.5 overflow-hidden transition-all duration-300 md:hidden">
-			<h1 class="font-bold tracking-tight text-primary">Heurix</h1>
+			<enhanced:img src={logo} alt="" class="h-10 w-9 min-w-[36px]" />
+
+			<h1 class="font-bold tracking-tight text-primary">eurix</h1>
 		</div>
 
 		<!-- Breadcrumbs - Hidden on mobile, shown on md and above -->
