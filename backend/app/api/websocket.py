@@ -69,7 +69,10 @@ async def websocket_endpoint(websocket: WebSocket, sessionId: str):
             if "text" in message_data:
                 message = json.loads(message_data["text"])
                 
-                if message["type"] == "START_INTERVIEW":
+                if message["type"] == "PING":
+                    await websocket.send_json({"type": "PONG"})
+
+                elif message["type"] == "START_INTERVIEW":
                     # Update status
                     interview_session.status = "active"
                     interview_session.startedAt = datetime.now()

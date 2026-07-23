@@ -63,6 +63,15 @@
 	let sessionId = $state<string | null>(null);
 	let ws = $state<WebSocket | null>(null);
 	let wsStatus = $state<'connecting' | 'connected' | 'disconnected'>('connecting');
+	let pingInterval: ReturnType<typeof setInterval> | null = null;
+
+	// ── Web Audio VAD ──
+	let audioCtx: AudioContext | null = null;
+	let analyserNode: AnalyserNode | null = null;
+	let vadSourceNode: MediaStreamAudioSourceNode | null = null;
+	let vadInterval: ReturnType<typeof setInterval> | null = null;
+	let hasSpokenInSession = false;
+	let silenceStartTime: number | null = null;
 
 	// ── Percakapan ──
 	type Message = { role: 'interviewer' | 'user'; text: string; time: string };
@@ -258,6 +267,82 @@
 		}
 	}
 
+	function startVAD() {
+		stopVAD();
+		if (!stream) return;
+
+		try {
+			if (!audioCtx || audioCtx.state === 'closed') {
+				const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+				audioCtx = new AudioContextClass();
+			}
+			if (audioCtx.state === 'suspended') {
+				audioCtx.resume();
+			}
+
+			vadSourceNode = audioCtx.createMediaStreamSource(stream);
+			analyserNode = audioCtx.createAnalyser();
+			analyserNode.fftSize = 512;
+			vadSourceNode.connect(analyserNode);
+
+			hasSpokenInSession = false;
+			silenceStartTime = null;
+
+			const dataArray = new Uint8Array(analyserNode.fftSize);
+
+			vadInterval = setInterval(() => {
+				if (!analyserNode || !isListening || isSpeaking || micMuted) return;
+
+				analyserNode.getByteTimeDomainData(dataArray);
+				let sumSq = 0;
+				for (let i = 0; i < dataArray.length; i++) {
+					const norm = (dataArray[i] - 128) / 128;
+					sumSq += norm * norm;
+				}
+				const rms = Math.sqrt(sumSq / dataArray.length);
+
+				const SPEECH_THRESHOLD = 0.03;
+				const SILENCE_DURATION_MS = 1200;
+
+				if (rms > SPEECH_THRESHOLD) {
+					hasSpokenInSession = true;
+					isVoiceActive = true;
+					silenceStartTime = null;
+				} else {
+					isVoiceActive = false;
+					if (hasSpokenInSession) {
+						if (!silenceStartTime) {
+							silenceStartTime = Date.now();
+						} else if (Date.now() - silenceStartTime >= SILENCE_DURATION_MS) {
+							if (autoSend && isListening && !isSpeaking) {
+								stopVAD();
+								stopRecording();
+							}
+						}
+					}
+				}
+			}, 100);
+		} catch (err) {
+			console.error('VAD Init Error:', err);
+		}
+	}
+
+	function stopVAD() {
+		if (vadInterval) {
+			clearInterval(vadInterval);
+			vadInterval = null;
+		}
+		if (vadSourceNode) {
+			try {
+				vadSourceNode.disconnect();
+			} catch (e) {}
+			vadSourceNode = null;
+		}
+		analyserNode = null;
+		hasSpokenInSession = false;
+		silenceStartTime = null;
+	}
+
 	function initSpeechRecognition() {
 		if (!browser) return;
 		const SpeechRecognition =
@@ -273,24 +358,12 @@
 		recognition.lang = 'id-ID';
 
 		recognition.onresult = (event: any) => {
-			isVoiceActive = true;
 			let currentTranscript = '';
 			for (let i = event.resultIndex; i < event.results.length; ++i) {
 				currentTranscript += event.results[i][0].transcript;
 			}
 			if (currentTranscript.trim()) {
 				liveTranscript = currentTranscript;
-
-				// Auto-send logic
-				if (autoSend) {
-					if (silenceTimeout) clearTimeout(silenceTimeout);
-					silenceTimeout = setTimeout(() => {
-						if (isListening && !isSpeaking && liveTranscript.trim().length > 3) {
-							stopRecording();
-						}
-					}, 1000); // 1 detik setelah selesai bicara
-					// }, 1200); // 1.2 detik setelah selesai bicara
-				}
 			}
 		};
 
@@ -306,7 +379,7 @@
 				if (recognitionRetryCount > MAX_RECOGNITION_RETRIES) {
 					console.warn('Speech Recognition disabled due to persistent network errors');
 					errorMessage =
-						'Layanan transkrip langsung browser tidak tersedia (Network Error). Anda tetap bisa berbicara, dan jawaban Anda akan diproses setelah selesai.';
+						'Layanan transkrip langsung browser tidak tersedia (Network Error). Anda tetap bisa berbicara, dan jawaban Anda akan terkirim dan diproses secara otomatis.';
 				}
 			}
 		};
@@ -327,6 +400,17 @@
 			document.body.style.overflow = '';
 		}
 		clearInterval(timerInterval);
+		if (pingInterval) {
+			clearInterval(pingInterval);
+			pingInterval = null;
+		}
+		stopVAD();
+		if (audioCtx && audioCtx.state !== 'closed') {
+			try {
+				audioCtx.close();
+			} catch (e) {}
+			audioCtx = null;
+		}
 		stream?.getTracks().forEach((t) => t.stop());
 		ws?.close();
 		stopBlink?.();
@@ -614,15 +698,26 @@
 
 		ws.onopen = () => {
 			wsStatus = 'connected';
+			if (pingInterval) clearInterval(pingInterval);
+			pingInterval = setInterval(() => {
+				if (ws?.readyState === WebSocket.OPEN) {
+					ws.send(JSON.stringify({ type: 'PING' }));
+				}
+			}, 20000);
 		};
 
 		ws.onclose = () => {
 			wsStatus = 'disconnected';
+			if (pingInterval) {
+				clearInterval(pingInterval);
+				pingInterval = null;
+			}
 			errorMessage = 'Koneksi terputus. Silakan muat ulang halaman.';
 		};
 
 		ws.onmessage = async (event) => {
 			const msg = JSON.parse(event.data);
+			if (msg.type === 'PONG') return;
 			if (msg.type === 'ERROR') {
 				console.error('Backend Error:', msg.message);
 				wsStatus = 'disconnected';
@@ -870,6 +965,7 @@
 		};
 
 		try {
+			startVAD();
 			tryStart(supportedType);
 		} catch (e: any) {
 			try {
@@ -883,6 +979,7 @@
 	}
 
 	function stopRecording() {
+		stopVAD();
 		if (silenceTimeout) {
 			clearTimeout(silenceTimeout);
 			silenceTimeout = null;

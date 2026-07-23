@@ -10,8 +10,8 @@
     "semantic_hash": "d41d8cd98f00b204e9800998ecf8427e"
   },
   "backend/app/api/websocket.py": {
-    "mtime": 1784705525.4982038,
-    "ast_hash": "1a67c424cd46fe3cd75831e401eb52d6",
+    "mtime": 1784801394.3489661,
+    "ast_hash": "9b73ddf96160dbb92dda60ca8f135cd3",
     "semantic_hash": ""
   },
   "backend/app/core/__init__.py": {
@@ -50,8 +50,8 @@
     "semantic_hash": "d41d8cd98f00b204e9800998ecf8427e"
   },
   "backend/app/services/brain.py": {
-    "mtime": 1784705525.5228148,
-    "ast_hash": "88d36c57ac5f9737a3902c5162d38148",
+    "mtime": 1784801407.4711254,
+    "ast_hash": "dc65cbedc97c29cedaf00bc99bf99ab2",
     "semantic_hash": ""
   },
   "backend/app/services/speech.py": {
@@ -355,8 +355,8 @@
     "semantic_hash": ""
   },
   "frontend/src/routes/session/interview/+page.svelte": {
-    "mtime": 1784461996.3795488,
-    "ast_hash": "98c95facbfdba9f505e4ed433f971bee",
+    "mtime": 1784801434.3464518,
+    "ast_hash": "88900663f21d1926673d2459385e0a84",
     "semantic_hash": ""
   },
   "frontend/src/routes/session/interview/+page.ts": {
@@ -669,41 +669,6 @@
     "ast_hash": "746b7f838c513815c0b22137e8a8e0e0",
     "semantic_hash": ""
   },
-  "frontend/src/lib/assets/avatar-backgrounds/akpol.png": {
-    "mtime": 1778970778.7738574,
-    "ast_hash": "a31618e8afa19910211c5e93b0cc534a",
-    "semantic_hash": ""
-  },
-  "frontend/src/lib/assets/avatar-backgrounds/bank-mandiri.png": {
-    "mtime": 1778970778.7938576,
-    "ast_hash": "2044cf9acface27f2cbc32260001ee1c",
-    "semantic_hash": ""
-  },
-  "frontend/src/lib/assets/avatar-backgrounds/default.jpg": {
-    "mtime": 1778970778.8148577,
-    "ast_hash": "78031a1e648456ef361bd3ae14f59c9f",
-    "semantic_hash": ""
-  },
-  "frontend/src/lib/assets/avatar-backgrounds/kantor-tni.png": {
-    "mtime": 1778970778.8328578,
-    "ast_hash": "a1afc65507f691346e368e5adf623224",
-    "semantic_hash": ""
-  },
-  "frontend/src/lib/assets/avatar-backgrounds/kemenkeu.png": {
-    "mtime": 1778970778.850858,
-    "ast_hash": "c040d8866d04e08859a775e67568a4fa",
-    "semantic_hash": ""
-  },
-  "frontend/src/lib/assets/avatar-backgrounds/pkn-stan.png": {
-    "mtime": 1778970778.8678582,
-    "ast_hash": "c024fa608178aa84742ee09ab08f4f01",
-    "semantic_hash": ""
-  },
-  "frontend/src/lib/assets/avatar-backgrounds/pt-pln.png": {
-    "mtime": 1778970778.8838584,
-    "ast_hash": "3374b97fb2dd4df41323c163ef912186",
-    "semantic_hash": ""
-  },
   "frontend/src/lib/assets/favicon.svg": {
     "mtime": 1777911819.4359407,
     "ast_hash": "a015a3645240ab670617862943b9178c",
@@ -857,6 +822,11 @@
   "deliverables/IMPLEMENTATION_LOG.md": {
     "mtime": 1784706020.678631,
     "ast_hash": "53672de14f4f348e1807cf7f56b20cde",
+    "semantic_hash": ""
+  },
+  "instruction/INSTRUCTIONS_fixes_batch.md": {
+    "mtime": 1784801331.4962528,
+    "ast_hash": "fa265a6f82a7fe47a470a8d1d0fe3d6e",
     "semantic_hash": ""
   }
 }
