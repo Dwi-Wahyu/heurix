@@ -1,0 +1,4 @@
+backend/venv
+backend/__pycache__
+frontend/.svelte-kit
+frontend/node_modules

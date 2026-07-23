@@ -37,14 +37,6 @@
 		RefreshCw
 	} from '@lucide/svelte';
 
-	const backgroundImages = import.meta.glob<any>(
-		'$lib/assets/avatar-backgrounds/*.{jpeg,jpg,png,webp}',
-		{
-			eager: true,
-			query: { enhanced: true }
-		}
-	);
-
 	// ── Media ──
 	let videoElementDesktop = $state<HTMLVideoElement | null>(null);
 	let videoElementMobile = $state<HTMLVideoElement | null>(null);
@@ -1061,25 +1053,15 @@
 			class="group relative z-0 h-full w-full overflow-hidden bg-inverse-surface md:absolute md:inset-0"
 		>
 			<!-- Background Image -->
+			<!-- Background Image -->
 			{#if avatarReady}
-				{#if backgroundImages[`/src/lib/assets${avatarBackground}`]}
-					<div class="absolute inset-0 z-[-1] transition-opacity duration-1000" transition:fade>
-						<enhanced:img
-							src={backgroundImages[`/src/lib/assets${avatarBackground}`].default}
-							class="absolute inset-0 h-full w-full object-cover"
-							alt="Background"
-						/>
-						<div class="absolute inset-0 bg-black/20 backdrop-blur-[2px]"></div>
-					</div>
-				{:else}
-					<div
-						class="absolute inset-0 z-[-1] bg-cover bg-center transition-opacity duration-1000"
-						style="background-image: url({avatarBackground});"
-						transition:fade
-					>
-						<div class="absolute inset-0 bg-black/20 backdrop-blur-[2px]"></div>
-					</div>
-				{/if}
+				<div
+					class="absolute inset-0 z-[-1] bg-cover bg-center transition-opacity duration-1000"
+					style="background-image: url('{avatarBackground}');"
+					transition:fade
+				>
+					<div class="absolute inset-0 bg-black/20 backdrop-blur-[2px]"></div>
+				</div>
 			{/if}
 
 			<canvas
@@ -1091,18 +1073,21 @@
 
 			{#if audioBlocked}
 				<div
-					class="absolute inset-0 z-40 flex items-center justify-center bg-black/20 backdrop-blur-[2px]"
+					class="absolute inset-0 z-40 flex items-center justify-center bg-black/60 backdrop-blur-[2px]"
 					transition:fade
 				>
 					<button
 						onclick={handleUserInteraction}
-						class="flex animate-bounce flex-col items-center gap-4 rounded-3xl border border-white/20 bg-primary/90 p-8 shadow-2xl"
+						class="flex flex-col items-center gap-2 rounded-3xl border border-white/20 bg-primary/90 p-8 shadow-2xl transition-transform active:scale-95"
 					>
-						<div class="flex h-16 w-16 items-center justify-center rounded-full bg-white/20">
+						<div class="flex h-16 w-16 items-center justify-center rounded-full bg-white/20 animate-pulse">
 							<Volume2 size={40} class="text-white" />
 						</div>
-						<span class="text-sm font-bold tracking-widest text-white uppercase"
-							>Klik untuk mengaktifkan suara</span
+						<span class="mt-2 text-xl font-bold text-center text-white"
+							>Klik pada layar untuk memulai interview</span
+						>
+						<span class="text-sm font-medium text-center text-white/80"
+							>Izin browser untuk memutar audio belum didapatkan</span
 						>
 					</button>
 				</div>
