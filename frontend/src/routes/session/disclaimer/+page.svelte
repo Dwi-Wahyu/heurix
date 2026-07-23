@@ -16,9 +16,6 @@
 		Check,
 		X,
 		AlertCircleIcon,
-		Smile,
-		Building2,
-		ShieldAlert,
 		Info
 	} from '@lucide/svelte';
 
@@ -27,29 +24,15 @@
 	let track = $derived(data.track);
 	let weaknessTags = $derived(data.weaknessTags as string[]);
 
-	// ── APE Pilar 3: Kontrol Skenario Suasana ──────────────────────────────
+	// Skenario suasana otomatis berdasarkan avatar track
 	type Scenario = 'friendly' | 'grilling' | 'stress_test';
-	const scenarios: { id: Scenario; title: string; desc: string; icon: typeof Smile }[] = [
-		{
-			id: 'friendly',
-			title: 'Friendly HR',
-			desc: 'Suasana hangat dan suportif, cocok untuk pemanasan.',
-			icon: Smile
-		},
-		{
-			id: 'grilling',
-			title: 'Grilling BUMN',
-			desc: 'Formal dan ketat, jawaban Anda akan diminta bukti konkret.',
-			icon: Building2
-		},
-		{
-			id: 'stress_test',
-			title: 'Stress Test Akmil',
-			desc: 'Tekanan tinggi, konfrontatif — melatih ketahanan mental.',
-			icon: ShieldAlert
-		}
-	];
-	let selectedScenario = $state<Scenario>('friendly');
+	const scenario = $derived<Scenario>(
+		avatar?.track === 'military'
+			? 'stress_test'
+			: avatar?.track === 'civil_service' || avatar?.track === 'stan'
+				? 'grilling'
+				: 'friendly'
+	);
 
 	let confirmed = $state(false);
 
@@ -153,7 +136,7 @@
 					userId: session.data.user.id,
 					avatarId: avatar.id,
 					track: track || 'corporate',
-					scenario: selectedScenario
+					scenario
 				})
 			});
 
@@ -321,46 +304,14 @@
 			{/if}
 		</section>
 
-		<!-- APE Pilar 3: Pemilihan Skenario Suasana -->
-		<section class="rounded-xl border border-outline-variant p-4">
-			<h2 class="mb-1 text-sm font-semibold text-on-surface">Pilih Suasana Wawancara</h2>
-			<p class="mb-3 text-xs text-on-surface-variant">
-				Suasana memengaruhi gaya bicara, kecepatan, dan tekanan dari pewawancara AI.
-			</p>
-			<div class="grid grid-cols-1 gap-3 sm:grid-cols-3">
-				{#each scenarios as s}
-					<button
-						type="button"
-						onclick={() => (selectedScenario = s.id)}
-						class="flex flex-col items-start gap-2 rounded-xl border-2 p-4 text-left transition-all {selectedScenario ===
-						s.id
-							? 'border-primary bg-red-50/50 shadow-sm'
-							: 'border-outline-variant hover:border-outline'}"
-					>
-						<div class="flex w-full items-center justify-between">
-							<s.icon
-								size={20}
-								class={selectedScenario === s.id ? 'text-primary' : 'text-on-surface-variant'}
-							/>
-							{#if selectedScenario === s.id}
-								<Check size={16} class="text-primary" strokeWidth={3} />
-							{/if}
-						</div>
-						<p class="text-sm font-bold text-on-surface">{s.title}</p>
-						<p class="text-xs text-on-surface-variant">{s.desc}</p>
-					</button>
-				{/each}
+		{#if weaknessTags.length > 0}
+			<div class="flex items-start gap-2 rounded-lg border border-outline-variant bg-surface-container-low p-3 text-xs text-on-surface-variant">
+				<Info size={14} class="mt-0.5 shrink-0" />
+				<span>
+					Berdasarkan sesi sebelumnya, kami akan lebih sering menggali topik: <strong>{weaknessTags.join(', ')}</strong>.
+				</span>
 			</div>
-
-			{#if weaknessTags.length > 0}
-				<div class="mt-3 flex items-start gap-2 rounded-lg bg-surface-container-low p-3 text-xs text-on-surface-variant">
-					<Info size={14} class="mt-0.5 shrink-0" />
-					<span>
-						Berdasarkan sesi sebelumnya, kami akan lebih sering menggali topik: <strong>{weaknessTags.join(', ')}</strong>.
-					</span>
-				</div>
-			{/if}
-		</section>
+		{/if}
 
 		<!-- APE 3.4: Pengelolaan Ekspektasi -->
 		<div class="flex items-start gap-2 rounded-lg border border-amber-200 bg-amber-50 p-3 text-xs text-amber-800">

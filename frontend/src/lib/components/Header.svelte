@@ -5,7 +5,6 @@
 	import { ChevronRight, Download, LogOut } from '@lucide/svelte';
 	import logo from '$lib/assets/logo.png?enhanced';
 
-
 	const breadcrumbMap: Record<string, string> = {
 		'/dashboard': 'Beranda',
 		'/profile': 'Profil Saya',
@@ -48,7 +47,7 @@
 	<div class="flex items-center gap-2 overflow-hidden">
 		<!-- Mobile Logo -->
 		<div class="flex items-center gap-0.5 overflow-hidden transition-all duration-300 md:hidden">
-			<enhanced:img src={logo} alt="" class="h-10 w-9 min-w-[36px]" />
+			<enhanced:img src={logo} alt="" class="h-6 w-5 min-w-[36px]" />
 
 			<h1 class="font-bold tracking-tight text-primary">eurix</h1>
 		</div>
