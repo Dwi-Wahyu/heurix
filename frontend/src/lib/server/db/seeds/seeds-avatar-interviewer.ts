@@ -125,15 +125,16 @@ dan tanyakan bagaimana kandidat akan berkontribusi pada budaya perusahaan.`,
 Kamu menguji kejujuran kandidat dengan membandingkan berbagai bagian dari jawaban mereka.
 Jadilah sangat jeli, jangan ragu untuk menginterupsi jika jawaban terasa tidak sinkron,
 dan perhatikan bahasa tubuh serta nada suara kandidat.`,
-				cameraConfig: { headHeightRatio: 0.1, distanceOffset: 0.8, lookAtOffset: 0.0 },
+				cameraConfig: { headHeightRatio: 0.86, distanceOffset: 1.0, lookAtOffset: 0.05 },
 				isActive: true
 			})
 			.onConflictDoUpdate({
 				target: schema.interviewAvatar.id,
 				set: {
+					description:
+						'Manajer senior dengan gaya kepemimpinan yang bijaksana. Sangat ahli dalam menggali motivasi terdalam dan visi jangka panjang.',
 					backgroundPath: 'avatar-backgrounds/kantor-tni.png',
-					// cameraConfig: { headHeightRatio: 0.1, distanceOffset: 0.8, lookAtOffset: 0.0 }
-					cameraConfig: { headHeightRatio: 0.82, distanceOffset: 1.0, lookAtOffset: 0.05 }
+					cameraConfig: { headHeightRatio: 0.86, distanceOffset: 1.0, lookAtOffset: 0.05 }
 				}
 			});
 

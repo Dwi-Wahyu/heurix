@@ -1,15 +1,16 @@
-# Graph Report - /home/dwiwahyuilahi/Kuliah/Gemastik/source-code  (2026-07-23)
+# Graph Report - source-code  (2026-07-23)
 
 ## Corpus Check
-- cluster-only mode — file stats not available
+- 129 files · ~2,695,590 words
+- Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 1878 nodes · 4029 edges · 174 communities (111 shown, 63 thin omitted)
+- 1890 nodes · 4040 edges · 174 communities (113 shown, 61 thin omitted)
 - Extraction: 91% EXTRACTED · 9% INFERRED · 0% AMBIGUOUS · INFERRED: 369 edges (avg confidence: 0.78)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `e3cfa871`
+- Built from commit: `5e4d96fa`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -198,11 +199,11 @@
 - **Avatar Animation & Lip-Sync System** — frontend_src_lib_faceanimator, frontend_src_lib_lipsync, instruction_viseme, frontend_static_face_professional_man_instruction [EXTRACTED 1.00]
 - **Interview Session Logic & Flow** — backend_app_services_brain, backend_app_api_websocket, instruction_implementasi_alur_percakapan [EXTRACTED 1.00]
 
-## Communities (174 total, 63 thin omitted)
+## Communities (174 total, 61 thin omitted)
 
 ### Community 0 - "draco_encoder.js"
 Cohesion: 0.01
-Nodes (21): $a(), bn(), fo(), ij(), ik(), li(), mh(), nh() (+13 more)
+Nodes (24): $a(), ak(), fo(), ij(), ik(), jq(), li(), mh() (+16 more)
 
 ### Community 1 - "vision_wasm_internal.js"
 Cohesion: 0.01
@@ -218,39 +219,39 @@ Nodes (116): ___syscall140(), ___syscall6(), chdir(), chmod(), chown(), create()
 
 ### Community 4 - "draco_wasm_wrapper.js"
 Cohesion: 0.06
-Nodes (37): handle(), bm(), fn(), ii(), kd(), od(), qb(), sm() (+29 more)
+Nodes (32): bm(), en(), fn(), kd(), od(), on(), qb(), rm() (+24 more)
 
 ### Community 5 - "Session"
 Cohesion: 0.14
 Nodes (29): Account, Base, Session, User, Verification, Difficulty, InterviewAvatar, InterviewSession (+21 more)
 
 ### Community 6 - "sj"
-Cohesion: 0.11
-Nodes (54): ad(), bd(), _c(), cd(), ce(), de(), ee(), eg() (+46 more)
+Cohesion: 0.16
+Nodes (45): ad(), aq(), bd(), _c(), cd(), ce(), de(), ee() (+37 more)
 
 ### Community 7 - "un"
 Cohesion: 0.11
-Nodes (28): Ac(), _b(), bk(), Ec(), ei(), eq(), Fc(), gq() (+20 more)
+Nodes (38): Ac(), Ae(), aj(), _b(), bk(), ch(), cj(), di() (+30 more)
 
 ### Community 8 - "ln"
-Cohesion: 0.10
-Nodes (40): ah(), ai(), aj(), bf(), bi(), cf(), cg(), ch() (+32 more)
+Cohesion: 0.11
+Nodes (33): af(), ah(), bf(), bi(), cf(), cg(), df(), ff() (+25 more)
 
 ### Community 9 - "ci"
-Cohesion: 0.14
-Nodes (33): af(), be(), bh(), bq(), ci(), dd(), dj(), _e() (+25 more)
+Cohesion: 0.20
+Nodes (25): bh(), bq(), ci(), dd(), dj(), _e(), ed(), fh() (+17 more)
 
 ### Community 10 - "ip"
-Cohesion: 0.15
-Nodes (13): dm(), en(), fl(), gl(), ip(), nj(), qi(), qq() (+5 more)
+Cohesion: 0.14
+Nodes (14): bn(), dm(), fl(), _g(), gl(), ip(), nj(), pg() (+6 more)
 
 ### Community 11 - "Draco Decoder JS"
-Cohesion: 0.07
-Nodes (14): addRunDependency(), createWasm(), emscripten_realloc_buffer(), _emscripten_resize_heap(), ensureString(), getHeapMax(), intArrayFromString(), l() (+6 more)
+Cohesion: 0.08
+Nodes (10): addRunDependency(), createWasm(), ensureString(), intArrayFromString(), l(), lengthBytesUTF8(), p(), stringToUTF8Array() (+2 more)
 
 ### Community 12 - "aq"
 Cohesion: 0.22
-Nodes (37): ab(), Ae(), aq(), bb(), cb(), _d(), db(), Dc() (+29 more)
+Nodes (32): ab(), bb(), cb(), _d(), db(), Dc(), eb(), fb() (+24 more)
 
 ### Community 13 - "Path and Directory Management"
 Cohesion: 0.07
@@ -273,8 +274,8 @@ Cohesion: 0.14
 Nodes (4): auth, GET, POST, actions
 
 ### Community 18 - "ej"
-Cohesion: 0.33
-Nodes (6): ej(), om(), _p(), pp(), qo(), sn()
+Cohesion: 0.17
+Nodes (11): 1. Executive Summary, 2. Implemented Fixes & Changes, 3. Summary of Modified Files, 4. Verification & Testing Results, 5. Conclusion, FIX 1: Decouple Auto-send from Web Speech API (VAD Implementation), FIX 2: WebSocket Heartbeat (Ping/Pong Keepalive), FIX 3: Natural Spoken TTS via Prompt Engineering (+3 more)
 
 ### Community 19 - "scripts"
 Cohesion: 0.05
@@ -293,20 +294,20 @@ Cohesion: 0.20
 Nodes (7): $lib/components/BottomNav.svelte, $lib/components/Header.svelte, $lib/components/Sidebar.svelte, $lib/sidebar.svelte, sidebarState, string, svelte/transition
 
 ### Community 23 - "fp"
-Cohesion: 0.22
-Nodes (9): dl(), eh(), fp(), hm(), il(), oh(), qj(), sk() (+1 more)
+Cohesion: 0.50
+Nodes (4): emscripten_realloc_buffer(), _emscripten_resize_heap(), getHeapMax(), updateMemoryViews()
 
 ### Community 25 - "WASM Memory Management"
 Cohesion: 0.15
 Nodes (17): alignUp(), allocate(), assert(), ccall(), dynamicAlloc(), enlargeMemory(), getCFunc(), getNativeTypeSize() (+9 more)
 
 ### Community 26 - "an"
-Cohesion: 0.22
-Nodes (10): am(), an(), hj(), jj(), lj(), lq(), pq(), qm() (+2 more)
+Cohesion: 0.11
+Nodes (19): am(), an(), dl(), eh(), fp(), hj(), hm(), il() (+11 more)
 
 ### Community 27 - "vision_wasm_module_internal.js"
-Cohesion: 0.12
-Nodes (16): RFC-2279, RFC-3629, NOTE: In our implementation, st_blocks = Math.ceil(st_size/st_blksize),, NOTE: This is also used as the process return code in shell environments, TODO: check for O_SEARCH? (== search for dir only), NOTE: None of the defaults here are true. We're just returning safe and, TODO: Use mozResponseArrayBuffer, responseStream, etc. if available., TODO: Due to Closure regression https://github.com/google/closure-compiler/issue (+8 more)
+Cohesion: 0.10
+Nodes (19): handle(), hardware_concurrency(), RFC-2279, RFC-3629, ModuleFactory(), NOTE: In our implementation, st_blocks = Math.ceil(st_size/st_blksize),, NOTE: This is also used as the process return code in shell environments, TODO: check for O_SEARCH? (== search for dir only) (+11 more)
 
 ### Community 28 - "brain.py"
 Cohesion: 0.11
@@ -473,8 +474,8 @@ Cohesion: 0.17
 Nodes (11): 1. Lift `renderer`, `scene`, `camera`, and the `ResizeObserver` to component scope, 2. Capture and cancel the animation frame loop, 3. Extend `onDestroy` with full cleanup, 4. Optional (recommended) performance improvements, same file, Do not change, File, Fix: Client-side memory leak / lag causing laptop hang on interview page, Root cause (+3 more)
 
 ### Community 75 - "gk"
-Cohesion: 0.36
-Nodes (8): dg(), Gc(), gh(), gk(), hg(), mg(), wg(), xj()
+Cohesion: 0.15
+Nodes (19): ai(), dg(), Gc(), gh(), gk(), hg(), ii(), lh() (+11 more)
 
 ### Community 76 - "Task for the agent: Heurix — Batch Fix (Auto-send VAD, WS Heartbeat, Natural TTS, Farewell Q&A, Response Length)"
 Cohesion: 0.25
@@ -497,8 +498,8 @@ Cohesion: 0.40
 Nodes (5): ao(), dp(), io(), ji(), op()
 
 ### Community 94 - "ha"
-Cohesion: 0.09
-Nodes (40): ha(), ag(), Bc(), bg(), bj(), Cc(), di(), fg() (+32 more)
+Cohesion: 0.10
+Nodes (44): ha(), ag(), Bc(), be(), bg(), bj(), Cc(), eg() (+36 more)
 
 ### Community 95 - "mj"
 Cohesion: 0.50
@@ -544,29 +545,37 @@ Nodes (3): ml(), rn(), to()
 Cohesion: 0.67
 Nodes (3): oq(), xn(), yc()
 
+### Community 160 - "tq"
+Cohesion: 0.67
+Nodes (3): ef(), jl(), yj()
+
 ### Community 162 - "c"
-Cohesion: 0.11
-Nodes (18): c(), bo(), cm(), go(), ho(), kn(), mn(), _n() (+10 more)
+Cohesion: 0.09
+Nodes (23): c(), bo(), cm(), ej(), go(), ho(), kn(), mn() (+15 more)
+
+### Community 173 - "ui"
+Cohesion: 0.50
+Nodes (4): hi(), np(), og(), ui()
 
 ## Knowledge Gaps
-- **217 isolated node(s):** `Config`, `user_profile`, `interview_session`, `session_report`, `interviewTrackEnum` (+212 more)
+- **226 isolated node(s):** `Config`, `user_profile`, `interview_session`, `session_report`, `interviewTrackEnum` (+221 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **63 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **61 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `fs` connect `fs` to `vision_wasm_internal.js`, `vision_wasm_nosimd_internal.js`, `draco_wasm_wrapper.js`, `Path and Directory Management`, `scripts`, `File I/O Operations`, `abort`, `TTY IOCTL Syscalls`, `TTY IOCTL Syscalls`, `Low-level Write Operations`, `Low-level Write Operations`, `File Stream Closing`, `Character Input Reading`, `Initialization and Timing`, `Filesystem Mounting`, `Filesystem Statistics`, `File Synchronization`, `Character Input Reading`, `Initialization and Timing`, `Filesystem Mounting`, `Filesystem Statistics`?**
-  _High betweenness centrality (0.318) - this node is a cross-community bridge._
+- **Why does `fs` connect `fs` to `vision_wasm_internal.js`, `vision_wasm_nosimd_internal.js`, `Path and Directory Management`, `scripts`, `vision_wasm_module_internal.js`, `File I/O Operations`, `abort`, `TTY IOCTL Syscalls`, `TTY IOCTL Syscalls`, `Low-level Write Operations`, `Low-level Write Operations`, `File Stream Closing`, `Character Input Reading`, `Initialization and Timing`, `Filesystem Mounting`, `Filesystem Statistics`, `File Synchronization`, `Character Input Reading`, `Initialization and Timing`, `Filesystem Mounting`, `Filesystem Statistics`?**
+  _High betweenness centrality (0.310) - this node is a cross-community bridge._
 - **Why does `___syscall140()` connect `fs` to `draco_encoder.js`?**
-  _High betweenness centrality (0.093) - this node is a cross-community bridge._
+  _High betweenness centrality (0.091) - this node is a cross-community bridge._
 - **Why does `___syscall6()` connect `fs` to `draco_encoder.js`?**
-  _High betweenness centrality (0.093) - this node is a cross-community bridge._
+  _High betweenness centrality (0.091) - this node is a cross-community bridge._
 - **Are the 153 inferred relationships involving `ha()` (e.g. with `Ac()` and `ad()`) actually correct?**
   _`ha()` has 153 INFERRED edges - model-reasoned connections that need verification._
 - **What connects `Config`, `user_profile`, `interview_session` to the rest of the system?**
-  _217 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _226 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `draco_encoder.js` be split into smaller, more focused modules?**
-  _Cohesion score 0.014598540145985401 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.014387031408308004 - nodes in this community are weakly interconnected._
 - **Should `vision_wasm_internal.js` be split into smaller, more focused modules?**
   _Cohesion score 0.014925373134328358 - nodes in this community are weakly interconnected._
