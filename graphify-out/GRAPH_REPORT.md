@@ -1,16 +1,15 @@
-# Graph Report - source-code  (2026-07-23)
+# Graph Report - /home/dwiwahyuilahi/Kuliah/Gemastik/source-code  (2026-07-23)
 
 ## Corpus Check
-- 129 files · ~2,695,590 words
-- Verdict: corpus is large enough that graph structure adds value.
+- cluster-only mode — file stats not available
 
 ## Summary
-- 1890 nodes · 4040 edges · 174 communities (113 shown, 61 thin omitted)
+- 1898 nodes · 4047 edges · 171 communities (110 shown, 61 thin omitted)
 - Extraction: 91% EXTRACTED · 9% INFERRED · 0% AMBIGUOUS · INFERRED: 369 edges (avg confidence: 0.78)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `5e4d96fa`
+- Built from commit: `20153884`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -25,7 +24,7 @@
 - un
 - ln
 - ci
-- ip
+- xh
 - Draco Decoder JS
 - aq
 - Path and Directory Management
@@ -33,15 +32,15 @@
 - $lib/FaceAnimator
 - devDependencies
 - auth.ts
-- ej
+- 2. Implemented Fixes & Changes
 - scripts
 - Draco Geometry Decoders
 - +page.svelte
 - $lib/components/Header.svelte
-- fp
+- qh
 - C++ Exception Handling
 - WASM Memory Management
-- an
+- xj
 - vision_wasm_module_internal.js
 - brain.py
 - Project Documentation and Assets
@@ -61,8 +60,8 @@
 - Database Seed Entrypoint
 - Institution Data Seeding
 - brain.py
-- $app/navigation
-- auth.schema.ts
+- Task for the agent: Heurix — Batch Fix (Auto-send VAD, WS Heartbeat, Natural TTS, Farewell Q&A, Response Length)
+- fp
 - WebGPU Buffer Entries
 - WebGPU Buffer Entries
 - SpeechService
@@ -88,9 +87,9 @@
 - Session Report Migrations
 - SvelteKit Type Definitions
 - index.ts
-- +page.svelte
+- $app/navigation
 - Fix: Client-side memory leak / lag causing laptop hang on interview page
-- gk
+- gj
 - Task for the agent: Heurix — Batch Fix (Auto-send VAD, WS Heartbeat, Natural TTS, Farewell Q&A, Response Length)
 - kp
 - Low-level Write Operations
@@ -105,11 +104,11 @@
 - Avatar Schema Update
 - Groq SDK Integration
 - Object Pointer Wrapping
-- ji
+- yg
 - ha
 - mj
 - xd
-- vj
+- wj
 - File Stream Closing
 - Async Callback Handling
 - Exit Status Constructor
@@ -137,7 +136,6 @@
 - Svelte Configuration
 - Task for the agent
 - SpeechService
-- $lib/lipSync
 - migration_ape.sql
 - 0010_fair_network.sql
 - dh
@@ -156,13 +154,11 @@
 - Face Animation Instructions
 - WebAssembly Documentation
 - Lucide Icon Library
-- tq
-- demangle
+- jl
 - c
-- ve
 - iq
 - qn
-- lh
+- rj
 - pm
 - ui
 
@@ -199,11 +195,11 @@
 - **Avatar Animation & Lip-Sync System** — frontend_src_lib_faceanimator, frontend_src_lib_lipsync, instruction_viseme, frontend_static_face_professional_man_instruction [EXTRACTED 1.00]
 - **Interview Session Logic & Flow** — backend_app_services_brain, backend_app_api_websocket, instruction_implementasi_alur_percakapan [EXTRACTED 1.00]
 
-## Communities (174 total, 61 thin omitted)
+## Communities (171 total, 61 thin omitted)
 
 ### Community 0 - "draco_encoder.js"
 Cohesion: 0.01
-Nodes (24): $a(), ak(), fo(), ij(), ik(), jq(), li(), mh() (+16 more)
+Nodes (24): $a(), ak(), demangle(), demangleAll(), fo(), gq(), hh(), ik() (+16 more)
 
 ### Community 1 - "vision_wasm_internal.js"
 Cohesion: 0.01
@@ -218,8 +214,8 @@ Cohesion: 0.02
 Nodes (116): ___syscall140(), ___syscall6(), chdir(), chmod(), chown(), create(), createDefaultDevices(), createNode() (+108 more)
 
 ### Community 4 - "draco_wasm_wrapper.js"
-Cohesion: 0.06
-Nodes (32): bm(), en(), fn(), kd(), od(), on(), qb(), rm() (+24 more)
+Cohesion: 0.05
+Nodes (43): handle(), bm(), en(), fn(), ii(), kd(), lh(), mg() (+35 more)
 
 ### Community 5 - "Session"
 Cohesion: 0.14
@@ -227,53 +223,53 @@ Nodes (29): Account, Base, Session, User, Verification, Difficulty, InterviewAva
 
 ### Community 6 - "sj"
 Cohesion: 0.16
-Nodes (45): ad(), aq(), bd(), _c(), cd(), ce(), de(), ee() (+37 more)
+Nodes (40): _c(), ce(), de(), ee(), eg(), _f(), fd(), fe() (+32 more)
 
 ### Community 7 - "un"
-Cohesion: 0.11
-Nodes (38): Ac(), Ae(), aj(), _b(), bk(), ch(), cj(), di() (+30 more)
+Cohesion: 0.14
+Nodes (28): Ac(), ai(), _b(), bk(), di(), Ec(), ei(), eq() (+20 more)
 
 ### Community 8 - "ln"
-Cohesion: 0.11
-Nodes (33): af(), ah(), bf(), bi(), cf(), cg(), df(), ff() (+25 more)
+Cohesion: 0.10
+Nodes (42): ad(), af(), ah(), aj(), bi(), cd(), cf(), cg() (+34 more)
 
 ### Community 9 - "ci"
-Cohesion: 0.20
-Nodes (25): bh(), bq(), ci(), dd(), dj(), _e(), ed(), fh() (+17 more)
+Cohesion: 0.14
+Nodes (30): be(), bh(), bq(), ci(), dd(), dg(), dj(), ed() (+22 more)
 
-### Community 10 - "ip"
+### Community 10 - "xh"
 Cohesion: 0.14
 Nodes (14): bn(), dm(), fl(), _g(), gl(), ip(), nj(), pg() (+6 more)
 
 ### Community 11 - "Draco Decoder JS"
-Cohesion: 0.08
-Nodes (10): addRunDependency(), createWasm(), ensureString(), intArrayFromString(), l(), lengthBytesUTF8(), p(), stringToUTF8Array() (+2 more)
+Cohesion: 0.07
+Nodes (14): addRunDependency(), createWasm(), emscripten_realloc_buffer(), _emscripten_resize_heap(), ensureString(), getHeapMax(), intArrayFromString(), l() (+6 more)
 
 ### Community 12 - "aq"
-Cohesion: 0.22
-Nodes (32): ab(), bb(), cb(), _d(), db(), Dc(), eb(), fb() (+24 more)
+Cohesion: 0.24
+Nodes (34): ab(), Ae(), aq(), bb(), cb(), _d(), db(), Dc() (+26 more)
 
 ### Community 13 - "Path and Directory Management"
 Cohesion: 0.07
 Nodes (30): analyzePath(), calculateAt(), createDataFile(), createDevice(), createFile(), createPath(), lookupPath(), mkdirTree() (+22 more)
 
 ### Community 14 - "schema.ts"
-Cohesion: 0.10
-Nodes (20): difficultyEnum, interviewAvatar, interviewAvatarRelations, interviewSession, interviewSessionRelations, interviewTrackEnum, masterInstitution, masterInstitutionRelations (+12 more)
+Cohesion: 0.08
+Nodes (27): account, accountRelations, session, sessionRelations, user, userRelations, verification, difficultyEnum (+19 more)
 
 ### Community 15 - "$lib/FaceAnimator"
-Cohesion: 0.18
-Nodes (12): $lib/autoBlink, $lib/emotionPresets, EMOTIONS, $lib/FaceAnimator, FaceAnimator, collectMorphMeshes(), resetAllMorphs(), setMorph() (+4 more)
+Cohesion: 0.15
+Nodes (17): $lib/autoBlink, $lib/emotionPresets, EMOTIONS, $lib/FaceAnimator, FaceAnimator, $lib/lipSync, b64toBlob(), speakWithBackend() (+9 more)
 
 ### Community 16 - "devDependencies"
 Cohesion: 0.04
 Nodes (47): @better-auth/cli, drizzle-kit, drizzle-orm, @faker-js/faker, devDependencies, @better-auth/cli, drizzle-kit, drizzle-orm (+39 more)
 
 ### Community 17 - "auth.ts"
-Cohesion: 0.14
-Nodes (4): auth, GET, POST, actions
+Cohesion: 0.13
+Nodes (6): $lib/auth-client, authClient, auth, GET, POST, actions
 
-### Community 18 - "ej"
+### Community 18 - "2. Implemented Fixes & Changes"
 Cohesion: 0.17
 Nodes (11): 1. Executive Summary, 2. Implemented Fixes & Changes, 3. Summary of Modified Files, 4. Verification & Testing Results, 5. Conclusion, FIX 1: Decouple Auto-send from Web Speech API (VAD Implementation), FIX 2: WebSocket Heartbeat (Ping/Pong Keepalive), FIX 3: Natural Spoken TTS via Prompt Engineering (+3 more)
 
@@ -287,27 +283,27 @@ Nodes (20): AttributeOctahedronTransform(), AttributeQuantizationTransform(), At
 
 ### Community 21 - "+page.svelte"
 Cohesion: 0.18
-Nodes (9): three/examples/jsm/loaders/DRACOLoader.js, $app/environment, $lib/avatarCache, cache, three/examples/jsm/loaders/GLTFLoader.js, three/examples/jsm/libs/meshopt_decoder.module.js, $env/static/public, $app/state (+1 more)
+Nodes (8): three/examples/jsm/loaders/DRACOLoader.js, $app/environment, $lib/avatarCache, cache, three/examples/jsm/loaders/GLTFLoader.js, three/examples/jsm/libs/meshopt_decoder.module.js, $env/static/public, @mediapipe/tasks-vision
 
 ### Community 22 - "$lib/components/Header.svelte"
-Cohesion: 0.20
-Nodes (7): $lib/components/BottomNav.svelte, $lib/components/Header.svelte, $lib/components/Sidebar.svelte, $lib/sidebar.svelte, sidebarState, string, svelte/transition
+Cohesion: 0.17
+Nodes (9): $lib/components/BottomNav.svelte, $lib/components/Header.svelte, $lib/components/Sidebar.svelte, $lib/sidebar.svelte, sidebarState, string, $lib/assets/login-art.png?enhanced, $lib/assets/logo.png?enhanced (+1 more)
 
-### Community 23 - "fp"
-Cohesion: 0.50
-Nodes (4): emscripten_realloc_buffer(), _emscripten_resize_heap(), getHeapMax(), updateMemoryViews()
+### Community 23 - "qh"
+Cohesion: 0.24
+Nodes (14): Bc(), Cc(), fg(), gf(), kf(), mk(), ng(), qh() (+6 more)
 
 ### Community 25 - "WASM Memory Management"
 Cohesion: 0.15
 Nodes (17): alignUp(), allocate(), assert(), ccall(), dynamicAlloc(), enlargeMemory(), getCFunc(), getNativeTypeSize() (+9 more)
 
-### Community 26 - "an"
-Cohesion: 0.11
-Nodes (19): am(), an(), dl(), eh(), fp(), hj(), hm(), il() (+11 more)
+### Community 26 - "xj"
+Cohesion: 0.13
+Nodes (16): am(), an(), hj(), il(), jj(), lj(), ll(), lq() (+8 more)
 
 ### Community 27 - "vision_wasm_module_internal.js"
-Cohesion: 0.10
-Nodes (19): handle(), hardware_concurrency(), RFC-2279, RFC-3629, ModuleFactory(), NOTE: In our implementation, st_blocks = Math.ceil(st_size/st_blksize),, NOTE: This is also used as the process return code in shell environments, TODO: check for O_SEARCH? (== search for dir only) (+11 more)
+Cohesion: 0.12
+Nodes (16): RFC-2279, RFC-3629, NOTE: In our implementation, st_blocks = Math.ceil(st_size/st_blksize),, NOTE: This is also used as the process return code in shell environments, TODO: check for O_SEARCH? (== search for dir only), NOTE: None of the defaults here are true. We're just returning safe and, TODO: Use mozResponseArrayBuffer, responseStream, etc. if available., TODO: Due to Closure regression https://github.com/google/closure-compiler/issue (+8 more)
 
 ### Community 28 - "brain.py"
 Cohesion: 0.11
@@ -373,13 +369,13 @@ Nodes (4): client, db, institutions, positionsByInstitution
 Cohesion: 0.13
 Nodes (25): build_chat_history(), build_system_prompt(), compute_pressure_level(), extract_weakness_tags(), generate_next_turn(), generate_next_turn_stream(), get_phase(), InterviewPhase (+17 more)
 
-### Community 46 - "$app/navigation"
-Cohesion: 0.20
-Nodes (6): $lib/auth-client, $lib/auth-client, authClient, $lib/assets/login-art.png?enhanced, $lib/assets/logo.png?enhanced, $app/navigation
-
-### Community 47 - "auth.schema.ts"
+### Community 46 - "Task for the agent: Heurix — Batch Fix (Auto-send VAD, WS Heartbeat, Natural TTS, Farewell Q&A, Response Length)"
 Cohesion: 0.25
-Nodes (7): account, accountRelations, session, sessionRelations, user, userRelations, verification
+Nodes (7): FIX 1 — Decouple auto-send dari Web Speech API (fix Brave, tanpa merusak Chrome), FIX 2 — WebSocket heartbeat (ping/pong) untuk cegah idle-disconnect di cloudflared tunnel, FIX 3 — Suara AI lebih natural (prompt engineering, BUKAN SSML), FIX 4 — AI harus jawab pertanyaan kandidat di fase closing/farewell, FIX 5 — Persingkat kalimat yang digenerate AI, Task for the agent: Heurix — Batch Fix (Auto-send VAD, WS Heartbeat, Natural TTS, Farewell Q&A, Response Length), Verification checklist (setelah semua fix diterapkan)
+
+### Community 47 - "fp"
+Cohesion: 0.29
+Nodes (7): dl(), eh(), fp(), hm(), oh(), qj(), sk()
 
 ### Community 48 - "WebGPU Buffer Entries"
 Cohesion: 0.33
@@ -462,20 +458,16 @@ Cohesion: 0.14
 Nodes (13): 1.1 Apa yang bisa diaudit secara statis vs. yang butuh runtime, 1.2 Audit Database & Skema (4.2), 1.3 Temuan arsitektur penting (memengaruhi cara APE diimplementasikan), 1. Laporan Audit, 2. Daftar File yang Diubah, 3. Migration Script, 4.1 `speech.py` — parameter speed/pitch, 4.2 `brain.py` — SRI, pressure level, weakness tags, scenario config (+5 more)
 
 ### Community 72 - "index.ts"
-Cohesion: 0.27
+Cohesion: 0.23
 Nodes (3): client, db, userProfile
 
-### Community 73 - "+page.svelte"
-Cohesion: 0.38
-Nodes (3): $lib/components/BottomNav.svelte, $lib/components/Header.svelte, $lib/components/Sidebar.svelte
+### Community 73 - "$app/navigation"
+Cohesion: 0.19
+Nodes (6): $lib/auth-client, $lib/components/BottomNav.svelte, $lib/components/Header.svelte, $app/navigation, $lib/components/Sidebar.svelte, svelte/transition
 
 ### Community 74 - "Fix: Client-side memory leak / lag causing laptop hang on interview page"
 Cohesion: 0.17
 Nodes (11): 1. Lift `renderer`, `scene`, `camera`, and the `ResizeObserver` to component scope, 2. Capture and cancel the animation frame loop, 3. Extend `onDestroy` with full cleanup, 4. Optional (recommended) performance improvements, same file, Do not change, File, Fix: Client-side memory leak / lag causing laptop hang on interview page, Root cause (+3 more)
-
-### Community 75 - "gk"
-Cohesion: 0.15
-Nodes (19): ai(), dg(), Gc(), gh(), gk(), hg(), ii(), lh() (+11 more)
 
 ### Community 76 - "Task for the agent: Heurix — Batch Fix (Auto-send VAD, WS Heartbeat, Natural TTS, Farewell Q&A, Response Length)"
 Cohesion: 0.25
@@ -493,13 +485,13 @@ Nodes (3): msync(), put_char(), write()
 Cohesion: 0.67
 Nodes (3): msync(), put_char(), write()
 
-### Community 93 - "ji"
-Cohesion: 0.40
-Nodes (5): ao(), dp(), io(), ji(), op()
+### Community 93 - "yg"
+Cohesion: 0.33
+Nodes (6): ao(), dp(), io(), ji(), op(), yg()
 
 ### Community 94 - "ha"
-Cohesion: 0.10
-Nodes (44): ha(), ag(), Bc(), be(), bg(), bj(), Cc(), eg() (+36 more)
+Cohesion: 0.09
+Nodes (38): ha(), ag(), bd(), bf(), bg(), bj(), fi(), gd() (+30 more)
 
 ### Community 95 - "mj"
 Cohesion: 0.50
@@ -509,10 +501,6 @@ Nodes (4): lm(), mj(), nm(), yp()
 Cohesion: 0.67
 Nodes (3): dq(), xd(), yo()
 
-### Community 97 - "vj"
-Cohesion: 0.67
-Nodes (3): ll(), vj(), zl()
-
 ### Community 123 - "Task for the agent"
 Cohesion: 0.22
 Nodes (8): 1. Standardize the convention, 2. Fix stale/incorrect examples and docs, 3. Rebuild the frontend image (not just recreate), 4. Verify the fix, Do not change, Fix: WebSocket connection rejected during interview startup (`/ws/ws/{sessionId}` double path), Root cause, Task for the agent
@@ -520,10 +508,6 @@ Nodes (8): 1. Standardize the convention, 2. Fix stale/incorrect examples and do
 ### Community 124 - "SpeechService"
 Cohesion: 0.33
 Nodes (4): Menghasilkan audio (base64) dan data viseme (amplitude envelope).          speed, Konversi rasio (1.0 = normal) ke string persen bertanda yang dipahami     edge_t, SpeechService, _to_percent_string()
-
-### Community 125 - "$lib/lipSync"
-Cohesion: 0.60
-Nodes (5): $lib/lipSync, b64toBlob(), speakWithBackend(), unlockAudio(), Frontend-Backend Integration Guide
 
 ### Community 126 - "migration_ape.sql"
 Cohesion: 0.50
@@ -545,7 +529,7 @@ Nodes (3): ml(), rn(), to()
 Cohesion: 0.67
 Nodes (3): oq(), xn(), yc()
 
-### Community 160 - "tq"
+### Community 160 - "jl"
 Cohesion: 0.67
 Nodes (3): ef(), jl(), yj()
 
@@ -553,20 +537,20 @@ Nodes (3): ef(), jl(), yj()
 Cohesion: 0.09
 Nodes (23): c(), bo(), cm(), ej(), go(), ho(), kn(), mn() (+15 more)
 
-### Community 173 - "ui"
+### Community 166 - "rj"
 Cohesion: 0.50
-Nodes (4): hi(), np(), og(), ui()
+Nodes (4): hn(), rj(), vg(), zn()
 
 ## Knowledge Gaps
-- **226 isolated node(s):** `Config`, `user_profile`, `interview_session`, `session_report`, `interviewTrackEnum` (+221 more)
+- **232 isolated node(s):** `Config`, `user_profile`, `interview_session`, `session_report`, `interviewTrackEnum` (+227 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **61 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `fs` connect `fs` to `vision_wasm_internal.js`, `vision_wasm_nosimd_internal.js`, `Path and Directory Management`, `scripts`, `vision_wasm_module_internal.js`, `File I/O Operations`, `abort`, `TTY IOCTL Syscalls`, `TTY IOCTL Syscalls`, `Low-level Write Operations`, `Low-level Write Operations`, `File Stream Closing`, `Character Input Reading`, `Initialization and Timing`, `Filesystem Mounting`, `Filesystem Statistics`, `File Synchronization`, `Character Input Reading`, `Initialization and Timing`, `Filesystem Mounting`, `Filesystem Statistics`?**
-  _High betweenness centrality (0.310) - this node is a cross-community bridge._
+- **Why does `fs` connect `fs` to `vision_wasm_internal.js`, `vision_wasm_nosimd_internal.js`, `draco_wasm_wrapper.js`, `Path and Directory Management`, `scripts`, `File I/O Operations`, `abort`, `TTY IOCTL Syscalls`, `TTY IOCTL Syscalls`, `Low-level Write Operations`, `Low-level Write Operations`, `File Stream Closing`, `Character Input Reading`, `Initialization and Timing`, `Filesystem Mounting`, `Filesystem Statistics`, `File Synchronization`, `Character Input Reading`, `Initialization and Timing`, `Filesystem Mounting`, `Filesystem Statistics`?**
+  _High betweenness centrality (0.308) - this node is a cross-community bridge._
 - **Why does `___syscall140()` connect `fs` to `draco_encoder.js`?**
   _High betweenness centrality (0.091) - this node is a cross-community bridge._
 - **Why does `___syscall6()` connect `fs` to `draco_encoder.js`?**
@@ -574,8 +558,8 @@ _Questions this graph is uniquely positioned to answer:_
 - **Are the 153 inferred relationships involving `ha()` (e.g. with `Ac()` and `ad()`) actually correct?**
   _`ha()` has 153 INFERRED edges - model-reasoned connections that need verification._
 - **What connects `Config`, `user_profile`, `interview_session` to the rest of the system?**
-  _226 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _232 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `draco_encoder.js` be split into smaller, more focused modules?**
-  _Cohesion score 0.014387031408308004 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.014488348530901722 - nodes in this community are weakly interconnected._
 - **Should `vision_wasm_internal.js` be split into smaller, more focused modules?**
   _Cohesion score 0.014925373134328358 - nodes in this community are weakly interconnected._

@@ -235,8 +235,8 @@
     "semantic_hash": "6729185f7402f14320b61b11cc2a0db0"
   },
   "frontend/src/lib/server/db/seeds/seeds-avatar-interviewer.ts": {
-    "mtime": 1784805798.9214144,
-    "ast_hash": "df6f24da1462c15f058daa7f5c6ed634",
+    "mtime": 1784806227.0328248,
+    "ast_hash": "6a9dd05f7534615bebf7d0349b737877",
     "semantic_hash": ""
   },
   "frontend/src/lib/server/groq.ts": {
@@ -832,6 +832,16 @@
   "instruction-report/BATCH_FIXES_SUMMARY_REPORT.md": {
     "mtime": 1784803281.4787674,
     "ast_hash": "6a1d8524cea4a5c7f334ddf714248486",
+    "semantic_hash": ""
+  },
+  "instruction/INSTRUCTIONS_fixes_batch_continue.md": {
+    "mtime": 1784806233.1123605,
+    "ast_hash": "fa265a6f82a7fe47a470a8d1d0fe3d6e",
+    "semantic_hash": ""
+  },
+  "avatar-hassan-problem.png": {
+    "mtime": 1784806148.9788384,
+    "ast_hash": "f02837003da8bf8a19822fc27be58b68",
     "semantic_hash": ""
   }
 }
