@@ -35,86 +35,88 @@
 		return { label: 'Perlu Latihan', class: 'bg-orange-100 text-orange-800 border-orange-200' };
 	}
 
-	const dimensions = $derived(report
-		? [
-				{
-					label: 'Tutur Kata',
-					score: Math.round(report.articulationScore || report.communicationScore),
-					feedback: report.articulationFeedback || 'Artikulasi jelas dan mudah dipahami.',
-					icon: Mic2,
-					level: getLevel(report.articulationScore || report.communicationScore)
-				},
-				{
-					label: 'Intonasi',
-					score: Math.round(report.intonationScore || report.overallScore),
-					feedback: report.intonationFeedback || 'Intonasi cukup dinamis dan ekspresif.',
-					icon: AudioLines,
-					level: getLevel(report.intonationScore || report.overallScore)
-				},
-				{
-					label: 'Kecepatan Bicara',
-					score: Math.round(report.pacingScore || 80),
-					feedback: report.pacingFeedback || 'Kecepatan ideal, terdengar tenang.',
-					icon: Gauge,
-					level: getLevel(report.pacingScore || 80)
-				},
-				{
-					label: 'Filler Words',
-					score: Math.round(report.fillerWordsScore || 100 - report.totalFillerWords * 2),
-					feedback:
-						report.fillerWordsFeedback ||
-						`Kamu menggunakan filler words sebanyak ${report.totalFillerWords} kali.`,
-					icon: Activity,
-					level: getLevel(report.fillerWordsScore || 100 - report.totalFillerWords * 2)
-				},
-				{
-					label: 'Pemilihan Kalimat',
-					score: Math.round(report.sentenceStructureScore || report.communicationScore),
-					feedback: report.sentenceStructureFeedback || 'Struktur kalimat baik dan profesional.',
-					icon: Type,
-					level: getLevel(report.sentenceStructureScore || report.communicationScore)
-				},
-				{
-					label: 'Kelengkapan Jawaban',
-					score: Math.round(report.answerCompletenessScore || report.overallScore),
-					feedback:
-						report.answerCompletenessFeedback ||
-						'Menjawab pertanyaan dengan poin-poin yang relevan.',
-					icon: CheckSquare,
-					level: getLevel(report.answerCompletenessScore || report.overallScore)
-				},
-				{
-					label: 'Konsistensi',
-					score: Math.round(report.consistencyScore),
-					feedback: report.consistencyFeedback || 'Argumen awal dan akhir konsisten.',
-					icon: RefreshCw,
-					level: getLevel(report.consistencyScore)
-				},
-				{
-					label: 'Kepercayaan Diri',
-					score: Math.round(report.confidenceScore),
-					feedback: report.confidenceFeedback || 'Nada suara mantap dan meyakinkan.',
-					icon: Medal,
-					level: getLevel(report.confidenceScore)
-				},
-				{
-					label: 'Raut Wajah',
-					score: Math.round(report.facialExpressionScore || 75),
-					feedback:
-						report.facialExpressionFeedback ||
-						'Ekspresi wajah Anda terlihat tenang dan profesional.',
-					icon: Smile,
-					level: getLevel(report.facialExpressionScore || 75)
-				},
-				{
-					label: 'Kontak Mata',
-					score: Math.round(report.eyeContactScore || 80),
-					feedback: report.eyeContactFeedback || 'Kontak mata Anda cukup konsisten selama sesi.',
-					icon: Eye,
-					level: getLevel(report.eyeContactScore || 80)
-				}
-			]
-		: []);
+	const dimensions = $derived(
+		report
+			? [
+					{
+						label: 'Tutur Kata',
+						score: Math.round(report.articulationScore || report.communicationScore),
+						feedback: report.articulationFeedback || 'Artikulasi jelas dan mudah dipahami.',
+						icon: Mic2,
+						level: getLevel(report.articulationScore || report.communicationScore)
+					},
+					{
+						label: 'Intonasi',
+						score: Math.round(report.intonationScore || report.overallScore),
+						feedback: report.intonationFeedback || 'Intonasi cukup dinamis dan ekspresif.',
+						icon: AudioLines,
+						level: getLevel(report.intonationScore || report.overallScore)
+					},
+					{
+						label: 'Kecepatan Bicara',
+						score: Math.round(report.pacingScore || 80),
+						feedback: report.pacingFeedback || 'Kecepatan ideal, terdengar tenang.',
+						icon: Gauge,
+						level: getLevel(report.pacingScore || 80)
+					},
+					{
+						label: 'Filler Words',
+						score: Math.round(report.fillerWordsScore || 100 - report.totalFillerWords * 2),
+						feedback:
+							report.fillerWordsFeedback ||
+							`Kamu menggunakan filler words sebanyak ${report.totalFillerWords} kali.`,
+						icon: Activity,
+						level: getLevel(report.fillerWordsScore || 100 - report.totalFillerWords * 2)
+					},
+					{
+						label: 'Pemilihan Kalimat',
+						score: Math.round(report.sentenceStructureScore || report.communicationScore),
+						feedback: report.sentenceStructureFeedback || 'Struktur kalimat baik dan profesional.',
+						icon: Type,
+						level: getLevel(report.sentenceStructureScore || report.communicationScore)
+					},
+					{
+						label: 'Kelengkapan Jawaban',
+						score: Math.round(report.answerCompletenessScore || report.overallScore),
+						feedback:
+							report.answerCompletenessFeedback ||
+							'Menjawab pertanyaan dengan poin-poin yang relevan.',
+						icon: CheckSquare,
+						level: getLevel(report.answerCompletenessScore || report.overallScore)
+					},
+					{
+						label: 'Konsistensi',
+						score: Math.round(report.consistencyScore),
+						feedback: report.consistencyFeedback || 'Argumen awal dan akhir konsisten.',
+						icon: RefreshCw,
+						level: getLevel(report.consistencyScore)
+					},
+					{
+						label: 'Kepercayaan Diri',
+						score: Math.round(report.confidenceScore),
+						feedback: report.confidenceFeedback || 'Nada suara mantap dan meyakinkan.',
+						icon: Medal,
+						level: getLevel(report.confidenceScore)
+					},
+					{
+						label: 'Raut Wajah',
+						score: Math.round(report.facialExpressionScore || 75),
+						feedback:
+							report.facialExpressionFeedback ||
+							'Ekspresi wajah Anda terlihat tenang dan profesional.',
+						icon: Smile,
+						level: getLevel(report.facialExpressionScore || 75)
+					},
+					{
+						label: 'Kontak Mata',
+						score: Math.round(report.eyeContactScore || 80),
+						feedback: report.eyeContactFeedback || 'Kontak mata Anda cukup konsisten selama sesi.',
+						icon: Eye,
+						level: getLevel(report.eyeContactScore || 80)
+					}
+				]
+			: []
+	);
 
 	function parseAnalysis(analysis: string) {
 		try {
@@ -307,7 +309,7 @@
 
 				<!-- 8 Dimensions Grid -->
 				<section class="mb-16 print:break-before-page">
-					<h2 class="mb-8 text-2xl font-bold text-gray-900">8 Dimensi Komunikasi</h2>
+					<h2 class="mb-8 text-2xl font-bold text-gray-900">Dimensi Komunikasi</h2>
 					<div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4 print:grid-cols-2">
 						{#each dimensions as dim}
 							<div

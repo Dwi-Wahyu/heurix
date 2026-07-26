@@ -307,7 +307,7 @@
 
 				<!-- 8 Dimensions Grid -->
 				<section class="mb-16 print:break-before-page">
-					<h2 class="mb-8 text-2xl font-bold text-gray-900">8 Dimensi Komunikasi</h2>
+					<h2 class="mb-8 text-2xl font-bold text-gray-900">Dimensi Komunikasi</h2>
 					<div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4 print:grid-cols-2">
 						{#each dimensions as dim}
 							<div
