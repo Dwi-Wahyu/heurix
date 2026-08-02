@@ -465,8 +465,8 @@
     "semantic_hash": "2e0f528367e7c219ede8639e28a6dcc1"
   },
   "backend/requirements.txt": {
-    "mtime": 1785701216.7928028,
-    "ast_hash": "754348abb0be3039cdb44f3c8b4244c8",
+    "mtime": 1785701459.2197058,
+    "ast_hash": "08c6d3333f66b7252759190d0b919b93",
     "semantic_hash": ""
   },
   "docker-compose.example.yml": {
