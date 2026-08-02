@@ -1,7 +1,10 @@
 # ==========================================
 # STAGE 1: Builder
 # ==========================================
+# NOTE: Base image python:3.12-slim is CPU-only.
+# If migrating to GPU/CUDA, change base image to nvidia/cuda (e.g., nvidia/cuda:12.1.0-runtime-ubuntu22.04) and install CUDA-enabled torch.
 FROM python:3.12-slim AS builder
+
 
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1

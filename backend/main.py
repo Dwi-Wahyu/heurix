@@ -1,7 +1,9 @@
+from contextlib import asynccontextmanager
 from fastapi import FastAPI, Body, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from app.api import websocket
 from app.services.speech import speech_service
+from app.services import f5tts_service
 from app.core.database import get_db, SessionLocal
 from app.models import (
     InterviewAvatar, 
@@ -18,7 +20,21 @@ from sqlalchemy import func
 from sqlalchemy.orm import Session
 import uuid
 
-app = FastAPI(title="HireReady AI Agent Backend")
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Preload F5-TTS hanya kalau ada avatar yang memakainya — cek cepat ke DB
+    db = SessionLocal()
+    try:
+        any_f5tts_avatar = db.query(InterviewAvatar).filter(InterviewAvatar.ttsEngine == "f5tts_indo_v2").first()
+        if any_f5tts_avatar:
+            print("Preloading F5-TTS model...")
+            f5tts_service.is_available()
+    finally:
+        db.close()
+    yield
+
+app = FastAPI(title="Heurix AI Agent Backend", lifespan=lifespan)
+
 
 # Configure CORS
 app.add_middleware(

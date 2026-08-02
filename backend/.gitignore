@@ -22,3 +22,5 @@ __pycache__/
 *$py.class
 
 .env
+
+models/F5-TTS-INDO-FINETUNE-V2

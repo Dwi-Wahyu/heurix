@@ -1,0 +1,51 @@
+import sys, os, argparse
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from app.core.database import SessionLocal
+from app.models import InterviewAvatar
+
+FORBIDDEN_TOKENS = ("prabowo", "windah", "reporter")
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        description="Terapkan konfigurasi voice cloning F5-TTS ke SEMUA avatar aktif."
+    )
+    parser.add_argument("--ref-audio", required=True, help="Path ke file audio referensi milik sendiri")
+    parser.add_argument("--ref-text", required=True, help="Transkrip PERSIS dari audio referensi")
+    parser.add_argument("--engine", default="f5tts_indo_v2")
+    parser.add_argument("--dry-run", action="store_true", help="Tampilkan perubahan tanpa commit ke DB")
+    args = parser.parse_args()
+
+    lowered = args.ref_audio.lower()
+    if any(tok in lowered for tok in FORBIDDEN_TOKENS):
+        print(f"DITOLAK: '{args.ref_audio}' terindikasi file demo dokumentasi model (figur publik).")
+        print("Gunakan rekaman referensi milik sendiri.")
+        sys.exit(1)
+
+    if not os.path.exists(args.ref_audio):
+        print(f"DITOLAK: file '{args.ref_audio}' tidak ditemukan di filesystem.")
+        sys.exit(1)
+
+    db = SessionLocal()
+    try:
+        avatars = db.query(InterviewAvatar).all()
+        print(f"Ditemukan {len(avatars)} avatar.")
+        for avatar in avatars:
+            print(f"  - {avatar.id} ({avatar.name}): {avatar.ttsEngine} -> {args.engine}")
+            if not args.dry_run:
+                avatar.ttsEngine = args.engine
+                avatar.ttsReferenceAudioPath = args.ref_audio
+                avatar.ttsReferenceText = args.ref_text
+
+        if args.dry_run:
+            print("Dry-run, tidak ada perubahan disimpan.")
+        else:
+            db.commit()
+            print("Konfigurasi diterapkan ke semua avatar.")
+    finally:
+        db.close()
+
+
+if __name__ == "__main__":
+    main()

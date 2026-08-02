@@ -240,7 +240,11 @@ class InterviewAvatar(Base):
     ttsFriendlyParams = Column("tts_friendly_params", JSON)
     ttsFormalParams = Column("tts_formal_params", JSON)
     ttsIntimidatingParams = Column("tts_intimidating_params", JSON)
+    ttsEngine = Column("tts_engine", String, default="edge_tts", nullable=False)
+    ttsReferenceAudioPath = Column("tts_reference_audio_path", String)
+    ttsReferenceText = Column("tts_reference_text", String)
     promptFriendly = Column("prompt_friendly", String)
+
     promptFormal = Column("prompt_formal", String)
     promptIntimidating = Column("prompt_intimidating", String)
     cameraConfig = Column("camera_config", JSON)

@@ -18,7 +18,7 @@ from app.services.brain import (
     extract_weakness_tags,
     get_tts_params,
 )
-from app.services.speech import speech_service
+from app.services.speech import get_speech_service_for_avatar, speech_service as default_speech_service
 from app.services.transcriber import transcriber
 from app.core.database import SessionLocal
 from app.models import (
@@ -369,6 +369,7 @@ async def send_next_question_stream(websocket: WebSocket, db: Session, session: 
     Menghasilkan pertanyaan berikutnya secara streaming dan mengirim audio per kalimat.
     """
     avatar = db.query(InterviewAvatar).filter(InterviewAvatar.id == session.avatarId).first()
+    active_speech_service = get_speech_service_for_avatar(avatar)
     user_profile = db.query(UserProfile).filter(UserProfile.userId == session.userId).first()
     institution = db.query(MasterInstitution).filter(MasterInstitution.id == user_profile.targetInstitutionId).first() if user_profile else None
     position = db.query(MasterPosition).filter(MasterPosition.id == user_profile.targetPositionId).first() if user_profile else None
@@ -442,7 +443,7 @@ async def send_next_question_stream(websocket: WebSocket, db: Session, session: 
                     for i in range(len(sentences) - 1):
                         sentence = sentences[i]
                         full_question_text += sentence + " "
-                        audio, visemes = await speech_service.generate_speech_with_visemes(
+                        audio, visemes = await active_speech_service.generate_speech_with_visemes(
                             sentence, speed=tts_speed, pitch=tts_pitch
                         )
                         await websocket.send_json({
@@ -459,7 +460,7 @@ async def send_next_question_stream(websocket: WebSocket, db: Session, session: 
     final_sentence = current_sentence_buffer.strip()
     if final_sentence:
         full_question_text += final_sentence
-        audio, visemes = await speech_service.generate_speech_with_visemes(
+        audio, visemes = await active_speech_service.generate_speech_with_visemes(
             final_sentence, speed=tts_speed, pitch=tts_pitch
         )
         await websocket.send_json({
@@ -561,8 +562,10 @@ async def handle_user_answer(websocket: WebSocket, db: Session, session: Intervi
 
 async def re_send_last_question(websocket: WebSocket, db: Session, last_turn: SessionTurn, session: InterviewSession):
     # Untuk resume, kita tetap pakai QUESTION biasa saja untuk kemudahan
+    avatar = db.query(InterviewAvatar).filter(InterviewAvatar.id == session.avatarId).first()
+    active_speech_service = get_speech_service_for_avatar(avatar)
     tts_speed, tts_pitch = get_tts_params(session.scenario, session.pressureLevel)
-    audio_base64, visemes = await speech_service.generate_speech_with_visemes(
+    audio_base64, visemes = await active_speech_service.generate_speech_with_visemes(
         last_turn.questionText, speed=tts_speed, pitch=tts_pitch
     )
     await websocket.send_json({

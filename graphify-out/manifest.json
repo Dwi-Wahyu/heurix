@@ -10,8 +10,8 @@
     "semantic_hash": "d41d8cd98f00b204e9800998ecf8427e"
   },
   "backend/app/api/websocket.py": {
-    "mtime": 1784801394.3489661,
-    "ast_hash": "9b73ddf96160dbb92dda60ca8f135cd3",
+    "mtime": 1785698601.1929066,
+    "ast_hash": "0b80e066db6545d2889bec3b1c0148a4",
     "semantic_hash": ""
   },
   "backend/app/core/__init__.py": {
@@ -20,9 +20,9 @@
     "semantic_hash": "d41d8cd98f00b204e9800998ecf8427e"
   },
   "backend/app/core/config.py": {
-    "mtime": 1777940998.1036859,
-    "ast_hash": "adb0592b33799e68e8c9bb1909b1301d",
-    "semantic_hash": "adb0592b33799e68e8c9bb1909b1301d"
+    "mtime": 1785698624.0581582,
+    "ast_hash": "ed718bf8d5209770e5e0bf3162ef9740",
+    "semantic_hash": ""
   },
   "backend/app/core/database.py": {
     "mtime": 1776206552.2081451,
@@ -40,8 +40,8 @@
     "semantic_hash": "651350ebc7166d150ae4b20ee196bede"
   },
   "backend/app/models/domain.py": {
-    "mtime": 1784705525.5055552,
-    "ast_hash": "7d5588d36e7c6d1d88662e6014fbe618",
+    "mtime": 1785698580.9986846,
+    "ast_hash": "2e98c951258cb70418ba633b3247b227",
     "semantic_hash": ""
   },
   "backend/app/services/__init__.py": {
@@ -55,8 +55,8 @@
     "semantic_hash": ""
   },
   "backend/app/services/speech.py": {
-    "mtime": 1784705525.5176957,
-    "ast_hash": "b6f7cc3bf61e5bbe8941ed13e76d14c4",
+    "mtime": 1785698590.760792,
+    "ast_hash": "6b75fedf27bc3af33cd6bcaa1746215b",
     "semantic_hash": ""
   },
   "backend/app/services/transcriber.py": {
@@ -70,8 +70,8 @@
     "semantic_hash": "d41d8cd98f00b204e9800998ecf8427e"
   },
   "backend/main.py": {
-    "mtime": 1784705572.968763,
-    "ast_hash": "62d188307eb9c11f94eeaaedab21d9e7",
+    "mtime": 1785698602.947926,
+    "ast_hash": "67fd16c28ed77df2a4d49d46f5f7ddd7",
     "semantic_hash": ""
   },
   "backend/scripts/create_tables.py": {
@@ -375,8 +375,8 @@
     "semantic_hash": "05af1fa5eb540bc7163dce711d311f9a"
   },
   "frontend/src/routes/session/results/+page.svelte": {
-    "mtime": 1784705525.4784167,
-    "ast_hash": "a283e083dc82546cf8f361f9635efa5f",
+    "mtime": 1785110069.955186,
+    "ast_hash": "3f83aac91b2350ffc38f0b460157b6c7",
     "semantic_hash": ""
   },
   "frontend/src/routes/session/select-avatar/+page.server.ts": {
@@ -465,9 +465,9 @@
     "semantic_hash": "2e0f528367e7c219ede8639e28a6dcc1"
   },
   "backend/requirements.txt": {
-    "mtime": 1779037037.9682438,
-    "ast_hash": "6a1b191de4a3e8e3c40144cf5c84134d",
-    "semantic_hash": "6a1b191de4a3e8e3c40144cf5c84134d"
+    "mtime": 1785698573.5796032,
+    "ast_hash": "a1fda19c7d1baed439d64387261fc41f",
+    "semantic_hash": ""
   },
   "docker-compose.example.yml": {
     "mtime": 1783444923.4579647,
@@ -610,8 +610,8 @@
     "semantic_hash": ""
   },
   "deliverables/patched_files/frontend/src/routes/session/results/+page.svelte": {
-    "mtime": 1784704628.400435,
-    "ast_hash": "a283e083dc82546cf8f361f9635efa5f",
+    "mtime": 1785110074.466464,
+    "ast_hash": "6b5a9d0a0921592ff8e28a84a9678e07",
     "semantic_hash": ""
   },
   "frontend/drizzle/0010_fair_network.sql": {
@@ -814,11 +814,6 @@
     "ast_hash": "1ecc5a287969bc87cdc760153348ed03",
     "semantic_hash": ""
   },
-  "optimized-memory-300mb.png": {
-    "mtime": 1784461616.1625483,
-    "ast_hash": "e53cd7c5fc630a5c17ec1ddb207aaa77",
-    "semantic_hash": ""
-  },
   "deliverables/IMPLEMENTATION_LOG.md": {
     "mtime": 1784706020.678631,
     "ast_hash": "53672de14f4f348e1807cf7f56b20cde",
@@ -839,9 +834,69 @@
     "ast_hash": "fa265a6f82a7fe47a470a8d1d0fe3d6e",
     "semantic_hash": ""
   },
-  "avatar-hassan-problem.png": {
-    "mtime": 1784806148.9788384,
-    "ast_hash": "f02837003da8bf8a19822fc27be58b68",
+  "backend/app/services/f5tts_service.py": {
+    "mtime": 1785698696.178951,
+    "ast_hash": "018f38ef53c6241f2f6327a380a86869",
+    "semantic_hash": ""
+  },
+  "backend/scripts/migrate_add_tts_columns.py": {
+    "mtime": 1785698582.7897043,
+    "ast_hash": "4fb44d4ed58e53bde77019c92c2fd4ae",
+    "semantic_hash": ""
+  },
+  "backend/scripts/set_avatar_voice_config.py": {
+    "mtime": 1785698604.8389468,
+    "ast_hash": "b6ebb44a523d57696de87411815cda2b",
+    "semantic_hash": ""
+  },
+  "backend/scripts/test_f5tts_integration.py": {
+    "mtime": 1785698734.8033755,
+    "ast_hash": "0138dc1f2763bb5060f24f7bcf8af2b4",
+    "semantic_hash": ""
+  },
+  "instruction-report/AVATAR_HASSAN_CAMERA_CONFIG_REPORT.md": {
+    "mtime": 1784806303.9907973,
+    "ast_hash": "c423e56396f35cde27f02686c1333421",
+    "semantic_hash": ""
+  },
+  "instruction-report/BATCH_FIXES_CONTINUE_REPORT.md": {
+    "mtime": 1784806331.2661421,
+    "ast_hash": "546aa11709653b1e6c372a12a99b1a32",
+    "semantic_hash": ""
+  },
+  "instruction-report/INTEGRASI_F5TTS_INDO_REPORT.md": {
+    "mtime": 1785698777.6668468,
+    "ast_hash": "74db17ba83c2beb50041d30a90c3d80d",
+    "semantic_hash": ""
+  },
+  "instruction/instruksi-integrasi-f5tts-indo.md": {
+    "mtime": 1785698475.1225207,
+    "ast_hash": "a2ec1d51fb9cb5be60cba5ef34fa81f0",
+    "semantic_hash": ""
+  },
+  "test-scenario/CONTEXT.md": {
+    "mtime": 1784877658.7639973,
+    "ast_hash": "0bdbf078852b818deb15cda06524db1c",
+    "semantic_hash": ""
+  },
+  "test-scenario/SPRINT-DETAIL.md": {
+    "mtime": 1785056573.975476,
+    "ast_hash": "83ca26ef22124682cbf73be67b486549",
+    "semantic_hash": ""
+  },
+  "test-scenario/SPRINT_TIMELINE_GANTT_CHART.md": {
+    "mtime": 1785057391.8075116,
+    "ast_hash": "b08da079231ee15bfaacaf5fb0a9e44a",
+    "semantic_hash": ""
+  },
+  "test-scenario/wawancara-ai.svg": {
+    "mtime": 1784878775.326032,
+    "ast_hash": "0ae38c381ad38a64b142470192a2b0bc",
+    "semantic_hash": ""
+  },
+  "test-scenario/yoodli.svg": {
+    "mtime": 1784878721.8815997,
+    "ast_hash": "a152758dae17366efb80b0cc26383211",
     "semantic_hash": ""
   }
 }
