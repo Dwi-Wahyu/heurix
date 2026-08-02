@@ -898,5 +898,10 @@
     "mtime": 1784878721.8815997,
     "ast_hash": "a152758dae17366efb80b0cc26383211",
     "semantic_hash": ""
+  },
+  "backend/reference_audio/formal_male_reference.wav": {
+    "mtime": 1785699630.5010643,
+    "ast_hash": "716e4d658ececf7c50ad15e89dbf5ae0",
+    "semantic_hash": ""
   }
 }
