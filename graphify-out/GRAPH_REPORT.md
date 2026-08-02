@@ -1,15 +1,16 @@
-# Graph Report - /home/dwiwahyuilahi/Kuliah/Gemastik/source-code  (2026-08-03)
+# Graph Report - source-code  (2026-08-03)
 
 ## Corpus Check
-- cluster-only mode — file stats not available
+- 141 files · ~2,673,225 words
+- Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 1975 nodes · 4135 edges · 182 communities (115 shown, 67 thin omitted)
+- 1975 nodes · 4135 edges · 183 communities (116 shown, 67 thin omitted)
 - Extraction: 91% EXTRACTED · 9% INFERRED · 0% AMBIGUOUS · INFERRED: 380 edges (avg confidence: 0.78)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `a5c5e598`
+- Built from commit: `259c6171`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -139,6 +140,7 @@
 - package.json
 - migration_ape.sql
 - 0010_fair_network.sql
+- emscripten_realloc_buffer
 - vj
 - AGENTS.md
 - yc
@@ -202,7 +204,7 @@
 - **Avatar Animation & Lip-Sync System** — frontend_src_lib_faceanimator, frontend_src_lib_lipsync, instruction_viseme, frontend_static_face_professional_man_instruction [EXTRACTED 1.00]
 - **Interview Session Logic & Flow** — backend_app_services_brain, backend_app_api_websocket, instruction_implementasi_alur_percakapan [EXTRACTED 1.00]
 
-## Communities (182 total, 67 thin omitted)
+## Communities (183 total, 67 thin omitted)
 
 ### Community 0 - "draco_encoder.js"
 Cohesion: 0.01
@@ -249,8 +251,8 @@ Cohesion: 0.14
 Nodes (14): bn(), dm(), fl(), _g(), gl(), ip(), nj(), pg() (+6 more)
 
 ### Community 11 - "Draco Decoder JS"
-Cohesion: 0.07
-Nodes (14): addRunDependency(), createWasm(), emscripten_realloc_buffer(), _emscripten_resize_heap(), ensureString(), getHeapMax(), intArrayFromString(), l() (+6 more)
+Cohesion: 0.08
+Nodes (10): addRunDependency(), createWasm(), ensureString(), intArrayFromString(), l(), lengthBytesUTF8(), p(), stringToUTF8Array() (+2 more)
 
 ### Community 12 - "aq"
 Cohesion: 0.25
@@ -535,6 +537,10 @@ Nodes (3): interview_session, session_report, user_profile
 ### Community 127 - "0010_fair_network.sql"
 Cohesion: 0.50
 Nodes (3): "interview_session", "session_report", "user_profile"
+
+### Community 128 - "emscripten_realloc_buffer"
+Cohesion: 0.50
+Nodes (4): emscripten_realloc_buffer(), _emscripten_resize_heap(), getHeapMax(), updateMemoryViews()
 
 ### Community 129 - "vj"
 Cohesion: 0.67

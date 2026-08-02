@@ -25,13 +25,24 @@ async def lifespan(app: FastAPI):
     # Preload F5-TTS hanya kalau ada avatar yang memakainya — cek cepat ke DB
     db = SessionLocal()
     try:
+        from sqlalchemy import text
+        # Auto-migration untuk DB existing jika kolom belum ada
+        db.execute(text("ALTER TABLE interview_avatar ADD COLUMN IF NOT EXISTS tts_engine VARCHAR NOT NULL DEFAULT 'edge_tts'"))
+        db.execute(text("ALTER TABLE interview_avatar ADD COLUMN IF NOT EXISTS tts_reference_audio_path VARCHAR"))
+        db.execute(text("ALTER TABLE interview_avatar ADD COLUMN IF NOT EXISTS tts_reference_text VARCHAR"))
+        db.commit()
+
         any_f5tts_avatar = db.query(InterviewAvatar).filter(InterviewAvatar.ttsEngine == "f5tts_indo_v2").first()
         if any_f5tts_avatar:
             print("Preloading F5-TTS model...")
             f5tts_service.is_available()
+    except Exception as e:
+        print(f"[Lifespan Warning] Error checking/migrating F5TTS avatar: {e}")
+        db.rollback()
     finally:
         db.close()
     yield
+
 
 app = FastAPI(title="Heurix AI Agent Backend", lifespan=lifespan)
 

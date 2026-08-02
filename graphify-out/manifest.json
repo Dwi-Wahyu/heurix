@@ -70,8 +70,8 @@
     "semantic_hash": "d41d8cd98f00b204e9800998ecf8427e"
   },
   "backend/main.py": {
-    "mtime": 1785698602.947926,
-    "ast_hash": "67fd16c28ed77df2a4d49d46f5f7ddd7",
+    "mtime": 1785702153.4364011,
+    "ast_hash": "78f2b978da2d2210a391f1d135f42c75",
     "semantic_hash": ""
   },
   "backend/scripts/create_tables.py": {
