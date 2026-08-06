@@ -1,6 +1,7 @@
 import io
 import os
 import threading
+import asyncio
 import numpy as np
 
 from app.core.config import settings
@@ -72,3 +73,12 @@ def synthesize(text: str, ref_audio_path: str, ref_text: str, speed: float = 1.0
     wav_tensor = torch.tensor(wav).unsqueeze(0) if not torch.is_tensor(wav) else wav.unsqueeze(0)
     torchaudio.save(buffer, wav_tensor, sr, format="wav")
     return buffer.getvalue(), sr
+
+
+async def synthesize_async(text: str, ref_audio_path: str, ref_text: str, speed: float = 1.0) -> tuple[bytes, int]:
+    """
+    Versi asinkron dari synthesize() yang memindahkan CPU inference ke thread pool
+    menggunakan asyncio.to_thread agar tidak memblokir event loop asyncio.
+    """
+    return await asyncio.to_thread(synthesize, text, ref_audio_path, ref_text, speed)
+

@@ -23,8 +23,13 @@ def main():
         print("Gunakan rekaman referensi milik sendiri.")
         sys.exit(1)
 
-    if not os.path.exists(args.ref_audio):
-        print(f"DITOLAK: file '{args.ref_audio}' tidak ditemukan di filesystem.")
+    ref_audio_path = args.ref_audio
+    if not os.path.exists(ref_audio_path):
+        from app.services.speech import _resolve_reference_audio_path
+        ref_audio_path = _resolve_reference_audio_path(args.ref_audio)
+
+    if not os.path.exists(ref_audio_path):
+        print(f"DITOLAK: file '{args.ref_audio}' tidak ditemukan di filesystem (dicoba juga: '{ref_audio_path}').")
         sys.exit(1)
 
     db = SessionLocal()

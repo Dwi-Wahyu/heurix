@@ -3,6 +3,8 @@ import uuid
 import os
 import base64
 import re
+import asyncio
+import time
 from datetime import datetime
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect, Depends
 from sqlalchemy import desc, func
@@ -124,7 +126,9 @@ async def websocket_endpoint(websocket: WebSocket, sessionId: str):
                     f.write(audio_data)
                 
                 try:
-                    transcript_text, filler_count, filler_breakdown = transcriber.transcribe_and_detect_fillers(temp_filename)
+                    transcript_text, filler_count, filler_breakdown = await asyncio.to_thread(
+                        transcriber.transcribe_and_detect_fillers, temp_filename
+                    )
                     print(f"Transcription result: '{transcript_text}'")
                 except Exception as stt_err:
                     print(f"STT Error: {stt_err}")
@@ -385,6 +389,7 @@ async def send_next_question_stream(websocket: WebSocket, db: Session, session: 
     # APE Pilar 1 & 3: parameter TTS gabungan dari skenario sesi + level tekanan sesi
     tts_speed, tts_pitch = get_tts_params(session.scenario, session.pressureLevel)
 
+    t0 = time.monotonic()
     stream = await generate_next_turn_stream(
         session=session,
         institution=institution,
@@ -400,6 +405,7 @@ async def send_next_question_stream(websocket: WebSocket, db: Session, session: 
     full_response = ""
     question_started = False
     current_sentence_buffer = ""
+    t1 = time.monotonic() # fallback t1
     
     score = 50
     persona_assessment = str(session.currentPersona)
@@ -413,6 +419,7 @@ async def send_next_question_stream(websocket: WebSocket, db: Session, session: 
         if not question_started:
             if "[QUESTION]" in full_response:
                 question_started = True
+                t1 = time.monotonic()
                 parts = full_response.split("[QUESTION]")
                 metadata_part = parts[0]
                 current_sentence_buffer = parts[1]
@@ -443,9 +450,12 @@ async def send_next_question_stream(websocket: WebSocket, db: Session, session: 
                     for i in range(len(sentences) - 1):
                         sentence = sentences[i]
                         full_question_text += sentence + " "
+                        tts_start = time.monotonic()
                         audio, visemes = await active_speech_service.generate_speech_with_visemes(
                             sentence, speed=tts_speed, pitch=tts_pitch
                         )
+                        tts_end = time.monotonic()
+                        print(f"[TIMING] LLM: {t1-t0:.2f}s | TTS: {tts_end-tts_start:.2f}s | engine={active_speech_service.__class__.__name__}")
                         await websocket.send_json({
                             "type": "QUESTION_CHUNK",
                             "text": sentence,
@@ -460,9 +470,12 @@ async def send_next_question_stream(websocket: WebSocket, db: Session, session: 
     final_sentence = current_sentence_buffer.strip()
     if final_sentence:
         full_question_text += final_sentence
+        tts_start = time.monotonic()
         audio, visemes = await active_speech_service.generate_speech_with_visemes(
             final_sentence, speed=tts_speed, pitch=tts_pitch
         )
+        tts_end = time.monotonic()
+        print(f"[TIMING] LLM: {t1-t0:.2f}s | TTS: {tts_end-tts_start:.2f}s | engine={active_speech_service.__class__.__name__}")
         await websocket.send_json({
             "type": "QUESTION_CHUNK",
             "text": final_sentence,

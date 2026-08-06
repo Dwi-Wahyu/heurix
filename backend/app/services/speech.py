@@ -6,8 +6,34 @@ import io
 
 from app.services import f5tts_service
 
+import os
+from pathlib import Path
+from app.core.config import BASE_DIR
+
 # Guard: tolak audio referensi yang namanya mengindikasikan file demo model
 _FORBIDDEN_REFERENCE_TOKENS = ("prabowo", "windah", "reporter")
+
+
+def _resolve_reference_audio_path(path: str) -> str:
+    if not path:
+        return path
+    if os.path.exists(path):
+        return path
+    
+    clean_path = path.replace("\\", "/")
+    if clean_path.startswith("backend/"):
+        clean_path = clean_path[len("backend/"):]
+        
+    candidates = [
+        BASE_DIR / clean_path,
+        BASE_DIR / "reference_audio" / os.path.basename(clean_path),
+        Path("reference_audio") / os.path.basename(clean_path),
+        Path("backend/reference_audio") / os.path.basename(clean_path),
+    ]
+    for c in candidates:
+        if c.exists():
+            return str(c)
+    return path
 
 
 def _guard_reference_audio(path: str):
@@ -79,13 +105,14 @@ class F5TTSSpeechService:
     """
 
     def __init__(self, ref_audio_path: str, ref_text: str):
-        _guard_reference_audio(ref_audio_path)
-        self.ref_audio_path = ref_audio_path
+        resolved_path = _resolve_reference_audio_path(ref_audio_path)
+        _guard_reference_audio(resolved_path)
+        self.ref_audio_path = resolved_path
         self.ref_text = ref_text
 
     async def generate_speech_with_visemes(self, text: str, speed: float = 1.0, pitch: float = 1.0, **kwargs):
         try:
-            wav_bytes, sr = f5tts_service.synthesize(
+            wav_bytes, sr = await f5tts_service.synthesize_async(
                 text=text,
                 ref_audio_path=self.ref_audio_path,
                 ref_text=self.ref_text,

@@ -4,12 +4,12 @@
 - cluster-only mode — file stats not available
 
 ## Summary
-- 1312 nodes · 1837 edges · 144 communities (89 shown, 55 thin omitted)
-- Extraction: 96% EXTRACTED · 4% INFERRED · 0% AMBIGUOUS · INFERRED: 75 edges (avg confidence: 0.79)
+- 1332 nodes · 1860 edges · 144 communities (89 shown, 55 thin omitted)
+- Extraction: 96% EXTRACTED · 4% INFERRED · 0% AMBIGUOUS · INFERRED: 77 edges (avg confidence: 0.78)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `d5396495`
+- Built from commit: `32a98f39`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -34,7 +34,7 @@
 - auth.ts
 - 2. Implemented Fixes & Changes
 - scripts
-- auth.schema.ts
+- Instruksi Perbaikan: Halusinasi Whisper, Latensi Kalimat Pertama, & Voice Cloning F5TTS Belum Aktif
 - +page.svelte
 - $lib/components/Header.svelte
 - vision_wasm_module_internal.js
@@ -62,10 +62,10 @@
 - WebGPU Blend States
 - WebGPU Vertex Attributes
 - schema.ts
-- Backend Configuration Settings
+- config.py
 - Audio Transcription Service
 - Avatar Seeding Script
-- _load_model
+- f5tts_service.py
 - Implementation Log — Adaptive Personalization Engine (APE)
 - TTY IOCTL Syscalls
 - WebGPU Render Pass
@@ -148,13 +148,13 @@
 ## Surprising Connections (you probably didn't know these)
 - `Frontend-Backend Integration Guide` --references--> `$lib/lipSync`  [EXTRACTED]
   instruction/frontend-backend-integration.md → frontend/src/lib/lipSync.ts
-- `readdir()` --references--> `fs`  [EXTRACTED]
+- `open()` --references--> `fs`  [EXTRACTED]
   frontend/static/wasm/vision_wasm_internal.js → migrator/package.json
-- `isDevice()` --references--> `fs`  [EXTRACTED]
+- `createNode()` --references--> `fs`  [EXTRACTED]
   frontend/static/wasm/vision_wasm_internal.js → migrator/package.json
-- `unmount()` --references--> `fs`  [EXTRACTED]
+- `hashAddNode()` --references--> `fs`  [EXTRACTED]
   frontend/static/wasm/vision_wasm_internal.js → migrator/package.json
-- `statfsStream()` --references--> `fs`  [EXTRACTED]
+- `hashRemoveNode()` --references--> `fs`  [EXTRACTED]
   frontend/static/wasm/vision_wasm_internal.js → migrator/package.json
 
 ## Import Cycles
@@ -169,11 +169,11 @@
 
 ### Community 0 - "brain.py"
 Cohesion: 0.06
-Nodes (58): build_chat_history(), build_system_prompt(), calculate_sri(), compute_pressure_level(), extract_weakness_tags(), generate_next_turn(), generate_next_turn_stream(), get_phase() (+50 more)
+Nodes (57): build_chat_history(), build_system_prompt(), calculate_sri(), compute_pressure_level(), extract_weakness_tags(), generate_next_turn(), generate_next_turn_stream(), get_phase() (+49 more)
 
 ### Community 1 - "vision_wasm_internal.js"
 Cohesion: 0.02
-Nodes (24): chown(), findObject(), isDevice(), RFC-2279, RFC-3629, quit(), NOTE: In our implementation, st_blocks = Math.ceil(st_size/st_blksize),, NOTE: This is also used as the process return code in shell environments (+16 more)
+Nodes (24): chmod(), createNode(), createStandardStreams(), doChmod(), fchmod(), hashAddNode(), hashRemoveNode(), RFC-2279 (+16 more)
 
 ### Community 2 - "vision_wasm_nosimd_internal.js"
 Cohesion: 0.02
@@ -181,7 +181,7 @@ Nodes (16): RFC-2279, RFC-3629, NOTE: In our implementation, st_blocks = Math.ce
 
 ### Community 3 - "fs"
 Cohesion: 0.02
-Nodes (122): chdir(), chmod(), create(), createDefaultDevices(), createDefaultDirectories(), createNode(), createSpecialDirectories(), createStandardStreams() (+114 more)
+Nodes (122): chdir(), chown(), create(), createDefaultDevices(), createDefaultDirectories(), createSpecialDirectories(), createStream(), destroyNode() (+114 more)
 
 ### Community 4 - "Instruksi: Hapus Fitur 3D (Three.js) dari Heurix"
 Cohesion: 0.15
@@ -208,16 +208,16 @@ Cohesion: 0.20
 Nodes (9): 1. Ringkasan Eksekutif, 2. Rincian Perubahan File, 3. Hasil Verifikasi & Build, 4. Protokol Pasca-Implementasi (POST IMPLEMENTATION PROTOCOL), A. Komponen Visualizer Baru, B. Refactoring `lipSync.ts`, C. Update `session/interview/+page.svelte`, D. Pembersihan File Unused (+1 more)
 
 ### Community 12 - "$app/navigation"
-Cohesion: 0.20
-Nodes (7): $lib/auth-client, $lib/auth-client, authClient, $lib/assets/dimensi-komunikasi.png?enhanced, $lib/assets/logo.png?enhanced, $lib/assets/simulasi-selesai.png?enhanced, $app/navigation
+Cohesion: 0.22
+Nodes (5): $lib/auth-client, $lib/assets/dimensi-komunikasi.png?enhanced, $lib/assets/logo.png?enhanced, $lib/assets/simulasi-selesai.png?enhanced, $app/navigation
 
 ### Community 13 - "Path and Directory Management"
 Cohesion: 0.07
 Nodes (30): analyzePath(), calculateAt(), createDataFile(), createDevice(), createFile(), createPath(), lookupPath(), mkdirTree() (+22 more)
 
 ### Community 14 - "schema.ts"
-Cohesion: 0.10
-Nodes (20): difficultyEnum, interviewAvatar, interviewAvatarRelations, interviewSession, interviewSessionRelations, interviewTrackEnum, masterInstitution, masterInstitutionRelations (+12 more)
+Cohesion: 0.08
+Nodes (27): account, accountRelations, session, sessionRelations, user, userRelations, verification, difficultyEnum (+19 more)
 
 ### Community 15 - "visemeMap.ts"
 Cohesion: 0.38
@@ -228,8 +228,8 @@ Cohesion: 0.04
 Nodes (47): @better-auth/cli, drizzle-kit, drizzle-orm, @faker-js/faker, devDependencies, @better-auth/cli, drizzle-kit, drizzle-orm (+39 more)
 
 ### Community 17 - "auth.ts"
-Cohesion: 0.14
-Nodes (4): auth, GET, POST, actions
+Cohesion: 0.13
+Nodes (6): $lib/auth-client, authClient, auth, GET, POST, actions
 
 ### Community 18 - "2. Implemented Fixes & Changes"
 Cohesion: 0.17
@@ -239,17 +239,17 @@ Nodes (11): 1. Executive Summary, 2. Implemented Fixes & Changes, 3. Summary of 
 Cohesion: 0.05
 Nodes (43): better-auth, @better-auth/core, face-api.js, groq-sdk, @mediapipe/tasks-vision, dependencies, better-auth, @better-auth/core (+35 more)
 
-### Community 20 - "auth.schema.ts"
-Cohesion: 0.25
-Nodes (7): account, accountRelations, session, sessionRelations, user, userRelations, verification
+### Community 20 - "Instruksi Perbaikan: Halusinasi Whisper, Latensi Kalimat Pertama, & Voice Cloning F5TTS Belum Aktif"
+Cohesion: 0.13
+Nodes (14): Cara pastikan diagnosis di atas benar, Checklist Verifikasi Akhir, Fix, Fix, Instruksi Perbaikan: Halusinasi Whisper, Latensi Kalimat Pertama, & Voice Cloning F5TTS Belum Aktif, Instrumentasi untuk konfirmasi "lambat kalimat pertama", Kemungkinan penyebab (cek berurutan sesuai probabilitas), MASALAH 1 — Halusinasi Whisper (+6 more)
 
 ### Community 21 - "+page.svelte"
-Cohesion: 0.38
-Nodes (4): $app/environment, $env/static/public, $app/state, @mediapipe/tasks-vision
+Cohesion: 0.32
+Nodes (4): $app/environment, $env/static/public, @mediapipe/tasks-vision, svelte/transition
 
 ### Community 22 - "$lib/components/Header.svelte"
-Cohesion: 0.18
-Nodes (7): $lib/components/BottomNav.svelte, $lib/components/Header.svelte, $lib/components/Sidebar.svelte, $lib/sidebar.svelte, sidebarState, string, svelte/transition
+Cohesion: 0.21
+Nodes (7): $lib/components/BottomNav.svelte, $lib/components/Header.svelte, $lib/components/Sidebar.svelte, $lib/sidebar.svelte, sidebarState, string, $app/state
 
 ### Community 27 - "vision_wasm_module_internal.js"
 Cohesion: 0.10
@@ -316,8 +316,8 @@ Cohesion: 0.33
 Nodes (6): makeBufferEntry(), makeEntries(), makeEntry(), makeSamplerEntry(), makeStorageTextureEntry(), makeTextureEntry()
 
 ### Community 50 - "get_speech_service_for_avatar"
-Cohesion: 0.15
-Nodes (14): _extract_visemes(), F5TTSSpeechService, get_speech_service_for_avatar(), _guard_reference_audio(), Factory: pilih engine berdasarkan kolom tts_engine di avatar.     Fallback aman, Ekstrak RMS envelope untuk viseme dari raw audio bytes (format apa pun yang didu, Engine default: edge_tts (cloud, stateless, tanpa voice cloning)., Engine voice cloning. Butuh ref_audio_path + ref_text per avatar (BUKAN global, (+6 more)
+Cohesion: 0.13
+Nodes (16): _extract_visemes(), F5TTSSpeechService, get_speech_service_for_avatar(), _guard_reference_audio(), Factory: pilih engine berdasarkan kolom tts_engine di avatar.     Fallback aman, Ekstrak RMS envelope untuk viseme dari raw audio bytes (format apa pun yang didu, Engine default: edge_tts (cloud, stateless, tanpa voice cloning)., Engine voice cloning. Butuh ref_audio_path + ref_text per avatar (BUKAN global, (+8 more)
 
 ### Community 51 - "Auth Table Migrations"
 Cohesion: 0.40
@@ -343,13 +343,13 @@ Nodes (5): makeVertexAttribute(), makeVertexAttributes(), makeVertexBuffer(), ma
 Cohesion: 0.09
 Nodes (21): difficultyEnum, interviewAvatar, interviewAvatarRelations, interviewSession, interviewSessionRelations, interviewTrackEnum, masterInstitution, masterInstitutionRelations (+13 more)
 
-### Community 60 - "Backend Configuration Settings"
-Cohesion: 0.50
-Nodes (3): Config, Settings, BaseSettings
+### Community 60 - "config.py"
+Cohesion: 0.40
+Nodes (4): Config, _find_f5tts_path(), Settings, BaseSettings
 
-### Community 63 - "_load_model"
-Cohesion: 0.38
-Nodes (6): is_available(), _load_model(), Lazy-load F5-TTS model + vocoder sekali saja (thread-safe)., Cek apakah model bisa/sudah di-load, tanpa melempar exception ke caller., Generate audio dengan voice cloning dari ref_audio_path.     Return: (wav_bytes,, synthesize()
+### Community 63 - "f5tts_service.py"
+Cohesion: 0.31
+Nodes (8): is_available(), _load_model(), Lazy-load F5-TTS model + vocoder sekali saja (thread-safe)., Cek apakah model bisa/sudah di-load, tanpa melempar exception ke caller., Generate audio dengan voice cloning dari ref_audio_path.     Return: (wav_bytes,, Versi asinkron dari synthesize() yang memindahkan CPU inference ke thread pool, synthesize(), synthesize_async()
 
 ### Community 64 - "Implementation Log — Adaptive Personalization Engine (APE)"
 Cohesion: 0.29
@@ -376,7 +376,7 @@ Cohesion: 0.14
 Nodes (13): 1.1 Apa yang bisa diaudit secara statis vs. yang butuh runtime, 1.2 Audit Database & Skema (4.2), 1.3 Temuan arsitektur penting (memengaruhi cara APE diimplementasikan), 1. Laporan Audit, 2. Daftar File yang Diubah, 3. Migration Script, 4.1 `speech.py` — parameter speed/pitch, 4.2 `brain.py` — SRI, pressure level, weakness tags, scenario config (+5 more)
 
 ### Community 72 - "index.ts"
-Cohesion: 0.27
+Cohesion: 0.23
 Nodes (3): client, db, userProfile
 
 ### Community 73 - "+page.svelte"
@@ -420,7 +420,7 @@ Cohesion: 0.50
 Nodes (3): "interview_session", "session_report", "user_profile"
 
 ## Knowledge Gaps
-- **299 isolated node(s):** `Config`, `user_profile`, `interview_session`, `session_report`, `interviewTrackEnum` (+294 more)
+- **309 isolated node(s):** `Config`, `user_profile`, `interview_session`, `session_report`, `interviewTrackEnum` (+304 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **55 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
@@ -428,16 +428,16 @@ Nodes (3): "interview_session", "session_report", "user_profile"
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `fs` connect `fs` to `vision_wasm_internal.js`, `Path and Directory Management`, `scripts`, `vision_wasm_module_internal.js`, `File I/O Operations`, `abort`, `TTY IOCTL Syscalls`, `TTY IOCTL Syscalls`, `Low-level Write Operations`, `Low-level Write Operations`, `File Stream Closing`, `Character Input Reading`, `Initialization and Timing`, `Filesystem Mounting`, `Filesystem Statistics`, `File Synchronization`, `Character Input Reading`, `Initialization and Timing`, `Filesystem Mounting`, `Filesystem Statistics`?**
-  _High betweenness centrality (0.160) - this node is a cross-community bridge._
+  _High betweenness centrality (0.150) - this node is a cross-community bridge._
 - **Why does `dependencies` connect `scripts` to `fs`, `Path and Directory Management`?**
-  _High betweenness centrality (0.057) - this node is a cross-community bridge._
+  _High betweenness centrality (0.051) - this node is a cross-community bridge._
 - **Why does `$lib/lipSync` connect `$lib/lipSync` to `+page.svelte`, `Session`, `visemeMap.ts`?**
-  _High betweenness centrality (0.032) - this node is a cross-community bridge._
+  _High betweenness centrality (0.030) - this node is a cross-community bridge._
 - **Are the 8 inferred relationships involving `send_next_question_stream()` (e.g. with `InterviewAvatar` and `MasterInstitution`) actually correct?**
   _`send_next_question_stream()` has 8 INFERRED edges - model-reasoned connections that need verification._
 - **What connects `Config`, `user_profile`, `interview_session` to the rest of the system?**
-  _299 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _309 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `brain.py` be split into smaller, more focused modules?**
-  _Cohesion score 0.060655737704918035 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.062146892655367235 - nodes in this community are weakly interconnected._
 - **Should `vision_wasm_internal.js` be split into smaller, more focused modules?**
   _Cohesion score 0.015037593984962405 - nodes in this community are weakly interconnected._
