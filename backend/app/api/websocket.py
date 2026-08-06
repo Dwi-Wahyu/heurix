@@ -161,6 +161,11 @@ async def websocket_endpoint(websocket: WebSocket, sessionId: str):
                 if os.path.exists(temp_filename):
                     os.remove(temp_filename)
                 
+                if not transcript_text or not transcript_text.strip():
+                    print(f"Empty transcript for session {sessionId}, asking candidate to repeat...")
+                    await websocket.send_json({"type": "QUESTION", "text": "Maaf, suara belum terdengar jelas. Silakan ulangi jawaban Anda.", "turnNumber": question_count})
+                    continue
+
                 # Send transcript back to frontend
                 await websocket.send_json({"type": "TRANSCRIPT", "text": transcript_text})
                 

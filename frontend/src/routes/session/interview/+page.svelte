@@ -479,6 +479,11 @@
 		if (audioBlocked) {
 			unlockAudio();
 			audioBlocked = false;
+			if (failedChunk) {
+				audioQueue.unshift(failedChunk);
+				failedChunk = null;
+				processAudioQueue();
+			}
 		}
 	}
 
@@ -587,6 +592,8 @@
 	let isProcessingQueue = false;
 	let lastChunkReceived = false;
 
+	let failedChunk: any = null;
+
 	async function processAudioQueue() {
 		if (isProcessingQueue || audioQueue.length === 0) return;
 		isProcessingQueue = true;
@@ -607,7 +614,9 @@
 				console.error('Queue speech failed:', err);
 				if (err.message === 'AUTOPLAY_BLOCKED') {
 					audioBlocked = true;
-					break;
+					failedChunk = chunk;
+					isProcessingQueue = false;
+					return;
 				}
 			}
 		}
@@ -671,23 +680,24 @@
 
 			mediaRecorder.onstop = async () => {
 				isListening = false;
-				isThinking = true;
 
 				const userText = liveTranscript.trim();
 				liveTranscript = '';
 
 				if (userText && ws?.readyState === WebSocket.OPEN) {
+					isThinking = true;
 					console.log('Sending Web Speech API transcript to backend:', userText);
 					ws.send(JSON.stringify({ type: 'USER_ANSWER', text: userText }));
 					messages = [
 						...messages,
 						{ role: 'user', text: userText, time: timeDisplay() }
 					];
-				} else if (audioChunks.length > 0) {
+				} else if (isVoiceActive && audioChunks.length > 0) {
 					const audioBlob = new Blob(audioChunks, { type: mimeType || 'audio/webm' });
 					const buffer = await audioBlob.arrayBuffer();
 
-					if (buffer.byteLength > 0 && ws?.readyState === WebSocket.OPEN) {
+					if (buffer.byteLength > 2000 && ws?.readyState === WebSocket.OPEN) {
+						isThinking = true;
 						ws.send(buffer);
 						messages = [
 							...messages,

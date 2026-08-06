@@ -108,6 +108,13 @@
 	async function handleStart() {
 		if (loading) return;
 		loading = true;
+
+		try {
+			// Pre-unlock Web AudioContext for seamless TTS autoplay on interview page
+			const audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)();
+			await audioCtx.resume();
+		} catch (e) {}
+
 		// Release test stream — interview page will request its own
 		testStream?.getTracks().forEach((t) => t.stop());
 		testStream = null;
