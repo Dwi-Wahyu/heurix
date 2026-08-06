@@ -1,5 +1,7 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import { goto } from '$app/navigation';
+	import { fade, scale } from 'svelte/transition';
 	import {
 		CheckCircle,
 		Building2,
@@ -21,6 +23,8 @@
 	let path = $state<'corporate' | 'military' | 'civil_service' | 'stan' | null>(null);
 	let selectedInstitutionId = $state<string | null>(null);
 	let selectedPositionId = $state<string | null>(null);
+	let showSuccessModal = $state(false);
+	let isSubmitting = $state(false);
 
 	// Search state
 	let institutionSearch = $state('');
@@ -68,11 +72,27 @@
 </script>
 
 <svelte:head>
-	<title>Onboarding — Heurix</title>
+	<title>Preferensi Karir — Heurix</title>
 </svelte:head>
 
 <!-- Hidden form for server action -->
-<form bind:this={formElement} method="POST" use:enhance class="hidden">
+<form
+	bind:this={formElement}
+	method="POST"
+	use:enhance={() => {
+		isSubmitting = true;
+		return async ({ result }) => {
+			isSubmitting = false;
+			if (result.type === 'success') {
+				showSuccessModal = true;
+				setTimeout(() => {
+					goto('/profile');
+				}, 1600);
+			}
+		};
+	}}
+	class="hidden"
+>
 	<input type="hidden" name="path" value={path} />
 	<input type="hidden" name="institutionId" value={selectedInstitutionId} />
 	<input type="hidden" name="positionId" value={selectedPositionId} />
@@ -405,3 +425,32 @@
 		</footer>
 	</main>
 </div>
+
+{#if showSuccessModal}
+	<div
+		class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-md"
+		transition:fade={{ duration: 150 }}
+	>
+		<div
+			class="flex w-full max-w-sm flex-col items-center rounded-3xl border border-gray-100 bg-white p-8 text-center shadow-2xl"
+			transition:scale={{ duration: 150, start: 0.9 }}
+		>
+			<div
+				class="mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-emerald-100 text-emerald-600 ring-8 ring-emerald-50"
+			>
+				<CheckCircle size={48} />
+			</div>
+			<h3 class="text-xl font-bold text-gray-900">Preferensi Karir Diperbarui!</h3>
+			<p class="mt-2 text-sm text-gray-500">
+				Target institusi dan posisi wawancara Anda telah berhasil disimpan. Menyiapkan profil Anda...
+			</p>
+			<button
+				onclick={() => goto('/profile')}
+				class="mt-6 flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-3.5 font-bold text-white shadow-lg transition-transform active:scale-95"
+			>
+				Kembali ke Profil
+			</button>
+		</div>
+	</div>
+{/if}
+

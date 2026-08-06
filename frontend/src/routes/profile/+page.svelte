@@ -80,7 +80,7 @@
 				<div class="flex flex-col gap-6 lg:col-span-1">
 					<!-- Avatar & Name Card -->
 					<div
-						class="relative overflow-hidden rounded-3xl border border-gray-100 bg-white p-8 shadow-soft text-center"
+						class="relative overflow-hidden rounded-3xl border border-gray-100 bg-white p-8 text-center shadow-soft"
 					>
 						<!-- Background decoration -->
 						<div
@@ -278,43 +278,6 @@
 								</p>
 							</div>
 						{/if}
-					</div>
-
-					<!-- Premium Status Card -->
-					<div class="rounded-3xl border border-gray-100 bg-white p-8 shadow-soft">
-						<div class="flex flex-col justify-between">
-							<div class="flex items-center">
-								<div
-									class="flex h-20 w-14 items-center justify-center rounded-2xl {profile?.isPremium
-										? 'bg-amber-50 text-amber-500'
-										: 'bg-gray-50 text-gray-400'}"
-								>
-									<Award />
-								</div>
-								<div>
-									<p class="text-xs font-semibold tracking-wide text-gray-400 uppercase">
-										Status Langganan
-									</p>
-									<p class="mt-0.5 text-base font-semibold text-gray-900">
-										{profile?.isPremium ? 'Premium' : 'Gratis'}
-									</p>
-									{#if profile?.isPremium && profile.premiumExpiresAt}
-										<p class="text-xs text-gray-400">
-											Berakhir {formatDate(profile.premiumExpiresAt)}
-										</p>
-									{/if}
-								</div>
-							</div>
-							{#if !profile?.isPremium}
-								<div class="flex w-full justify-end">
-									<button
-										class=" mt-4 w-full rounded-xl bg-linear-to-r from-primary to-primary/90 px-5 py-2.5 text-sm font-bold text-white shadow-sm transition-all hover:scale-[1.03] hover:shadow-md active:scale-[0.98] md:mt-0 md:w-fit"
-									>
-										Upgrade
-									</button>
-								</div>
-							{/if}
-						</div>
 					</div>
 				</div>
 			</div>

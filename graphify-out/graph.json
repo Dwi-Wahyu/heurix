@@ -2660,8 +2660,8 @@
       "source_file": "deliverables/patched_files/frontend/src/routes/session/disclaimer/+page.svelte",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 12,
-      "community_name": "$app/navigation",
+      "community": 21,
+      "community_name": "+page.svelte",
       "norm_label": "+page.svelte",
       "id": "deliverables_patched_files_frontend_src_routes_session_disclaimer_page"
     },
@@ -2671,8 +2671,8 @@
       "source_file": "$lib/auth-client",
       "confidence": "EXTRACTED",
       "_origin": "ast",
-      "community": 12,
-      "community_name": "$app/navigation",
+      "community": 21,
+      "community_name": "+page.svelte",
       "norm_label": "$lib/auth-client",
       "id": "auth_client"
     },
@@ -2682,8 +2682,8 @@
       "source_file": "$app/navigation",
       "confidence": "EXTRACTED",
       "_origin": "ast",
-      "community": 12,
-      "community_name": "$app/navigation",
+      "community": 21,
+      "community_name": "+page.svelte",
       "norm_label": "$app/navigation",
       "id": "navigation"
     },
@@ -3306,8 +3306,8 @@
       "source_file": "frontend/src/lib/assets/logo.png?enhanced",
       "confidence": "EXTRACTED",
       "_origin": "ast",
-      "community": 12,
-      "community_name": "$app/navigation",
+      "community": 22,
+      "community_name": "$lib/components/Header.svelte",
       "norm_label": "$lib/assets/logo.png?enhanced",
       "id": "home_dwiwahyuilahi_kuliah_gemastik_source_code_frontend_src_lib_assets_logo_png_enhanced"
     },
@@ -4198,8 +4198,8 @@
       "source_file": "frontend/src/routes/+page.svelte",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 12,
-      "community_name": "$app/navigation",
+      "community": 21,
+      "community_name": "+page.svelte",
       "norm_label": "+page.svelte",
       "id": "frontend_src_routes_page"
     },
@@ -4297,8 +4297,8 @@
       "source_file": "frontend/src/routes/history/+page.svelte",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 21,
-      "community_name": "+page.svelte",
+      "community": 22,
+      "community_name": "$lib/components/Header.svelte",
       "norm_label": "+page.svelte",
       "id": "frontend_src_routes_history_page"
     },
@@ -4331,7 +4331,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "community": 12,
-      "community_name": "$app/navigation",
+      "community_name": "+page.svelte",
       "norm_label": "+page.svelte",
       "id": "frontend_src_routes_login_page"
     },
@@ -4342,7 +4342,7 @@
       "confidence": "EXTRACTED",
       "_origin": "ast",
       "community": 12,
-      "community_name": "$app/navigation",
+      "community_name": "+page.svelte",
       "norm_label": "$lib/assets/simulasi-selesai.png?enhanced",
       "id": "home_dwiwahyuilahi_kuliah_gemastik_source_code_frontend_src_lib_assets_simulasi_selesai_png_enhanced"
     },
@@ -4353,7 +4353,7 @@
       "confidence": "EXTRACTED",
       "_origin": "ast",
       "community": 12,
-      "community_name": "$app/navigation",
+      "community_name": "+page.svelte",
       "norm_label": "$lib/assets/dimensi-komunikasi.png?enhanced",
       "id": "home_dwiwahyuilahi_kuliah_gemastik_source_code_frontend_src_lib_assets_dimensi_komunikasi_png_enhanced"
     },
@@ -4418,8 +4418,8 @@
       "source_file": "frontend/src/routes/onboarding/+page.svelte",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 82,
-      "community_name": "Svelte Form Handling",
+      "community": 21,
+      "community_name": "+page.svelte",
       "norm_label": "+page.svelte",
       "id": "frontend_src_routes_onboarding_page"
     },
@@ -4429,8 +4429,8 @@
       "source_file": "$app/forms",
       "confidence": "EXTRACTED",
       "_origin": "ast",
-      "community": 82,
-      "community_name": "Svelte Form Handling",
+      "community": 21,
+      "community_name": "+page.svelte",
       "norm_label": "$app/forms",
       "id": "forms"
     },
@@ -4603,7 +4603,7 @@
       "label": "if()",
       "file_type": "code",
       "source_file": "frontend/src/routes/session/interview/+page.svelte",
-      "source_location": "L326",
+      "source_location": "L328",
       "_origin": "ast",
       "community": 21,
       "community_name": "+page.svelte",
@@ -4748,8 +4748,8 @@
       "source_file": "frontend/src/routes/session/select-avatar/+page.svelte",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 12,
-      "community_name": "$app/navigation",
+      "community": 21,
+      "community_name": "+page.svelte",
       "norm_label": "+page.svelte",
       "id": "frontend_src_routes_session_select_avatar_page"
     },
@@ -19908,6 +19908,15 @@
     {
       "relation": "imports_from",
       "confidence": "EXTRACTED",
+      "source_file": "frontend/src/routes/onboarding/+page.svelte",
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "frontend_src_routes_onboarding_page",
+      "target": "transition"
+    },
+    {
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
       "source_file": "frontend/src/routes/progress/+page.svelte",
       "_origin": "ast",
       "confidence_score": 1.0,
@@ -19986,6 +19995,15 @@
       "_origin": "ast",
       "confidence_score": 1.0,
       "source": "frontend_src_routes_login_page",
+      "target": "navigation"
+    },
+    {
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/routes/onboarding/+page.svelte",
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "frontend_src_routes_onboarding_page",
       "target": "navigation"
     },
     {
@@ -22331,7 +22349,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "frontend/src/routes/session/interview/+page.svelte",
-      "source_location": "L329",
+      "source_location": "L331",
       "weight": 1.0,
       "_origin": "ast",
       "confidence_score": 1.0,
@@ -35615,5 +35633,5 @@
       "source_file": "instruction/implementasi-alur-percakapan.md"
     }
   ],
-  "built_at_commit": "bf5a78eca0865464f782816a19d7fbee044623bb"
+  "built_at_commit": "2c3652c08472bcad14ab5b41e98c87e84780365f"
 }

@@ -4,12 +4,12 @@
 - cluster-only mode — file stats not available
 
 ## Summary
-- 1332 nodes · 1860 edges · 144 communities (89 shown, 55 thin omitted)
+- 1332 nodes · 1862 edges · 143 communities (88 shown, 55 thin omitted)
 - Extraction: 96% EXTRACTED · 4% INFERRED · 0% AMBIGUOUS · INFERRED: 77 edges (avg confidence: 0.78)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `bf5a78ec`
+- Built from commit: `2c3652c0`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -26,7 +26,7 @@
 - Instruksi Lanjutan: Ganti Avatar 2D dengan Audio Bar Visualizer
 - 2. Rincian Perubahan File
 - utils.ts
-- $app/navigation
+- +page.svelte
 - Path and Directory Management
 - schema.ts
 - visemeMap.ts
@@ -80,7 +80,6 @@
 - Task for the agent: Heurix — Batch Fix (Auto-send VAD, WS Heartbeat, Natural TTS, Farewell Q&A, Response Length)
 - Low-level Write Operations
 - Low-level Write Operations
-- Svelte Form Handling
 - Task Schema Migration
 - Institution Schema Migration
 - Avatar Schema Migration
@@ -165,7 +164,7 @@
 - **AI Interview Simulation Flow** — interview_agent, face_animator, heurix_backend, heurix_frontend [INFERRED 0.85]
 - **Interview Session Logic & Flow** — backend_app_services_brain, backend_app_api_websocket, instruction_implementasi_alur_percakapan [EXTRACTED 1.00]
 
-## Communities (144 total, 55 thin omitted)
+## Communities (143 total, 55 thin omitted)
 
 ### Community 0 - "brain.py"
 Cohesion: 0.06
@@ -207,10 +206,6 @@ Nodes (9): ⚠️ 5 Hal Penting Soal Kompatibilitas (WAJIB dibaca dulu), Checkli
 Cohesion: 0.20
 Nodes (9): 1. Ringkasan Eksekutif, 2. Rincian Perubahan File, 3. Hasil Verifikasi & Build, 4. Protokol Pasca-Implementasi (POST IMPLEMENTATION PROTOCOL), A. Komponen Visualizer Baru, B. Refactoring `lipSync.ts`, C. Update `session/interview/+page.svelte`, D. Pembersihan File Unused (+1 more)
 
-### Community 12 - "$app/navigation"
-Cohesion: 0.22
-Nodes (5): $lib/auth-client, $lib/assets/dimensi-komunikasi.png?enhanced, $lib/assets/logo.png?enhanced, $lib/assets/simulasi-selesai.png?enhanced, $app/navigation
-
 ### Community 13 - "Path and Directory Management"
 Cohesion: 0.07
 Nodes (30): analyzePath(), calculateAt(), createDataFile(), createDevice(), createFile(), createPath(), lookupPath(), mkdirTree() (+22 more)
@@ -244,12 +239,12 @@ Cohesion: 0.13
 Nodes (14): Cara pastikan diagnosis di atas benar, Checklist Verifikasi Akhir, Fix, Fix, Instruksi Perbaikan: Halusinasi Whisper, Latensi Kalimat Pertama, & Voice Cloning F5TTS Belum Aktif, Instrumentasi untuk konfirmasi "lambat kalimat pertama", Kemungkinan penyebab (cek berurutan sesuai probabilitas), MASALAH 1 — Halusinasi Whisper (+6 more)
 
 ### Community 21 - "+page.svelte"
-Cohesion: 0.32
-Nodes (4): $app/environment, $env/static/public, @mediapipe/tasks-vision, svelte/transition
+Cohesion: 0.20
+Nodes (7): $lib/auth-client, $app/environment, $app/forms, $app/navigation, $env/static/public, @mediapipe/tasks-vision, svelte/transition
 
 ### Community 22 - "$lib/components/Header.svelte"
-Cohesion: 0.21
-Nodes (7): $lib/components/BottomNav.svelte, $lib/components/Header.svelte, $lib/components/Sidebar.svelte, $lib/sidebar.svelte, sidebarState, string, $app/state
+Cohesion: 0.19
+Nodes (8): $lib/components/BottomNav.svelte, $lib/components/Header.svelte, $lib/components/Sidebar.svelte, $lib/sidebar.svelte, sidebarState, string, $lib/assets/logo.png?enhanced, $app/state
 
 ### Community 27 - "vision_wasm_module_internal.js"
 Cohesion: 0.10

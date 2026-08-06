@@ -147,9 +147,11 @@
 
 	// Otomatis mulai interview jika avatar siap dan WS terkoneksi
 	let sessionStarted = $state(false);
+	let startInterviewSent = false;
 	$effect(() => {
-		if (wsStatus === 'connected' && avatarReady && ws && !sessionStarted) {
-			sessionStarted = true;
+		if (wsStatus === 'connected' && avatarReady && ws && !startInterviewSent) {
+			startInterviewSent = true;
+			isThinking = true;
 			ws.send(JSON.stringify({ type: 'START_INTERVIEW', sessionId }));
 			// Mulai timer jika belum diset dari onMount
 			if (!sessionStartTime) {
@@ -828,9 +830,9 @@
 		</div>
 	{/if}
 
-	<main class="relative flex flex-1 flex-col overflow-hidden md:block md:h-full md:w-full">
+	<main class="absolute inset-0 h-full w-full overflow-hidden">
 		<section
-			class="group relative z-0 h-full w-full overflow-hidden bg-black md:absolute md:inset-0"
+			class="group absolute inset-0 z-0 h-full w-full overflow-hidden bg-black"
 		>
 			<!-- Fullscreen User Camera -->
 			<div class="absolute inset-0 z-0 h-full w-full overflow-hidden bg-gray-950">
@@ -1102,7 +1104,7 @@
 	</main>
 
 	<nav
-		class="z-50 flex shrink-0 items-center justify-center gap-3 border-t border-white/10 bg-black/60 px-4 py-3 backdrop-blur-xl md:fixed md:bottom-8 md:left-1/2 md:-translate-x-1/2 md:rounded-full md:border-white/10 md:bg-black/40 md:px-6 md:py-4 md:shadow-2xl"
+		class="fixed bottom-3 left-3 right-3 z-50 flex items-center justify-center gap-2 rounded-2xl border border-white/15 bg-black/60 px-3 py-2.5 shadow-2xl backdrop-blur-xl md:bottom-8 md:left-1/2 md:right-auto md:-translate-x-1/2 md:gap-3 md:rounded-full md:border-white/10 md:bg-black/40 md:px-6 md:py-4"
 	>
 		<button
 			onclick={toggleMic}

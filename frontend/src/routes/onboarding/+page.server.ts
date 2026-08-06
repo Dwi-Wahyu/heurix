@@ -32,7 +32,7 @@ export const actions: Actions = {
 		}
 
 		// Simpan ke profil user via backend
-		await fetch(`/api/proxy/api/profile`, {
+		const res = await fetch(`/api/proxy/api/profile`, {
 			method: 'PATCH',
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({
@@ -43,6 +43,10 @@ export const actions: Actions = {
 			})
 		});
 
-		throw redirect(302, '/dashboard');
+		if (!res.ok) {
+			return fail(500, { message: 'Gagal memperbarui profil. Silakan coba lagi.' });
+		}
+
+		return { success: true };
 	}
 };
