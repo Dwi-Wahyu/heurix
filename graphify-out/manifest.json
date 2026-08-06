@@ -70,8 +70,8 @@
     "semantic_hash": "d41d8cd98f00b204e9800998ecf8427e"
   },
   "backend/main.py": {
-    "mtime": 1786016590.1146913,
-    "ast_hash": "fb0fa9b31d2a71098666aab022d3222b",
+    "mtime": 1786022813.2406795,
+    "ast_hash": "b6b3c4e133fdf9774f9d6717588d3d8d",
     "semantic_hash": ""
   },
   "backend/scripts/create_tables.py": {
@@ -785,8 +785,8 @@
     "semantic_hash": ""
   },
   "backend/scripts/set_avatar_voice_config.py": {
-    "mtime": 1786016057.3017585,
-    "ast_hash": "b0407fea2b4355e482296a87bb822ff5",
+    "mtime": 1786022806.4986281,
+    "ast_hash": "96908b0fd29afbb66c7736e9d095cb44",
     "semantic_hash": ""
   },
   "backend/scripts/test_f5tts_integration.py": {

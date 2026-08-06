@@ -16378,8 +16378,20 @@
       "context": "argument",
       "confidence": "INFERRED",
       "confidence_score": 0.8,
+      "source_file": "backend/main.py",
+      "source_location": "L38",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "backend_main_lifespan",
+      "target": "backend_app_models_domain_interviewavatar"
+    },
+    {
+      "relation": "indirect_call",
+      "context": "argument",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
       "source_file": "backend/scripts/set_avatar_voice_config.py",
-      "source_location": "L48",
+      "source_location": "L23",
       "weight": 1.0,
       "_origin": "ast",
       "source": "backend_scripts_set_avatar_voice_config_main",
@@ -17260,7 +17272,7 @@
       "confidence": "INFERRED",
       "confidence_score": 0.8,
       "source_file": "backend/scripts/set_avatar_voice_config.py",
-      "source_location": "L29",
+      "source_location": "L49",
       "weight": 1.0,
       "_origin": "ast",
       "source": "backend_scripts_set_avatar_voice_config_main",
@@ -35603,5 +35615,5 @@
       "source_file": "instruction/implementasi-alur-percakapan.md"
     }
   ],
-  "built_at_commit": "877a5f0e41ace9b7c1b248711ce90c39b23889b4"
+  "built_at_commit": "bf5a78eca0865464f782816a19d7fbee044623bb"
 }

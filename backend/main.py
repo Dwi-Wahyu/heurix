@@ -26,15 +26,6 @@ from app.core.config import settings
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Preload F5-TTS model secara mandiri di startup jika file model ada di disk
-    if os.path.exists(settings.F5TTS_MODEL_PATH):
-        try:
-            print("[Lifespan] Preloading F5-TTS model ke RAM...")
-            await asyncio.to_thread(f5tts_service.is_available)
-            print("[Lifespan] F5-TTS model berhasil di-load.")
-        except Exception as e:
-            print(f"[Lifespan Warning] Error preloading F5TTS model: {e}")
-
     db = SessionLocal()
     try:
         from sqlalchemy import text
@@ -43,6 +34,15 @@ async def lifespan(app: FastAPI):
         db.execute(text("ALTER TABLE interview_avatar ADD COLUMN IF NOT EXISTS tts_reference_audio_path VARCHAR"))
         db.execute(text("ALTER TABLE interview_avatar ADD COLUMN IF NOT EXISTS tts_reference_text VARCHAR"))
         db.commit()
+
+        any_f5tts_avatar = db.query(InterviewAvatar).filter(InterviewAvatar.ttsEngine == "f5tts_indo_v2").first()
+        if any_f5tts_avatar and os.path.exists(settings.F5TTS_MODEL_PATH):
+            try:
+                print("[Lifespan] Preloading F5-TTS model ke RAM...")
+                await asyncio.to_thread(f5tts_service.is_available)
+                print("[Lifespan] F5-TTS model berhasil di-load.")
+            except Exception as e:
+                print(f"[Lifespan Warning] Error preloading F5TTS model: {e}")
     except Exception as e:
         print(f"[Lifespan Warning] Error checking/migrating F5TTS avatar DB columns: {e}")
         db.rollback()

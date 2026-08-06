@@ -11,11 +11,31 @@ def main():
     parser = argparse.ArgumentParser(
         description="Terapkan konfigurasi voice cloning F5-TTS ke SEMUA avatar aktif."
     )
-    parser.add_argument("--ref-audio", required=True, help="Path ke file audio referensi milik sendiri")
+    parser.add_argument("--ref-audio", default=None, help="Path ke file audio referensi milik sendiri")
     parser.add_argument("--ref-text", default="auto", help="Transkrip PERSIS dari audio referensi (default: auto via Whisper)")
-    parser.add_argument("--engine", default="f5tts_indo_v2")
+    parser.add_argument("--engine", default="f5tts_indo_v2", help="TTS Engine ('edge_tts' atau 'f5tts_indo_v2')")
     parser.add_argument("--dry-run", action="store_true", help="Tampilkan perubahan tanpa commit ke DB")
     args = parser.parse_args()
+
+    if args.engine == "edge_tts":
+        db = SessionLocal()
+        try:
+            avatars = db.query(InterviewAvatar).all()
+            print(f"Mengembalikan {len(avatars)} avatar ke edge_tts...")
+            for avatar in avatars:
+                print(f"  - {avatar.id} ({avatar.name}): {avatar.ttsEngine} -> edge_tts")
+                if not args.dry_run:
+                    avatar.ttsEngine = "edge_tts"
+            if not args.dry_run:
+                db.commit()
+            print("Konfigurasi edge_tts berhasil diterapkan.")
+            sys.exit(0)
+        finally:
+            db.close()
+
+    if not args.ref_audio:
+        print("ERROR: --ref-audio wajib diisi untuk engine 'f5tts_indo_v2'.")
+        sys.exit(1)
 
     lowered = args.ref_audio.lower()
     if any(tok in lowered for tok in FORBIDDEN_TOKENS):
