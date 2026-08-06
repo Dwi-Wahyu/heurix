@@ -41,6 +41,7 @@ class Settings(BaseSettings):
     F5TTS_MODEL_PATH: str = ""
     F5TTS_VOCAB_PATH: str = ""
     F5TTS_DEVICE: str = "cpu"          # "cpu" atau "cuda"
+    F5TTS_NFE_STEP: int = 16           # Number of function evaluation steps (8-16 untuk CPU super cepat, 32 default)
     F5TTS_DEFAULT_ENGINE: str = "edge_tts"  # default engine kalau avatar tidak set apa-apa
     F5TTS_REFERENCE_AUDIO_DIR: str = "reference_audio"
 

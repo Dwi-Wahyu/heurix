@@ -260,7 +260,7 @@
       "label": ".__init__()",
       "file_type": "code",
       "source_file": "backend/app/core/config.py",
-      "source_location": "L47",
+      "source_location": "L48",
       "_origin": "ast",
       "community": 60,
       "community_name": "config.py",
@@ -271,7 +271,7 @@
       "label": "Config",
       "file_type": "code",
       "source_file": "backend/app/core/config.py",
-      "source_location": "L54",
+      "source_location": "L55",
       "_origin": "ast",
       "community": 60,
       "community_name": "config.py",
@@ -953,7 +953,7 @@
       "label": "synthesize_async()",
       "file_type": "code",
       "source_file": "backend/app/services/f5tts_service.py",
-      "source_location": "L78",
+      "source_location": "L79",
       "_origin": "ast",
       "community": 63,
       "community_name": "f5tts_service.py",
@@ -997,12 +997,12 @@
       "label": "Versi asinkron dari synthesize() yang memindahkan CPU inference ke thread pool",
       "file_type": "rationale",
       "source_file": "backend/app/services/f5tts_service.py",
-      "source_location": "L79",
+      "source_location": "L80",
       "_origin": "ast",
       "community": 63,
       "community_name": "f5tts_service.py",
       "norm_label": "versi asinkron dari synthesize() yang memindahkan cpu inference ke thread pool",
-      "id": "backend_app_services_f5tts_service_rationale_79"
+      "id": "backend_app_services_f5tts_service_rationale_80"
     },
     {
       "label": "speech.py",
@@ -15374,7 +15374,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "backend/app/core/config.py",
-      "source_location": "L54",
+      "source_location": "L55",
       "weight": 1.0,
       "_origin": "ast",
       "confidence_score": 1.0,
@@ -15408,7 +15408,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/app/core/config.py",
-      "source_location": "L50",
+      "source_location": "L51",
       "weight": 1.0,
       "_origin": "ast",
       "confidence_score": 1.0,
@@ -15419,7 +15419,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "backend/app/core/config.py",
-      "source_location": "L47",
+      "source_location": "L48",
       "weight": 1.0,
       "_origin": "ast",
       "confidence_score": 1.0,
@@ -17078,7 +17078,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "backend/app/services/f5tts_service.py",
-      "source_location": "L78",
+      "source_location": "L79",
       "weight": 1.0,
       "_origin": "ast",
       "confidence_score": 1.0,
@@ -17147,7 +17147,7 @@
       "context": "argument",
       "confidence": "INFERRED",
       "source_file": "backend/app/services/f5tts_service.py",
-      "source_location": "L83",
+      "source_location": "L84",
       "weight": 1.0,
       "_origin": "ast",
       "confidence_score": 0.5,
@@ -17158,11 +17158,11 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/app/services/f5tts_service.py",
-      "source_location": "L79",
+      "source_location": "L80",
       "weight": 1.0,
       "_origin": "ast",
       "confidence_score": 1.0,
-      "source": "backend_app_services_f5tts_service_rationale_79",
+      "source": "backend_app_services_f5tts_service_rationale_80",
       "target": "backend_app_services_f5tts_service_synthesize_async"
     },
     {
@@ -35603,5 +35603,5 @@
       "source_file": "instruction/implementasi-alur-percakapan.md"
     }
   ],
-  "built_at_commit": "bd070857b956a015f8f3034aebc8a2a539415d71"
+  "built_at_commit": "877a5f0e41ace9b7c1b248711ce90c39b23889b4"
 }

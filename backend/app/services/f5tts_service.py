@@ -65,6 +65,7 @@ def synthesize(text: str, ref_audio_path: str, ref_text: str, speed: float = 1.0
         ref_file=ref_audio_path,
         ref_text=ref_text,
         gen_text=text,
+        nfe_step=getattr(settings, "F5TTS_NFE_STEP", 16),
         speed=speed,
         remove_silence=True,
     )
