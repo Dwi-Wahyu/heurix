@@ -4,12 +4,12 @@
 - cluster-only mode — file stats not available
 
 ## Summary
-- 1311 nodes · 1836 edges · 142 communities (87 shown, 55 thin omitted)
+- 1312 nodes · 1837 edges · 144 communities (89 shown, 55 thin omitted)
 - Extraction: 96% EXTRACTED · 4% INFERRED · 0% AMBIGUOUS · INFERRED: 75 edges (avg confidence: 0.79)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `5ee744b5`
+- Built from commit: `d5396495`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -26,6 +26,7 @@
 - Instruksi Lanjutan: Ganti Avatar 2D dengan Audio Bar Visualizer
 - 2. Rincian Perubahan File
 - utils.ts
+- $app/navigation
 - Path and Directory Management
 - schema.ts
 - visemeMap.ts
@@ -33,6 +34,7 @@
 - auth.ts
 - 2. Implemented Fixes & Changes
 - scripts
+- auth.schema.ts
 - +page.svelte
 - $lib/components/Header.svelte
 - vision_wasm_module_internal.js
@@ -163,7 +165,7 @@
 - **AI Interview Simulation Flow** — interview_agent, face_animator, heurix_backend, heurix_frontend [INFERRED 0.85]
 - **Interview Session Logic & Flow** — backend_app_services_brain, backend_app_api_websocket, instruction_implementasi_alur_percakapan [EXTRACTED 1.00]
 
-## Communities (142 total, 55 thin omitted)
+## Communities (144 total, 55 thin omitted)
 
 ### Community 0 - "brain.py"
 Cohesion: 0.06
@@ -205,13 +207,17 @@ Nodes (9): ⚠️ 5 Hal Penting Soal Kompatibilitas (WAJIB dibaca dulu), Checkli
 Cohesion: 0.20
 Nodes (9): 1. Ringkasan Eksekutif, 2. Rincian Perubahan File, 3. Hasil Verifikasi & Build, 4. Protokol Pasca-Implementasi (POST IMPLEMENTATION PROTOCOL), A. Komponen Visualizer Baru, B. Refactoring `lipSync.ts`, C. Update `session/interview/+page.svelte`, D. Pembersihan File Unused (+1 more)
 
+### Community 12 - "$app/navigation"
+Cohesion: 0.20
+Nodes (7): $lib/auth-client, $lib/auth-client, authClient, $lib/assets/dimensi-komunikasi.png?enhanced, $lib/assets/logo.png?enhanced, $lib/assets/simulasi-selesai.png?enhanced, $app/navigation
+
 ### Community 13 - "Path and Directory Management"
 Cohesion: 0.07
 Nodes (30): analyzePath(), calculateAt(), createDataFile(), createDevice(), createFile(), createPath(), lookupPath(), mkdirTree() (+22 more)
 
 ### Community 14 - "schema.ts"
-Cohesion: 0.08
-Nodes (27): account, accountRelations, session, sessionRelations, user, userRelations, verification, difficultyEnum (+19 more)
+Cohesion: 0.10
+Nodes (20): difficultyEnum, interviewAvatar, interviewAvatarRelations, interviewSession, interviewSessionRelations, interviewTrackEnum, masterInstitution, masterInstitutionRelations (+12 more)
 
 ### Community 15 - "visemeMap.ts"
 Cohesion: 0.38
@@ -222,8 +228,8 @@ Cohesion: 0.04
 Nodes (47): @better-auth/cli, drizzle-kit, drizzle-orm, @faker-js/faker, devDependencies, @better-auth/cli, drizzle-kit, drizzle-orm (+39 more)
 
 ### Community 17 - "auth.ts"
-Cohesion: 0.13
-Nodes (6): $lib/auth-client, authClient, auth, GET, POST, actions
+Cohesion: 0.14
+Nodes (4): auth, GET, POST, actions
 
 ### Community 18 - "2. Implemented Fixes & Changes"
 Cohesion: 0.17
@@ -233,13 +239,17 @@ Nodes (11): 1. Executive Summary, 2. Implemented Fixes & Changes, 3. Summary of 
 Cohesion: 0.05
 Nodes (43): better-auth, @better-auth/core, face-api.js, groq-sdk, @mediapipe/tasks-vision, dependencies, better-auth, @better-auth/core (+35 more)
 
+### Community 20 - "auth.schema.ts"
+Cohesion: 0.25
+Nodes (7): account, accountRelations, session, sessionRelations, user, userRelations, verification
+
 ### Community 21 - "+page.svelte"
-Cohesion: 0.23
-Nodes (6): $lib/auth-client, $app/environment, $app/navigation, $env/static/public, @mediapipe/tasks-vision, svelte/transition
+Cohesion: 0.38
+Nodes (4): $app/environment, $env/static/public, $app/state, @mediapipe/tasks-vision
 
 ### Community 22 - "$lib/components/Header.svelte"
-Cohesion: 0.17
-Nodes (9): $lib/components/BottomNav.svelte, $lib/components/Header.svelte, $lib/components/Sidebar.svelte, $lib/sidebar.svelte, sidebarState, string, $lib/assets/login-art.png?enhanced, $lib/assets/logo.png?enhanced (+1 more)
+Cohesion: 0.18
+Nodes (7): $lib/components/BottomNav.svelte, $lib/components/Header.svelte, $lib/components/Sidebar.svelte, $lib/sidebar.svelte, sidebarState, string, svelte/transition
 
 ### Community 27 - "vision_wasm_module_internal.js"
 Cohesion: 0.10
@@ -366,7 +376,7 @@ Cohesion: 0.14
 Nodes (13): 1.1 Apa yang bisa diaudit secara statis vs. yang butuh runtime, 1.2 Audit Database & Skema (4.2), 1.3 Temuan arsitektur penting (memengaruhi cara APE diimplementasikan), 1. Laporan Audit, 2. Daftar File yang Diubah, 3. Migration Script, 4.1 `speech.py` — parameter speed/pitch, 4.2 `brain.py` — SRI, pressure level, weakness tags, scenario config (+5 more)
 
 ### Community 72 - "index.ts"
-Cohesion: 0.23
+Cohesion: 0.27
 Nodes (3): client, db, userProfile
 
 ### Community 73 - "+page.svelte"
@@ -410,7 +420,7 @@ Cohesion: 0.50
 Nodes (3): "interview_session", "session_report", "user_profile"
 
 ## Knowledge Gaps
-- **298 isolated node(s):** `Config`, `user_profile`, `interview_session`, `session_report`, `interviewTrackEnum` (+293 more)
+- **299 isolated node(s):** `Config`, `user_profile`, `interview_session`, `session_report`, `interviewTrackEnum` (+294 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **55 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
@@ -426,7 +436,7 @@ _Questions this graph is uniquely positioned to answer:_
 - **Are the 8 inferred relationships involving `send_next_question_stream()` (e.g. with `InterviewAvatar` and `MasterInstitution`) actually correct?**
   _`send_next_question_stream()` has 8 INFERRED edges - model-reasoned connections that need verification._
 - **What connects `Config`, `user_profile`, `interview_session` to the rest of the system?**
-  _298 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _299 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `brain.py` be split into smaller, more focused modules?**
   _Cohesion score 0.060655737704918035 - nodes in this community are weakly interconnected._
 - **Should `vision_wasm_internal.js` be split into smaller, more focused modules?**

@@ -830,26 +830,61 @@
 
 	<main class="relative flex flex-1 flex-col overflow-hidden md:block md:h-full md:w-full">
 		<section
-			class="group relative z-0 h-full w-full overflow-hidden bg-inverse-surface md:absolute md:inset-0"
+			class="group relative z-0 h-full w-full overflow-hidden bg-black md:absolute md:inset-0"
 		>
-			<!-- Background Image -->
-			<!-- Background Image -->
-			{#if avatarReady}
-				<div
-					class="absolute inset-0 z-[-1] bg-cover bg-center transition-opacity duration-1000"
-					style="background-image: url('{avatarBackground}');"
-					transition:fade
-				>
-					<div class="absolute inset-0 bg-black/20 backdrop-blur-[2px]"></div>
-				</div>
-			{/if}
+			<!-- Fullscreen User Camera -->
+			<div class="absolute inset-0 z-0 h-full w-full overflow-hidden bg-gray-950">
+				<video
+					bind:this={videoElementDesktop}
+					autoplay
+					playsinline
+					muted
+					class="hidden h-full w-full object-cover md:block {camOff ? 'invisible' : ''}"
+				></video>
+				<video
+					bind:this={videoElementMobile}
+					autoplay
+					playsinline
+					muted
+					class="h-full w-full object-cover md:hidden {camOff ? 'invisible' : ''}"
+				></video>
 
+				{#if camOff}
+					<div
+						class="absolute inset-0 flex flex-col items-center justify-center bg-gray-950 text-white/60"
+					>
+						<VideoOff size={48} />
+						<p class="mt-3 text-sm font-medium">Kamera Anda dimatikan</p>
+					</div>
+				{/if}
+			</div>
+
+			<!-- Top-Left Card: Audio Bar Visualizer (Pewawancara Waveform) -->
 			<div
-				class="absolute inset-0 flex items-center justify-center transition-opacity duration-500 {avatarReady
+				class="absolute top-14 left-3 z-20 transition-opacity duration-500 md:top-16 md:left-4 {avatarReady
 					? 'opacity-100'
 					: 'opacity-0'}"
 			>
-				<OutputBarVisualizer />
+				<div
+					class="flex flex-col gap-2 rounded-2xl border border-white/15 bg-black/60 p-3 shadow-2xl backdrop-blur-xl md:p-3.5"
+				>
+					<div class="flex items-center gap-2.5">
+						<div
+							class="flex h-7 w-7 items-center justify-center rounded-full border border-primary/40 bg-primary/20"
+						>
+							<Bot size={15} class="text-primary-light" />
+						</div>
+						<div class="flex flex-col">
+							<span class="text-xs font-bold text-white">{avatarName || 'Pewawancara'}</span>
+							<span class="text-[10px] font-medium text-white/60">
+								{isSpeaking ? 'Sedang berbicara...' : 'Mendengarkan'}
+							</span>
+						</div>
+					</div>
+					<div class="h-10 w-48 md:w-56">
+						<OutputBarVisualizer />
+					</div>
+				</div>
 			</div>
 
 			{#if audioBlocked}
@@ -962,44 +997,6 @@
 							{timeDisplay()}
 						</span>
 					</div>
-				</div>
-			</div>
-
-			<div
-				class="absolute right-6 bottom-28 z-20 h-40 w-28 overflow-hidden rounded-xl border border-white/20 shadow-2xl transition-transform duration-300 md:bottom-28 md:left-6 md:h-52 md:w-36 lg:h-64 lg:w-48"
-			>
-				<video
-					bind:this={videoElementDesktop}
-					autoplay
-					playsinline
-					muted
-					class="hidden h-full w-full object-cover md:block {camOff ? 'invisible' : ''}"
-				></video>
-				<video
-					bind:this={videoElementMobile}
-					autoplay
-					playsinline
-					muted
-					class="h-full w-full object-cover md:hidden {camOff ? 'invisible' : ''}"
-				></video>
-
-				{#if camOff}
-					<div
-						class="absolute inset-0 flex flex-col items-center justify-center bg-black/80 text-white/60"
-					>
-						<VideoOff size={28} />
-						<p class="mt-1 text-[8px] md:text-[10px]">Kamera mati</p>
-					</div>
-				{/if}
-				<div
-					class="absolute bottom-1.5 left-1.5 flex items-center gap-1 rounded bg-black/60 px-1.5 py-0.5 backdrop-blur-sm md:bottom-2 md:left-2 md:rounded-md md:px-2 md:py-1"
-				>
-					{#if micMuted}
-						<MicOff size={11} class="text-red-400" />
-					{:else}
-						<Mic size={11} class="text-white" />
-					{/if}
-					<span class="text-[9px] text-white md:text-[11px]">Kamu</span>
 				</div>
 			</div>
 		</section>

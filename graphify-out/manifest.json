@@ -275,9 +275,9 @@
     "semantic_hash": "1675904410da6cc7fdd303b38b0fb6aa"
   },
   "frontend/src/routes/login/+page.svelte": {
-    "mtime": 1778967245.6825795,
-    "ast_hash": "fa634a629fc0ae914e4e93a8d6c6c06e",
-    "semantic_hash": "fa634a629fc0ae914e4e93a8d6c6c06e"
+    "mtime": 1786011950.7440922,
+    "ast_hash": "316fd0c83da1cf3c5e1239788e4cbe60",
+    "semantic_hash": ""
   },
   "frontend/src/routes/logout/+page.server.ts": {
     "mtime": 1777925574.6020017,
@@ -330,8 +330,8 @@
     "semantic_hash": ""
   },
   "frontend/src/routes/session/interview/+page.svelte": {
-    "mtime": 1785978946.1382873,
-    "ast_hash": "b6d4d0c17000857d5ac4c9a4d99ce709",
+    "mtime": 1786012090.8761442,
+    "ast_hash": "4fd3a935c2421aebbab68e8690a02f96",
     "semantic_hash": ""
   },
   "frontend/src/routes/session/interview/+page.ts": {
@@ -855,8 +855,8 @@
     "semantic_hash": ""
   },
   "frontend/src/lib/OutputBarVisualizer.svelte": {
-    "mtime": 1785978930.1341658,
-    "ast_hash": "59cb5cbcf4b4edc27480a33af25f187c",
+    "mtime": 1786012080.4940662,
+    "ast_hash": "06fbe9c1b8667f7fbff21fb5e3300135",
     "semantic_hash": ""
   },
   "frontend/src/lib/visualizations/core/BarVisualizer.svelte": {
@@ -877,6 +877,21 @@
   "instruction/INSTRUKSI_GANTI_AVATAR_KE_BAR_VISUALIZER.md": {
     "mtime": 1785978835.1437294,
     "ast_hash": "5c594ca78c3ea3cad1fbc648a6c62912",
+    "semantic_hash": ""
+  },
+  "frontend/src/lib/assets/dimensi-komunikasi.png": {
+    "mtime": 1786011655.275873,
+    "ast_hash": "109376f1d229c1ea4ec4df81267d4045",
+    "semantic_hash": ""
+  },
+  "frontend/src/lib/assets/mockup-hasil-sesi.png": {
+    "mtime": 1786011433.639199,
+    "ast_hash": "bf3c67ff5d390c3ce0466853b6e9822b",
+    "semantic_hash": ""
+  },
+  "frontend/src/lib/assets/simulasi-selesai.png": {
+    "mtime": 1786011673.3043408,
+    "ast_hash": "6f1518772a71076df324401cce57fee6",
     "semantic_hash": ""
   }
 }

@@ -3,7 +3,8 @@
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
 	import logo from '$lib/assets/logo.png?enhanced';
-	import loginArt from '$lib/assets/login-art.png?enhanced';
+	import simulasiSelesai from '$lib/assets/simulasi-selesai.png?enhanced';
+	import dimensiKomunikasi from '$lib/assets/dimensi-komunikasi.png?enhanced';
 
 	let activeTab = $state(page.url.searchParams.get('tab') === 'register' ? 'register' : 'login');
 	let email = $state('');
@@ -73,7 +74,7 @@
 				class="z-10 w-full max-w-110 overflow-hidden rounded-lg bg-white shadow-lg transition-all duration-300"
 			>
 				<!-- Tabs -->
-				<div class="flex border-b border-outline-variant">
+				<div class="flex">
 					<button
 						class="flex-1 px-4 py-3 font-label-bold text-label-bold transition-colors {activeTab ===
 						'register'
@@ -209,18 +210,42 @@
 	</div>
 
 	<!-- Right Panel: Decorative Image Panel -->
-	<div class="relative hidden bg-[#7a0c16] lg:block lg:w-1/2">
-		<!-- Fallback pattern background if image doesn't exist -->
+	<div
+		class="relative hidden flex-1 items-center justify-center overflow-hidden bg-gradient-to-br from-[#850d18] via-[#7a0c16] to-[#54060e] p-8 lg:flex lg:w-1/2"
+	>
+		<!-- Subtle dot pattern background -->
 		<div
-			class="absolute inset-0 opacity-10"
-			style="background-image: radial-gradient(white 1px, transparent 1px); background-size: 20px 20px;"
+			class="absolute inset-0 opacity-15"
+			style="background-image: radial-gradient(white 1px, transparent 1px); background-size: 24px 24px;"
 		></div>
 
-		<!-- Main illustration/artwork specified by user (needs to be present in static folder) -->
-		<enhanced:img
-			src={loginArt}
-			alt="Heurix Dashboard Art"
-			class="absolute inset-0 h-full w-full object-cover object-center"
-		/>
+		<!-- Subtle ambient glow -->
+		<div class="absolute -top-24 -right-24 h-96 w-96 rounded-full bg-red-500/20 blur-3xl"></div>
+		<div class="absolute -bottom-24 -left-24 h-96 w-96 rounded-full bg-primary/20 blur-3xl"></div>
+
+		<!-- Mockup Container with Overlapping Cards -->
+		<div class="relative z-10 w-full max-w-xl p-4">
+			<!-- Background Mockup: Simulasi Selesai -->
+			<div
+				class="relative z-10 w-[82%] overflow-hidden rounded-2xl border border-white/20 bg-white/5 shadow-[0_20px_50px_rgba(0,0,0,0.5)] transition-all duration-300 hover:scale-[1.01]"
+			>
+				<enhanced:img
+					src={simulasiSelesai}
+					alt="Hasil Simulasi Interview Heurix"
+					class="h-auto w-full object-cover"
+				/>
+			</div>
+
+			<!-- Foreground Mockup: Dimensi Komunikasi (Overlapping Top-Right to Bottom-Right) -->
+			<div
+				class="relative z-20 -mt-36 ml-auto w-[82%] overflow-hidden rounded-2xl border border-white/25 bg-white/5 shadow-[0_25px_60px_rgba(0,0,0,0.6)] transition-all duration-300 hover:scale-[1.01]"
+			>
+				<enhanced:img
+					src={dimensiKomunikasi}
+					alt="Dimensi Komunikasi Interview Heurix"
+					class="h-auto w-full object-cover"
+				/>
+			</div>
+		</div>
 	</div>
 </main>

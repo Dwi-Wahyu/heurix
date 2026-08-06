@@ -30,6 +30,6 @@
   });
 </script>
 
-<div class="h-32 w-full max-w-md flex items-center justify-center p-4">
-  <BarVisualizer {values} color="#6366F1" barSpacing={4} center={true} />
+<div class="h-full w-full flex items-center justify-center">
+  <BarVisualizer {values} color="#818CF8" barSpacing={3} center={true} />
 </div>

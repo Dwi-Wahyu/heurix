@@ -2539,8 +2539,8 @@
       "source_file": "svelte/transition",
       "confidence": "EXTRACTED",
       "_origin": "ast",
-      "community": 21,
-      "community_name": "+page.svelte",
+      "community": 22,
+      "community_name": "$lib/components/Header.svelte",
       "norm_label": "svelte/transition",
       "id": "transition"
     },
@@ -2605,8 +2605,8 @@
       "source_file": "deliverables/patched_files/frontend/src/routes/session/disclaimer/+page.svelte",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 21,
-      "community_name": "+page.svelte",
+      "community": 12,
+      "community_name": "$app/navigation",
       "norm_label": "+page.svelte",
       "id": "deliverables_patched_files_frontend_src_routes_session_disclaimer_page"
     },
@@ -2616,8 +2616,8 @@
       "source_file": "$lib/auth-client",
       "confidence": "EXTRACTED",
       "_origin": "ast",
-      "community": 21,
-      "community_name": "+page.svelte",
+      "community": 12,
+      "community_name": "$app/navigation",
       "norm_label": "$lib/auth-client",
       "id": "auth_client"
     },
@@ -2627,8 +2627,8 @@
       "source_file": "$app/navigation",
       "confidence": "EXTRACTED",
       "_origin": "ast",
-      "community": 21,
-      "community_name": "+page.svelte",
+      "community": 12,
+      "community_name": "$app/navigation",
       "norm_label": "$app/navigation",
       "id": "navigation"
     },
@@ -3170,8 +3170,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "confidence": "EXTRACTED",
-      "community": 17,
-      "community_name": "auth.ts",
+      "community": 12,
+      "community_name": "$app/navigation",
       "norm_label": "$lib/auth-client",
       "id": "frontend_src_lib_auth_client"
     },
@@ -3181,8 +3181,8 @@
       "source_file": "frontend/src/lib/auth-client.ts",
       "source_location": "L5",
       "_origin": "ast",
-      "community": 17,
-      "community_name": "auth.ts",
+      "community": 12,
+      "community_name": "$app/navigation",
       "norm_label": "authclient",
       "id": "frontend_src_lib_auth_client_authclient"
     },
@@ -3204,8 +3204,8 @@
       "source_file": "$app/state",
       "confidence": "EXTRACTED",
       "_origin": "ast",
-      "community": 22,
-      "community_name": "$lib/components/Header.svelte",
+      "community": 21,
+      "community_name": "+page.svelte",
       "norm_label": "$app/state",
       "id": "state"
     },
@@ -3251,8 +3251,8 @@
       "source_file": "frontend/src/lib/assets/logo.png?enhanced",
       "confidence": "EXTRACTED",
       "_origin": "ast",
-      "community": 22,
-      "community_name": "$lib/components/Header.svelte",
+      "community": 12,
+      "community_name": "$app/navigation",
       "norm_label": "$lib/assets/logo.png?enhanced",
       "id": "home_dwiwahyuilahi_kuliah_gemastik_source_code_frontend_src_lib_assets_logo_png_enhanced"
     },
@@ -3428,8 +3428,8 @@
       "source_file": "frontend/src/lib/server/db/auth.schema.ts",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 14,
-      "community_name": "schema.ts",
+      "community": 20,
+      "community_name": "auth.schema.ts",
       "norm_label": "auth.schema.ts",
       "id": "frontend_src_lib_server_db_auth_schema"
     },
@@ -3439,8 +3439,8 @@
       "source_file": "frontend/src/lib/server/db/auth.schema.ts",
       "source_location": "L4",
       "_origin": "ast",
-      "community": 14,
-      "community_name": "schema.ts",
+      "community": 20,
+      "community_name": "auth.schema.ts",
       "norm_label": "user",
       "id": "frontend_src_lib_server_db_auth_schema_user"
     },
@@ -3450,8 +3450,8 @@
       "source_file": "frontend/src/lib/server/db/auth.schema.ts",
       "source_location": "L17",
       "_origin": "ast",
-      "community": 14,
-      "community_name": "schema.ts",
+      "community": 20,
+      "community_name": "auth.schema.ts",
       "norm_label": "session",
       "id": "frontend_src_lib_server_db_auth_schema_session"
     },
@@ -3461,8 +3461,8 @@
       "source_file": "frontend/src/lib/server/db/auth.schema.ts",
       "source_location": "L36",
       "_origin": "ast",
-      "community": 14,
-      "community_name": "schema.ts",
+      "community": 20,
+      "community_name": "auth.schema.ts",
       "norm_label": "account",
       "id": "frontend_src_lib_server_db_auth_schema_account"
     },
@@ -3472,8 +3472,8 @@
       "source_file": "frontend/src/lib/server/db/auth.schema.ts",
       "source_location": "L60",
       "_origin": "ast",
-      "community": 14,
-      "community_name": "schema.ts",
+      "community": 20,
+      "community_name": "auth.schema.ts",
       "norm_label": "verification",
       "id": "frontend_src_lib_server_db_auth_schema_verification"
     },
@@ -3483,8 +3483,8 @@
       "source_file": "frontend/src/lib/server/db/auth.schema.ts",
       "source_location": "L76",
       "_origin": "ast",
-      "community": 14,
-      "community_name": "schema.ts",
+      "community": 20,
+      "community_name": "auth.schema.ts",
       "norm_label": "userrelations",
       "id": "frontend_src_lib_server_db_auth_schema_userrelations"
     },
@@ -3494,8 +3494,8 @@
       "source_file": "frontend/src/lib/server/db/auth.schema.ts",
       "source_location": "L81",
       "_origin": "ast",
-      "community": 14,
-      "community_name": "schema.ts",
+      "community": 20,
+      "community_name": "auth.schema.ts",
       "norm_label": "sessionrelations",
       "id": "frontend_src_lib_server_db_auth_schema_sessionrelations"
     },
@@ -3505,8 +3505,8 @@
       "source_file": "frontend/src/lib/server/db/auth.schema.ts",
       "source_location": "L88",
       "_origin": "ast",
-      "community": 14,
-      "community_name": "schema.ts",
+      "community": 20,
+      "community_name": "auth.schema.ts",
       "norm_label": "accountrelations",
       "id": "frontend_src_lib_server_db_auth_schema_accountrelations"
     },
@@ -4143,8 +4143,8 @@
       "source_file": "frontend/src/routes/+page.svelte",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 21,
-      "community_name": "+page.svelte",
+      "community": 12,
+      "community_name": "$app/navigation",
       "norm_label": "+page.svelte",
       "id": "frontend_src_routes_page"
     },
@@ -4275,21 +4275,32 @@
       "source_file": "frontend/src/routes/login/+page.svelte",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 22,
-      "community_name": "$lib/components/Header.svelte",
+      "community": 12,
+      "community_name": "$app/navigation",
       "norm_label": "+page.svelte",
       "id": "frontend_src_routes_login_page"
     },
     {
-      "label": "$lib/assets/login-art.png?enhanced",
+      "label": "$lib/assets/simulasi-selesai.png?enhanced",
       "file_type": "code",
-      "source_file": "frontend/src/lib/assets/login-art.png?enhanced",
+      "source_file": "frontend/src/lib/assets/simulasi-selesai.png?enhanced",
       "confidence": "EXTRACTED",
       "_origin": "ast",
-      "community": 22,
-      "community_name": "$lib/components/Header.svelte",
-      "norm_label": "$lib/assets/login-art.png?enhanced",
-      "id": "home_dwiwahyuilahi_kuliah_gemastik_source_code_frontend_src_lib_assets_login_art_png_enhanced"
+      "community": 12,
+      "community_name": "$app/navigation",
+      "norm_label": "$lib/assets/simulasi-selesai.png?enhanced",
+      "id": "home_dwiwahyuilahi_kuliah_gemastik_source_code_frontend_src_lib_assets_simulasi_selesai_png_enhanced"
+    },
+    {
+      "label": "$lib/assets/dimensi-komunikasi.png?enhanced",
+      "file_type": "code",
+      "source_file": "frontend/src/lib/assets/dimensi-komunikasi.png?enhanced",
+      "confidence": "EXTRACTED",
+      "_origin": "ast",
+      "community": 12,
+      "community_name": "$app/navigation",
+      "norm_label": "$lib/assets/dimensi-komunikasi.png?enhanced",
+      "id": "home_dwiwahyuilahi_kuliah_gemastik_source_code_frontend_src_lib_assets_dimensi_komunikasi_png_enhanced"
     },
     {
       "label": "+page.server.ts",
@@ -4517,8 +4528,8 @@
       "source_file": "frontend/src/routes/session/disclaimer/+page.svelte",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 17,
-      "community_name": "auth.ts",
+      "community": 12,
+      "community_name": "$app/navigation",
       "norm_label": "+page.svelte",
       "id": "frontend_src_routes_session_disclaimer_page"
     },
@@ -4660,8 +4671,8 @@
       "source_file": "frontend/src/routes/session/select-avatar/+page.server.ts",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 72,
-      "community_name": "index.ts",
+      "community": 17,
+      "community_name": "auth.ts",
       "norm_label": "+page.server.ts",
       "id": "frontend_src_routes_session_select_avatar_page_server"
     },
@@ -4671,8 +4682,8 @@
       "source_file": "frontend/src/routes/session/select-avatar/+page.server.ts",
       "source_location": "L7",
       "_origin": "ast",
-      "community": 72,
-      "community_name": "index.ts",
+      "community": 17,
+      "community_name": "auth.ts",
       "norm_label": "load()",
       "id": "frontend_src_routes_session_select_avatar_page_server_load"
     },
@@ -4682,8 +4693,8 @@
       "source_file": "frontend/src/routes/session/select-avatar/+page.svelte",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 21,
-      "community_name": "+page.svelte",
+      "community": 22,
+      "community_name": "$lib/components/Header.svelte",
       "norm_label": "+page.svelte",
       "id": "frontend_src_routes_session_select_avatar_page"
     },
@@ -21854,7 +21865,16 @@
       "_origin": "ast",
       "confidence_score": 1.0,
       "source": "frontend_src_routes_login_page",
-      "target": "home_dwiwahyuilahi_kuliah_gemastik_source_code_frontend_src_lib_assets_login_art_png_enhanced"
+      "target": "home_dwiwahyuilahi_kuliah_gemastik_source_code_frontend_src_lib_assets_dimensi_komunikasi_png_enhanced"
+    },
+    {
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/routes/login/+page.svelte",
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "frontend_src_routes_login_page",
+      "target": "home_dwiwahyuilahi_kuliah_gemastik_source_code_frontend_src_lib_assets_simulasi_selesai_png_enhanced"
     },
     {
       "relation": "contains",
@@ -35118,5 +35138,5 @@
       "source_file": "instruction/implementasi-alur-percakapan.md"
     }
   ],
-  "built_at_commit": "5ee744b5490aedc347d00b0353ef3567a20f87eb"
+  "built_at_commit": "d5396495b47561d2c20896d98f4413b3295d4eed"
 }
