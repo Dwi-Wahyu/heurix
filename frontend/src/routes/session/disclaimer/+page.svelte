@@ -98,14 +98,6 @@
 		document.body.style.height = '';
 
 		requestPermissions();
-
-		// Preload GLB model in the background
-		// This ensures the model is cached by the browser and ready for the interview
-		const link = document.createElement('link');
-		link.rel = 'prefetch';
-		link.href = `/${avatar.glbUrl}`;
-		link.as = 'fetch';
-		document.head.appendChild(link);
 	});
 
 	onDestroy(() => {
