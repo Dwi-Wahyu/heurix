@@ -12,7 +12,7 @@ def main():
         description="Terapkan konfigurasi voice cloning F5-TTS ke SEMUA avatar aktif."
     )
     parser.add_argument("--ref-audio", required=True, help="Path ke file audio referensi milik sendiri")
-    parser.add_argument("--ref-text", required=True, help="Transkrip PERSIS dari audio referensi")
+    parser.add_argument("--ref-text", default="auto", help="Transkrip PERSIS dari audio referensi (default: auto via Whisper)")
     parser.add_argument("--engine", default="f5tts_indo_v2")
     parser.add_argument("--dry-run", action="store_true", help="Tampilkan perubahan tanpa commit ke DB")
     args = parser.parse_args()
@@ -32,6 +32,17 @@ def main():
         print(f"DITOLAK: file '{args.ref_audio}' tidak ditemukan di filesystem (dicoba juga: '{ref_audio_path}').")
         sys.exit(1)
 
+    ref_text = args.ref_text
+    if not ref_text or ref_text.strip().lower() in ("auto", "transkrip persis apa yang diucapkan di file wav ini"):
+        print(f"Mengurai transkrip otomatis dari '{ref_audio_path}' menggunakan Whisper...")
+        from app.services.transcriber import transcriber
+        ref_text, _, _ = transcriber.transcribe_and_detect_fillers(ref_audio_path)
+        print(f"Transkrip terdeteksi: '{ref_text}'")
+
+    if not ref_text:
+        print("ERROR: Transkrip kosong.")
+        sys.exit(1)
+
     db = SessionLocal()
     try:
         avatars = db.query(InterviewAvatar).all()
@@ -41,7 +52,7 @@ def main():
             if not args.dry_run:
                 avatar.ttsEngine = args.engine
                 avatar.ttsReferenceAudioPath = args.ref_audio
-                avatar.ttsReferenceText = args.ref_text
+                avatar.ttsReferenceText = ref_text
 
         if args.dry_run:
             print("Dry-run, tidak ada perubahan disimpan.")

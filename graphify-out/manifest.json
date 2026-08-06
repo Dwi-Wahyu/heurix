@@ -785,8 +785,8 @@
     "semantic_hash": ""
   },
   "backend/scripts/set_avatar_voice_config.py": {
-    "mtime": 1786015132.2609305,
-    "ast_hash": "0116410904615069bb2ec29d32fad0b2",
+    "mtime": 1786016057.3017585,
+    "ast_hash": "b0407fea2b4355e482296a87bb822ff5",
     "semantic_hash": ""
   },
   "backend/scripts/test_f5tts_integration.py": {

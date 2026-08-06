@@ -16391,7 +16391,7 @@
       "confidence": "INFERRED",
       "confidence_score": 0.8,
       "source_file": "backend/scripts/set_avatar_voice_config.py",
-      "source_location": "L37",
+      "source_location": "L48",
       "weight": 1.0,
       "_origin": "ast",
       "source": "backend_scripts_set_avatar_voice_config_main",
@@ -35615,5 +35615,5 @@
       "source_file": "instruction/implementasi-alur-percakapan.md"
     }
   ],
-  "built_at_commit": "32a98f391282d2bd214a7df140c63ca75f2dcba4"
+  "built_at_commit": "3fe1a4520fc11002c9849335e119dc0dad5f0664"
 }
