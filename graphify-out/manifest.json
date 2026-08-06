@@ -144,30 +144,10 @@
     "ast_hash": "cde9bc0ddebd5ed3710194c388281195",
     "semantic_hash": "cde9bc0ddebd5ed3710194c388281195"
   },
-  "frontend/src/lib/Avatar.svelte": {
-    "mtime": 1777266785.1424477,
-    "ast_hash": "a2811101aee025c702b3b1c782b58373",
-    "semantic_hash": "a2811101aee025c702b3b1c782b58373"
-  },
-  "frontend/src/lib/FaceAnimator.ts": {
-    "mtime": 1777930874.3619092,
-    "ast_hash": "969b21833dbee307fb224ef883ff8bb5",
-    "semantic_hash": "969b21833dbee307fb224ef883ff8bb5"
-  },
   "frontend/src/lib/auth-client.ts": {
     "mtime": 1777877339.1214135,
     "ast_hash": "3d3f7c92bb91c0239912f65f44209023",
     "semantic_hash": "3d3f7c92bb91c0239912f65f44209023"
-  },
-  "frontend/src/lib/autoBlink.ts": {
-    "mtime": 1777514270.7814028,
-    "ast_hash": "a8410dca65eab4e54cd89fa5767ae85e",
-    "semantic_hash": "a8410dca65eab4e54cd89fa5767ae85e"
-  },
-  "frontend/src/lib/avatarCache.ts": {
-    "mtime": 1777930575.504338,
-    "ast_hash": "0b7129d02537c2cde65c11c9f88e53e4",
-    "semantic_hash": "0b7129d02537c2cde65c11c9f88e53e4"
   },
   "frontend/src/lib/components/BottomNav.svelte": {
     "mtime": 1778141163.2481859,
@@ -190,14 +170,14 @@
     "semantic_hash": "4f93dacf5bfff83aa652cd7e4560b54b"
   },
   "frontend/src/lib/index.ts": {
-    "mtime": 1777514352.2420535,
-    "ast_hash": "1b32d0065446262033ac838055c5b732",
-    "semantic_hash": "1b32d0065446262033ac838055c5b732"
+    "mtime": 1785978955.3723574,
+    "ast_hash": "383ff5d0690b2128c2c6cdd9b23ba603",
+    "semantic_hash": ""
   },
   "frontend/src/lib/lipSync.ts": {
-    "mtime": 1778923364.9135554,
-    "ast_hash": "cde6932caf4da237b709a4f42d3e3c2d",
-    "semantic_hash": "cde6932caf4da237b709a4f42d3e3c2d"
+    "mtime": 1785978927.1631432,
+    "ast_hash": "75e25e1c78ceab12347371bdf5295129",
+    "semantic_hash": ""
   },
   "frontend/src/lib/pwa.svelte.ts": {
     "mtime": 1778104709.774537,
@@ -248,11 +228,6 @@
     "mtime": 1778141389.0584688,
     "ast_hash": "f6f9ae64b00518d69524b566327ff711",
     "semantic_hash": "f6f9ae64b00518d69524b566327ff711"
-  },
-  "frontend/src/lib/visemeController.ts": {
-    "mtime": 1777514232.1700497,
-    "ast_hash": "bab9c6ef7ba28e25f83af3e172f7b542",
-    "semantic_hash": "bab9c6ef7ba28e25f83af3e172f7b542"
   },
   "frontend/src/lib/visemeMap.ts": {
     "mtime": 1778085018.5530787,
@@ -355,8 +330,8 @@
     "semantic_hash": ""
   },
   "frontend/src/routes/session/interview/+page.svelte": {
-    "mtime": 1784801434.3464518,
-    "ast_hash": "88900663f21d1926673d2459385e0a84",
+    "mtime": 1785978946.1382873,
+    "ast_hash": "b6d4d0c17000857d5ac4c9a4d99ce709",
     "semantic_hash": ""
   },
   "frontend/src/routes/session/interview/+page.ts": {
@@ -388,21 +363,6 @@
     "mtime": 1778682893.9927666,
     "ast_hash": "0e5cc32ca43d76866aed5fb8016fb86b",
     "semantic_hash": "0e5cc32ca43d76866aed5fb8016fb86b"
-  },
-  "frontend/static/draco/draco_decoder.js": {
-    "mtime": 1777513138.8688052,
-    "ast_hash": "5fcad04db3893d9fbb79418b1f8e44a1",
-    "semantic_hash": "5fcad04db3893d9fbb79418b1f8e44a1"
-  },
-  "frontend/static/draco/draco_encoder.js": {
-    "mtime": 1777513138.8758051,
-    "ast_hash": "b3c687f18f58015e032d5d4b5c5c33e8",
-    "semantic_hash": "b3c687f18f58015e032d5d4b5c5c33e8"
-  },
-  "frontend/static/draco/draco_wasm_wrapper.js": {
-    "mtime": 1777513138.8778052,
-    "ast_hash": "7a48a3fdc5785631621f4b20cd0937dc",
-    "semantic_hash": "7a48a3fdc5785631621f4b20cd0937dc"
   },
   "frontend/static/wasm/vision_wasm_internal.js": {
     "mtime": 1776116744.5706,
@@ -508,11 +468,6 @@
     "mtime": 1778927284.751873,
     "ast_hash": "2bfadfe0ba9e8171daca37feedb01500",
     "semantic_hash": "2bfadfe0ba9e8171daca37feedb01500"
-  },
-  "frontend/static/face/middle-aged-man/readme.txt": {
-    "mtime": 1777302967.7175863,
-    "ast_hash": "5a2a6a1fc279a0f16a17ac784b845493",
-    "semantic_hash": "5a2a6a1fc279a0f16a17ac784b845493"
   },
   "frontend/static/face/professional-man/instruction.md": {
     "mtime": 1777880444.3114376,
@@ -724,21 +679,6 @@
     "ast_hash": "0afc803cbdb288baf911cd0731bd4bd6",
     "semantic_hash": ""
   },
-  "frontend/static/face/middle-aged-man/Models/face-color-specular.jpg": {
-    "mtime": 1777302967.7090008,
-    "ast_hash": "6970d2b0974764927d0418723c898818",
-    "semantic_hash": ""
-  },
-  "frontend/static/face/middle-aged-man/Models/face-color.jpg": {
-    "mtime": 1777302967.711586,
-    "ast_hash": "5fa6736e4f4a3ea3fb820b6c8a22c574",
-    "semantic_hash": ""
-  },
-  "frontend/static/face/middle-aged-man/Models/face-norcolor2.jpg": {
-    "mtime": 1777302967.713586,
-    "ast_hash": "f1a90ab2d0fd633ad2cc23a7b1453c35",
-    "semantic_hash": ""
-  },
   "frontend/static/face/professional-man/thumbnail.png": {
     "mtime": 1778138850.3932736,
     "ast_hash": "10cb32a33f3b9fdace220dca9853f08d",
@@ -902,6 +842,41 @@
   "backend/reference_audio/formal_male_reference.wav": {
     "mtime": 1785699630.5010643,
     "ast_hash": "716e4d658ececf7c50ad15e89dbf5ae0",
+    "semantic_hash": ""
+  },
+  "instruction-report/LAPORAN_HAPUS_3D_HEURIX.md": {
+    "mtime": 1785978038.6163542,
+    "ast_hash": "37c9a85b677b3cbc4e730baae0707e0c",
+    "semantic_hash": ""
+  },
+  "instruction/INSTRUKSI_HAPUS_3D_HEURIX.md": {
+    "mtime": 1785977708.3928213,
+    "ast_hash": "918e163ba2ffbb225337101c99e095e7",
+    "semantic_hash": ""
+  },
+  "frontend/src/lib/OutputBarVisualizer.svelte": {
+    "mtime": 1785978930.1341658,
+    "ast_hash": "59cb5cbcf4b4edc27480a33af25f187c",
+    "semantic_hash": ""
+  },
+  "frontend/src/lib/visualizations/core/BarVisualizer.svelte": {
+    "mtime": 1785978914.740049,
+    "ast_hash": "b57875b5ccdcfa898a08e01bdae9a24e",
+    "semantic_hash": ""
+  },
+  "frontend/src/lib/visualizations/core/utils.ts": {
+    "mtime": 1785978919.640086,
+    "ast_hash": "3852f180ee71dfd6a47a5ae0c15bd4e2",
+    "semantic_hash": ""
+  },
+  "instruction-report/LAPORAN_GANTI_AVATAR_KE_BAR_VISUALIZER.md": {
+    "mtime": 1785979047.079054,
+    "ast_hash": "1780cada9b27c7a376312b37d83141ce",
+    "semantic_hash": ""
+  },
+  "instruction/INSTRUKSI_GANTI_AVATAR_KE_BAR_VISUALIZER.md": {
+    "mtime": 1785978835.1437294,
+    "ast_hash": "5c594ca78c3ea3cad1fbc648a6c62912",
     "semantic_hash": ""
   }
 }

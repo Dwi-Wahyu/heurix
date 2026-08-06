@@ -30,7 +30,6 @@
 		"@tailwindcss/typography": "^0.5.19",
 		"@tailwindcss/vite": "^4.2.2",
 		"@types/node": "^22",
-		"@types/three": "^0.184.0",
 		"@vite-pwa/sveltekit": "^1.1.0",
 		"drizzle-kit": "^0.31.10",
 		"drizzle-orm": "^0.45.2",
@@ -57,7 +56,6 @@
 		"fs": "^0.0.1-security",
 		"groq-sdk": "^1.1.2",
 		"path": "^0.12.7",
-		"svelte-chartjs": "^4.0.1",
-		"three": "^0.184.0"
+		"svelte-chartjs": "^4.0.1"
 	}
 }

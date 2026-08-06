@@ -1,8 +1,12 @@
-import { FaceAnimator } from "./FaceAnimator";
 import { PUBLIC_BACKEND_URL } from '$env/static/public';
 
 // Singleton audio element to bypass mobile autoplay restrictions
 let globalAudioPlayer: HTMLAudioElement | null = null;
+
+// ── Analyser singleton untuk visualizer ──
+let audioContext: AudioContext | null = null;
+let analyserNode: AnalyserNode | null = null;
+let sourceNode: MediaElementAudioSourceNode | null = null;
 
 /**
  * Mempersiapkan audio agar bisa diputar di mobile (harus dipicu user interaction)
@@ -20,47 +24,48 @@ export function unlockAudio() {
 }
 
 /**
+ * Lazy-init AudioContext + AnalyserNode yang tersambung ke globalAudioPlayer.
+ * WAJIB dipanggil hanya sekali per audio element (createMediaElementSource
+ * akan throw kalau dipanggil dua kali pada element yang sama).
+ */
+export function getOutputAnalyser(): AnalyserNode {
+  if (!globalAudioPlayer) unlockAudio();
+  if (analyserNode) return analyserNode;
+
+  audioContext = new AudioContext();
+  analyserNode = audioContext.createAnalyser();
+  analyserNode.fftSize = 128; // -> 64 bin frequency data, cukup untuk bar chart ringkas
+  analyserNode.smoothingTimeConstant = 0.7; // biar transisi antar bar tidak "patah-patah"
+
+  sourceNode = audioContext.createMediaElementSource(globalAudioPlayer!);
+  sourceNode.connect(analyserNode);
+  // ── PENTING: sambungkan balik ke destination, kalau tidak audio jadi BISU ──
+  analyserNode.connect(audioContext.destination);
+
+  return analyserNode;
+}
+
+/** Panggil dari handleUserInteraction() di interview page agar AudioContext resume setelah gesture user. */
+export function resumeAudioContext() {
+  audioContext?.resume();
+}
+
+/**
  * Mengucapkan teks menggunakan backend edge-tts.
- * Sinkronisasi bibir menggunakan data amplitudo (visemes) dari backend.
+ * Memutar audio secara langsung, visualisasi ditangani terpisah oleh AnalyserNode.
  */
 export async function speakWithBackend(
   text: string,
-  animator: FaceAnimator,
   pregeneratedData?: { audio: string; visemes: number[] }
 ): Promise<void> {
-  let fallbackInterval: any;
-  let isBackendAudioPlaying = false;
-
   // Pastikan audio player sudah siap
   if (!globalAudioPlayer) unlockAudio();
 
-  // --- OPTIMISTIC FALLBACK ---
-  const startFallbackAnimation = () => {
-    let toggle = false;
-    fallbackInterval = setInterval(() => {
-      if (!isBackendAudioPlaying) {
-        toggle = !toggle;
-        animator.setMouth(toggle ? 0.4 : 0.1);
-      }
-    }, 150);
-  };
-
-  const stopFallbackAnimation = () => {
-    if (fallbackInterval) {
-      clearInterval(fallbackInterval);
-      fallbackInterval = null;
-    }
-  };
-
   try {
-    startFallbackAnimation();
-    
     let audio: string;
-    let visemes: number[];
 
     if (pregeneratedData) {
       audio = pregeneratedData.audio;
-      visemes = pregeneratedData.visemes;
     } else {
       const response = await fetch(`/api/proxy/api/speech`, {
         method: "POST",
@@ -75,10 +80,9 @@ export async function speakWithBackend(
 
       const data = await response.json();
       audio = data.audio;
-      visemes = data.visemes;
     }
 
-    if (!audio || !visemes) throw new Error("Invalid response from backend (missing audio/visemes)");
+    if (!audio) throw new Error("Invalid response from backend (missing audio)");
 
     const audioBlob = b64toBlob(audio, "audio/mpeg");
     const audioUrl = URL.createObjectURL(audioBlob);
@@ -86,44 +90,13 @@ export async function speakWithBackend(
     const audioPlayer = globalAudioPlayer!;
     audioPlayer.src = audioUrl;
 
-    stopFallbackAnimation();
-
-    // Edge-TTS default sample rate ~24000Hz. Hop length di backend 512.
-    const frameInterval = (512 / 24000) * 1000; 
-
     return new Promise((resolve, reject) => {
-      audioPlayer.onplay = () => {
-        isBackendAudioPlaying = true;
-        const startTime = performance.now();
-
-        const updateMouth = () => {
-          if (!isBackendAudioPlaying) return;
-
-          const elapsed = performance.now() - startTime;
-          const frame = Math.floor(elapsed / frameInterval);
-
-          if (frame < visemes.length) {
-            const amplitude = visemes[frame];
-            animator.setMouth(amplitude * 3.5);
-            requestAnimationFrame(updateMouth);
-          } else {
-            animator.setMouth(0);
-          }
-        };
-        requestAnimationFrame(updateMouth);
-      };
-
       audioPlayer.onended = () => {
-        isBackendAudioPlaying = false;
         URL.revokeObjectURL(audioUrl);
-        animator.setMouth(0);
         resolve();
       };
 
       audioPlayer.onerror = (e) => {
-        isBackendAudioPlaying = false;
-        stopFallbackAnimation();
-        animator.setMouth(0);
         reject(new Error("Audio playback failed or was blocked by browser"));
       };
 
@@ -138,8 +111,6 @@ export async function speakWithBackend(
     });
 
   } catch (err) {
-    stopFallbackAnimation();
-    animator.setMouth(0);
     throw err;
   }
 }

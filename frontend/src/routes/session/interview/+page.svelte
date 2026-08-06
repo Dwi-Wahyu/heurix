@@ -2,16 +2,9 @@
 	import { goto } from '$app/navigation';
 	import { onMount, onDestroy } from 'svelte';
 	import { page } from '$app/state';
-	import { FaceAnimator } from '$lib/FaceAnimator';
-	import { speakWithBackend, unlockAudio } from '$lib/lipSync';
-	import { startAutoBlink } from '$lib/autoBlink';
-	import { EMOTIONS } from '$lib/emotionPresets';
+	import OutputBarVisualizer from '$lib/OutputBarVisualizer.svelte';
+	import { speakWithBackend, unlockAudio, resumeAudioContext } from '$lib/lipSync';
 	import { PUBLIC_BACKEND_WS } from '$env/static/public';
-	import { loadGLBCached } from '$lib/avatarCache';
-	import * as THREE from 'three';
-	import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
-	import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
-	import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js';
 
 	import { browser } from '$app/environment';
 	import { fade } from 'svelte/transition';
@@ -40,7 +33,6 @@
 	// ── Media ──
 	let videoElementDesktop = $state<HTMLVideoElement | null>(null);
 	let videoElementMobile = $state<HTMLVideoElement | null>(null);
-	let canvasElement: HTMLCanvasElement;
 	let stream = $state<MediaStream | null>(null);
 	let micMuted = $state(false);
 	let camOff = $state(false);
@@ -48,16 +40,10 @@
 
 	// ── Face Analysis (MediaPipe) ──
 	let faceLandmarker: FaceLandmarker | undefined;
-	let lastFaceSampleTime = 0;
 	const FACE_SAMPLE_INTERVAL = 3000; // Sample every 3 seconds
+	let faceSampleIntervalId: ReturnType<typeof setInterval> | undefined;
 
-	// ── Three.js resources (lifted to component scope for cleanup in onDestroy) ──
-	let renderer: THREE.WebGLRenderer | undefined;
-	let scene: THREE.Scene | undefined;
-	let camera: THREE.PerspectiveCamera | undefined;
-	let resizeObserver: ResizeObserver | undefined;
-	let animationFrameId: number | undefined;
-	let modelRoot: THREE.Object3D | undefined;
+
 
 	// ── Session & WebSocket ──
 	let sessionId = $state<string | null>(null);
@@ -89,11 +75,8 @@
 	let errorMessage = $state<string | null>(null);
 	let processingResult = $state(false);
 
-	// ── Avatar (Three.js) ──
-	let animator: FaceAnimator | null = null;
-	let stopBlink: (() => void) | null = null;
+	// ── Avatar Info ──
 	let avatarReady = $state(false);
-	let avatarLoadProgress = $state(0);
 	let avatarName = $state('');
 	let avatarDescription = $state('');
 	let avatarThumbnail = $state('');
@@ -189,8 +172,6 @@
 				if (!res.ok) throw new Error('Session not found');
 
 				const sessionData = await res.json();
-				const glbUrl = `/${sessionData.avatar.glbUrl}`;
-				const cameraConfig = sessionData.avatar.cameraConfig;
 
 				// Store avatar info for loading screen
 				avatarName = sessionData.avatar.name;
@@ -208,8 +189,7 @@
 					updateTimer();
 				}
 
-				// 2. Avatar Three.js
-				initAvatar(glbUrl, cameraConfig);
+				avatarReady = true;
 			} catch (err) {
 				console.error('Failed to load session details:', err);
 				errorMessage = 'Gagal memuat detail sesi.';
@@ -248,6 +228,37 @@
 		await initMediaPipe();
 	});
 
+	function startFaceSampling() {
+		faceSampleIntervalId = setInterval(() => {
+			if (!faceLandmarker || !browser || camOff) return;
+			const activeVideo = videoElementDesktop || videoElementMobile;
+			if (!activeVideo || activeVideo.readyState < 2) return;
+
+			const now = performance.now();
+			const results = faceLandmarker.detectForVideo(activeVideo, now);
+			if (results.faceBlendshapes?.[0]) {
+				const shapes = results.faceBlendshapes[0].categories;
+				const smileLeft = shapes.find((s) => s.categoryName === 'mouthSmileLeft')?.score || 0;
+				const smileRight = shapes.find((s) => s.categoryName === 'mouthSmileRight')?.score || 0;
+				const avgSmile = (smileLeft + smileRight) / 2;
+				const hasLandmarks = results.faceLandmarks?.[0]?.length > 0;
+
+				if (ws && wsStatus === 'connected') {
+					ws.send(
+						JSON.stringify({
+							type: 'FACE_METRICS',
+							metrics: {
+								smileScore: avgSmile,
+								isLookingAtCamera: hasLandmarks,
+								timestamp: now
+							}
+						})
+					);
+				}
+			}
+		}, FACE_SAMPLE_INTERVAL);
+	}
+
 	async function initMediaPipe() {
 		if (!browser) return;
 		try {
@@ -262,6 +273,7 @@
 				numFaces: 1
 			});
 			console.log('MediaPipe FaceLandmarker initialized');
+			startFaceSampling();
 		} catch (err) {
 			console.error('Failed to init MediaPipe:', err);
 		}
@@ -413,281 +425,13 @@
 		}
 		stream?.getTracks().forEach((t) => t.stop());
 		ws?.close();
-		stopBlink?.();
 
-		// ── Added: stop the render loop ──
-		if (animationFrameId !== undefined) {
-			cancelAnimationFrame(animationFrameId);
-		}
-
-		// ── Added: disconnect the ResizeObserver ──
-		resizeObserver?.disconnect();
+		if (faceSampleIntervalId) clearInterval(faceSampleIntervalId);
 
 		// ── Added: release MediaPipe WASM/GPU resources ──
 		faceLandmarker?.close();
 		faceLandmarker = undefined;
-
-		// ── Added: release Three.js GPU resources ──
-		if (scene) {
-			scene.traverse((obj: any) => {
-				if (obj.geometry) obj.geometry.dispose();
-				if (obj.material) {
-					const materials = Array.isArray(obj.material) ? obj.material : [obj.material];
-					for (const mat of materials) {
-						for (const key of Object.keys(mat)) {
-							const value = mat[key];
-							if (value && typeof value.dispose === 'function') {
-								value.dispose(); // textures
-							}
-						}
-						mat.dispose();
-					}
-				}
-			});
-		}
-		renderer?.dispose();
-		renderer = undefined;
-		scene = undefined;
-		camera = undefined;
-		modelRoot = undefined;
 	});
-
-	async function initAvatar(glbUrl: string, cameraConfig?: any) {
-		if (!canvasElement || !browser) return;
-
-		const localRenderer = new THREE.WebGLRenderer({
-			canvas: canvasElement,
-			alpha: true,
-			antialias: true,
-			powerPreference: 'high-performance'
-		});
-		renderer = localRenderer;
-
-		const width = canvasElement.clientWidth || window.innerWidth;
-		const height = canvasElement.clientHeight || window.innerHeight || 1;
-		localRenderer.setSize(width, height);
-		localRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-
-		// Tone mapping for better visuals
-		localRenderer.toneMapping = THREE.ACESFilmicToneMapping;
-		localRenderer.toneMappingExposure = 1.2;
-		localRenderer.shadowMap.enabled = true;
-		localRenderer.shadowMap.type = THREE.PCFShadowMap;
-
-		const localScene = new THREE.Scene();
-		scene = localScene;
-
-		const localCamera = new THREE.PerspectiveCamera(25, width / height, 0.01, 100);
-		localCamera.position.set(0, 1.6, 2.0);
-		camera = localCamera;
-
-		// ── PENCAHAYAAN ──
-		const ambient = new THREE.AmbientLight(0xffffff, 0.8);
-		localScene.add(ambient);
-
-		const hemiLight = new THREE.HemisphereLight(0xffffff, 0x444444, 0.6);
-		localScene.add(hemiLight);
-
-		const keyLight = new THREE.DirectionalLight(0xffffff, 1.2);
-		keyLight.position.set(-1, 2, 4);
-		keyLight.castShadow = true;
-		keyLight.shadow.bias = -0.0001;
-		keyLight.shadow.normalBias = 0.05;
-		keyLight.shadow.mapSize.width = 1024;
-		keyLight.shadow.mapSize.height = 1024;
-		localScene.add(keyLight);
-		localScene.add(keyLight.target);
-
-		const fillLight = new THREE.DirectionalLight(0xffffff, 0.5);
-		fillLight.position.set(1, 1, 2);
-		localScene.add(fillLight);
-
-		const rimLight = new THREE.DirectionalLight(0xffffff, 0.7);
-		rimLight.position.set(0, 2, -3);
-		localScene.add(rimLight);
-
-		const dracoLoader = new DRACOLoader();
-		dracoLoader.setDecoderPath('/draco/');
-
-		const loader = new GLTFLoader();
-		loader.setDRACOLoader(dracoLoader);
-		loader.setMeshoptDecoder(MeshoptDecoder);
-
-		try {
-			await new Promise<void>((resolve, reject) => {
-				loader.load(
-					glbUrl,
-					(gltf) => {
-						const model = gltf.scene;
-						localScene.add(model);
-
-						model.traverse((obj) => {
-							if ((obj as THREE.Mesh).isMesh) {
-								const mesh = obj as THREE.Mesh;
-								const hidden = ['Pants_14249_Shape', 'hnsshoes_6176_Shape', 'Shoes'];
-								if (hidden.some((h) => mesh.name.includes(h))) mesh.visible = false;
-
-								mesh.castShadow = true;
-								mesh.receiveShadow = true;
-
-								if (mesh.material) {
-									const mat = mesh.material as THREE.MeshStandardMaterial;
-									if (mat.map) mat.map.anisotropy = 16;
-								}
-							}
-						});
-
-						// ── DYNAMIC CAMERA FOCUS ──
-						model.updateMatrixWorld(true);
-						const box = new THREE.Box3().setFromObject(model);
-						const size = box.getSize(new THREE.Vector3());
-						const center = box.getCenter(new THREE.Vector3());
-
-						// Gunakan config dari DB atau default
-						const headHeightRatio = cameraConfig?.headHeightRatio ?? 0.82;
-						const distanceOffset = cameraConfig?.distanceOffset ?? 1.0;
-						const lookAtOffset = cameraConfig?.lookAtOffset ?? 0.05;
-
-						if (size.y < 0.1) {
-							localCamera.position.set(center.x, center.y + 0.1, center.z + 0.5);
-							localCamera.lookAt(center.x, center.y + 0.1, center.z);
-						} else {
-							const headBottomY = box.min.y + size.y * headHeightRatio;
-							const headTopY = box.max.y;
-							const focusCenterY = (headBottomY + headTopY) / 2;
-							const focusHeight = headTopY - headBottomY;
-
-							const vFovRad = (localCamera.fov * Math.PI) / 180;
-							const desiredCoverage = 0.85;
-							const distance =
-								(focusHeight / 2 / Math.tan(vFovRad / 2) / desiredCoverage) * distanceOffset;
-
-							localCamera.position.set(center.x, focusCenterY, center.z + distance);
-							localCamera.lookAt(center.x, focusCenterY - focusHeight * lookAtOffset, center.z);
-
-							keyLight.position.set(center.x - 1, focusCenterY + 1, center.z + 2);
-							keyLight.target.position.set(center.x, focusCenterY, center.z);
-							keyLight.target.updateMatrixWorld();
-						}
-
-						localCamera.updateProjectionMatrix();
-
-						animator = new FaceAnimator(model);
-						modelRoot = model;
-						stopBlink = startAutoBlink(animator);
-						avatarReady = true;
-						resolve();
-					},
-					(xhr) => {
-						if (xhr.lengthComputable) {
-							avatarLoadProgress = Math.round((xhr.loaded / xhr.total) * 100);
-						} else {
-							avatarLoadProgress = Math.min(avatarLoadProgress + 1, 98);
-						}
-					},
-					(err) => reject(err)
-				);
-			});
-		} catch (err) {
-			console.error('Avatar load error:', err);
-		}
-
-		let lastTime = performance.now();
-		function animate() {
-			if (!renderer || !scene || !camera) return;
-			animationFrameId = requestAnimationFrame(animate);
-			const time = performance.now();
-			const delta = (time - lastTime) / 1000;
-			lastTime = time;
-
-			if (animator) {
-				animator.update(Math.min(delta, 0.1));
-
-				// ── PROCEDURAL IDLE & THINKING ANIMATION ──
-				const t = time / 1000;
-
-				// 1. Subtle breathing/sway (Always on)
-				// Kecepatan sangat lambat agar tidak mengganggu
-				const swayX = Math.sin(t * 0.5) * 0.015;
-				const swayY = Math.cos(t * 0.8) * 0.01;
-
-				let targetRotX = swayX;
-				let targetRotY = swayY;
-				let targetRotZ = 0;
-
-				if (isThinking) {
-					// Menoleh sedikit ke samping dan ke atas (pose berpikir)
-					targetRotX += 0.04;
-					targetRotY += 0.1;
-					targetRotZ = 0.03;
-
-					// Naikkan alis sedikit
-					animator.setExpression({
-						BrowInnerUp: 0.3,
-						BrowOuterUpLeft: 0.1,
-						BrowOuterUpRight: 0.1
-					});
-				}
-
-				// Cari model di scene untuk diaplikasikan rotasi
-				// Cache direct reference to modelRoot to save scene traversal every frame
-				if (modelRoot) {
-					modelRoot.rotation.x = THREE.MathUtils.lerp(modelRoot.rotation.x, targetRotX, 0.05);
-					modelRoot.rotation.y = THREE.MathUtils.lerp(modelRoot.rotation.y, targetRotY, 0.05);
-					modelRoot.rotation.z = THREE.MathUtils.lerp(modelRoot.rotation.z, targetRotZ, 0.05);
-				}
-			}
-
-			renderer.render(scene, camera);
-
-			// ── FACE ANALYSIS (MediaPipe) ──
-			if (faceLandmarker && browser && !camOff) {
-				const activeVideo = videoElementDesktop || videoElementMobile;
-				if (activeVideo && activeVideo.readyState >= 2) {
-					const now = performance.now();
-					if (now - lastFaceSampleTime > FACE_SAMPLE_INTERVAL) {
-						lastFaceSampleTime = now;
-
-						const results = faceLandmarker.detectForVideo(activeVideo, now);
-						if (results.faceBlendshapes?.[0]) {
-							const shapes = results.faceBlendshapes[0].categories;
-							const smileLeft = shapes.find((s) => s.categoryName === 'mouthSmileLeft')?.score || 0;
-							const smileRight =
-								shapes.find((s) => s.categoryName === 'mouthSmileRight')?.score || 0;
-							const avgSmile = (smileLeft + smileRight) / 2;
-
-							// Eye contact consistency check
-							// We consider consistent eye contact if face is detected and landmarks are present
-							// For more precision, we could check pupil position or head pitch/yaw/roll
-							const hasLandmarks = results.faceLandmarks?.[0]?.length > 0;
-
-							if (ws && wsStatus === 'connected') {
-								ws.send(
-									JSON.stringify({
-										type: 'FACE_METRICS',
-										metrics: {
-											smileScore: avgSmile,
-											isLookingAtCamera: hasLandmarks,
-											timestamp: now
-										}
-									})
-								);
-							}
-						}
-					}
-				}
-			}
-		}
-		animate();
-
-		resizeObserver = new ResizeObserver(() => {
-			if (!canvasElement) return;
-			localCamera.aspect = canvasElement.clientWidth / canvasElement.clientHeight;
-			localCamera.updateProjectionMatrix();
-			localRenderer.setSize(canvasElement.clientWidth, canvasElement.clientHeight);
-		});
-		resizeObserver.observe(canvasElement);
-	}
 
 	function initWebSocket() {
 		let wsUrl = PUBLIC_BACKEND_WS;
@@ -729,6 +473,7 @@
 	}
 
 	function handleUserInteraction() {
+		resumeAudioContext();
 		if (audioBlocked) {
 			unlockAudio();
 			audioBlocked = false;
@@ -747,28 +492,18 @@
 				errorMessage = null;
 				currentTurnNumber = msg.turnNumber;
 
-				if (msg.persona === 'intimidating' && animator) {
-					animator.setExpression(EMOTIONS.angry);
-				} else if (msg.persona === 'friendly' && animator) {
-					animator.setExpression(EMOTIONS.happy);
-				}
-
 				isSpeaking = true;
 				isThinking = false;
 				try {
-					if (animator) {
-						// Gunakan audio & visemes dari backend jika tersedia untuk menghindari fetch ulang
-						await speakWithBackend(
-							text,
-							animator,
-							msg.audio && msg.visemes
-								? {
-										audio: msg.audio,
-										visemes: msg.visemes
-									}
-								: undefined
-						);
-					}
+					await speakWithBackend(
+						text,
+						msg.audio && msg.visemes
+							? {
+									audio: msg.audio,
+									visemes: msg.visemes
+								}
+							: undefined
+					);
 				} catch (err: any) {
 					console.error('Speech playback failed:', err);
 					if (err.message === 'AUTOPLAY_BLOCKED') {
@@ -859,16 +594,9 @@
 			const chunk = audioQueue.shift()!;
 			if (chunk.isLast) lastChunkReceived = true;
 
-			// Handle persona
-			if (chunk.persona === 'intimidating' && animator) {
-				animator.setExpression(EMOTIONS.angry);
-			} else if (chunk.persona === 'friendly' && animator) {
-				animator.setExpression(EMOTIONS.happy);
-			}
-
 			try {
-				if (animator && chunk.audio && chunk.visemes) {
-					await speakWithBackend(chunk.text, animator, {
+				if (chunk.audio && chunk.visemes) {
+					await speakWithBackend(chunk.text, {
 						audio: chunk.audio,
 						visemes: chunk.visemes
 					});
@@ -1074,57 +802,12 @@
 >
 	{#if !avatarReady}
 		<div
-			class="fixed inset-0 z-[100] flex items-center justify-center bg-[#f8f9ff] text-gray-900"
+			class="fixed inset-0 z-[100] flex items-center justify-center bg-black transition-opacity"
 			transition:fade
 		>
-			<div
-				class="w-full max-w-2xl overflow-hidden rounded-3xl bg-white p-8 shadow-[0px_20px_50px_rgba(0,0,0,0.1)]"
-			>
-				<div class="flex flex-col gap-8 md:flex-row md:items-center">
-					<!-- Avatar Image -->
-					<div
-						class="relative h-48 w-48 shrink-0 self-center overflow-hidden rounded-2xl bg-gray-100 md:h-56 md:w-56"
-					>
-						{#if avatarThumbnail}
-							<img src={avatarThumbnail} alt={avatarName} class="h-full w-full object-cover" />
-						{:else}
-							<div class="flex h-full w-full items-center justify-center bg-gray-200">
-								<Bot size={64} class="text-gray-400" />
-							</div>
-						{/if}
-						<div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
-					</div>
-
-					<!-- Avatar Info -->
-					<div class="flex flex-1 flex-col justify-center text-center md:text-left">
-						<span class="mb-2 text-[10px] font-bold tracking-[0.2em] text-primary uppercase"
-							>Mempersiapkan Sesi</span
-						>
-						<h2 class="mb-3 text-3xl font-extrabold tracking-tight text-gray-900">
-							{avatarName || 'Pewawancara'}
-						</h2>
-						<p class="mb-8 text-base leading-relaxed text-gray-500">
-							{avatarDescription ||
-								'Sedang memuat data pewawancara profesional Anda. Harap tunggu sejenak.'}
-						</p>
-
-						<!-- Progress Bar -->
-						<div class="space-y-3">
-							<div
-								class="flex items-center justify-between text-xs font-bold tracking-wider text-gray-400 uppercase"
-							>
-								<span>Memuat Avatar 3D</span>
-								<span class="text-primary">{avatarLoadProgress}%</span>
-							</div>
-							<div class="h-2 w-full overflow-hidden rounded-full bg-gray-100">
-								<div
-									class="h-full bg-primary transition-all duration-300"
-									style="width: {avatarLoadProgress || 10}%"
-								></div>
-							</div>
-						</div>
-					</div>
-				</div>
+			<div class="flex flex-col items-center gap-4 text-white">
+				<div class="h-10 w-10 animate-spin rounded-full border-4 border-white/20 border-t-white"></div>
+				<p class="text-lg font-medium tracking-wide">Memulai Sesi Interview</p>
 			</div>
 		</div>
 	{/if}
@@ -1161,12 +844,13 @@
 				</div>
 			{/if}
 
-			<canvas
-				bind:this={canvasElement}
-				class="absolute inset-0 h-full w-full transition-opacity duration-500 {avatarReady
+			<div
+				class="absolute inset-0 flex items-center justify-center transition-opacity duration-500 {avatarReady
 					? 'opacity-100'
 					: 'opacity-0'}"
-			></canvas>
+			>
+				<OutputBarVisualizer />
+			</div>
 
 			{#if audioBlocked}
 				<div
