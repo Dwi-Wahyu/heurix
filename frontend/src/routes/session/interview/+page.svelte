@@ -671,18 +671,29 @@
 
 			mediaRecorder.onstop = async () => {
 				isListening = false;
-				if (audioChunks.length === 0) return;
+				isThinking = true;
 
-				const audioBlob = new Blob(audioChunks, { type: mimeType || 'audio/webm' });
-				const buffer = await audioBlob.arrayBuffer();
+				const userText = liveTranscript.trim();
+				liveTranscript = '';
 
-				if (buffer.byteLength > 0 && ws?.readyState === WebSocket.OPEN) {
-					ws.send(buffer);
+				if (userText && ws?.readyState === WebSocket.OPEN) {
+					console.log('Sending Web Speech API transcript to backend:', userText);
+					ws.send(JSON.stringify({ type: 'USER_ANSWER', text: userText }));
 					messages = [
 						...messages,
-						{ role: 'user', text: liveTranscript || '...', time: timeDisplay() }
+						{ role: 'user', text: userText, time: timeDisplay() }
 					];
-					liveTranscript = '';
+				} else if (audioChunks.length > 0) {
+					const audioBlob = new Blob(audioChunks, { type: mimeType || 'audio/webm' });
+					const buffer = await audioBlob.arrayBuffer();
+
+					if (buffer.byteLength > 0 && ws?.readyState === WebSocket.OPEN) {
+						ws.send(buffer);
+						messages = [
+							...messages,
+							{ role: 'user', text: '...', time: timeDisplay() }
+						];
+					}
 				}
 			};
 

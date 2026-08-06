@@ -4,12 +4,12 @@
 - cluster-only mode — file stats not available
 
 ## Summary
-- 1332 nodes · 1862 edges · 143 communities (88 shown, 55 thin omitted)
+- 1371 nodes · 1903 edges · 145 communities (90 shown, 55 thin omitted)
 - Extraction: 96% EXTRACTED · 4% INFERRED · 0% AMBIGUOUS · INFERRED: 77 edges (avg confidence: 0.78)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `2c3652c0`
+- Built from commit: `b4d53d97`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -37,6 +37,8 @@
 - Instruksi Perbaikan: Halusinasi Whisper, Latensi Kalimat Pertama, & Voice Cloning F5TTS Belum Aktif
 - +page.svelte
 - $lib/components/Header.svelte
+- schema.ts
+- STORYBOARD: HEURIX — SIMULASI WAWANCARA
 - vision_wasm_module_internal.js
 - finish_and_report
 - Project Documentation and Assets
@@ -164,15 +166,15 @@
 - **AI Interview Simulation Flow** — interview_agent, face_animator, heurix_backend, heurix_frontend [INFERRED 0.85]
 - **Interview Session Logic & Flow** — backend_app_services_brain, backend_app_api_websocket, instruction_implementasi_alur_percakapan [EXTRACTED 1.00]
 
-## Communities (143 total, 55 thin omitted)
+## Communities (145 total, 55 thin omitted)
 
 ### Community 0 - "brain.py"
 Cohesion: 0.06
-Nodes (57): build_chat_history(), build_system_prompt(), calculate_sri(), compute_pressure_level(), extract_weakness_tags(), generate_next_turn(), generate_next_turn_stream(), get_phase() (+49 more)
+Nodes (58): build_chat_history(), build_system_prompt(), calculate_sri(), compute_pressure_level(), extract_weakness_tags(), generate_next_turn(), generate_next_turn_stream(), get_phase() (+50 more)
 
 ### Community 1 - "vision_wasm_internal.js"
 Cohesion: 0.02
-Nodes (24): chmod(), createNode(), createStandardStreams(), doChmod(), fchmod(), hashAddNode(), hashRemoveNode(), RFC-2279 (+16 more)
+Nodes (24): chmod(), createNode(), createStandardStreams(), doChmod(), hashAddNode(), hashRemoveNode(), RFC-2279, RFC-3629 (+16 more)
 
 ### Community 2 - "vision_wasm_nosimd_internal.js"
 Cohesion: 0.02
@@ -187,8 +189,8 @@ Cohesion: 0.15
 Nodes (12): ⚠️ Catatan Penting Sebelum Mulai, Checklist Verifikasi Setelah Refactor, Instruksi: Hapus Fitur 3D (Three.js) dari Heurix, LANGKAH BACKEND, LANGKAH FRONTEND, Peta Dependensi (baca dulu), Step 1 — Refactor `lipSync.ts` (lepas ketergantungan ke `FaceAnimator`), Step 2 — Refactor `autoBlink.ts` (+4 more)
 
 ### Community 5 - "Session"
-Cohesion: 0.10
-Nodes (45): finish_and_report(), handle_user_answer(), InterviewSession, WebSocket, Mengakhiri sesi, men-generate laporan, dan mengirim sinyal selesai ke frontend., Menghasilkan pertanyaan berikutnya secara streaming dan mengirim audio per kalim, Sederhana membagi teks menjadi kalimat berdasarkan tanda baca., re_send_last_question() (+37 more)
+Cohesion: 0.11
+Nodes (44): finish_and_report(), handle_user_answer(), InterviewSession, WebSocket, Mengakhiri sesi, men-generate laporan, dan mengirim sinyal selesai ke frontend., Menghasilkan pertanyaan berikutnya secara streaming dan mengirim audio per kalim, Sederhana membagi teks menjadi kalimat berdasarkan tanda baca., re_send_last_question() (+36 more)
 
 ### Community 6 - "Laporan Pelaksanaan: Penghapusan Fitur 3D (Three.js) dari Heurix"
 Cohesion: 0.25
@@ -245,6 +247,14 @@ Nodes (7): $lib/auth-client, $app/environment, $app/forms, $app/navigation, $env
 ### Community 22 - "$lib/components/Header.svelte"
 Cohesion: 0.19
 Nodes (8): $lib/components/BottomNav.svelte, $lib/components/Header.svelte, $lib/components/Sidebar.svelte, $lib/sidebar.svelte, sidebarState, string, $lib/assets/logo.png?enhanced, $app/state
+
+### Community 23 - "schema.ts"
+Cohesion: 0.08
+Nodes (28): account, accountRelations, session, sessionRelations, user, userRelations, verification, difficultyEnum (+20 more)
+
+### Community 24 - "STORYBOARD: HEURIX — SIMULASI WAWANCARA"
+Cohesion: 0.22
+Nodes (8): CATATAN PRODUKSI, SCENE 1: MASALAH (0:00 – 0:25), SCENE 2: SOLUSI HEURIX (0:25 – 0:50), SCENE 3: CARA KERJA (0:50 – 1:10), SCENE 4: DEMO PENGGUNAAN (1:10 – 2:20), SCENE 5: KENAPA INI BERGUNA (2:20 – 2:45), SCENE 6: CLOSING (2:45 – 3:00), STORYBOARD: HEURIX — SIMULASI WAWANCARA
 
 ### Community 27 - "vision_wasm_module_internal.js"
 Cohesion: 0.10
@@ -415,7 +425,7 @@ Cohesion: 0.50
 Nodes (3): "interview_session", "session_report", "user_profile"
 
 ## Knowledge Gaps
-- **309 isolated node(s):** `Config`, `user_profile`, `interview_session`, `session_report`, `interviewTrackEnum` (+304 more)
+- **340 isolated node(s):** `Config`, `user_profile`, `interview_session`, `session_report`, `interviewTrackEnum` (+335 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **55 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
@@ -423,16 +433,16 @@ Nodes (3): "interview_session", "session_report", "user_profile"
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `fs` connect `fs` to `vision_wasm_internal.js`, `Path and Directory Management`, `scripts`, `vision_wasm_module_internal.js`, `File I/O Operations`, `abort`, `TTY IOCTL Syscalls`, `TTY IOCTL Syscalls`, `Low-level Write Operations`, `Low-level Write Operations`, `File Stream Closing`, `Character Input Reading`, `Initialization and Timing`, `Filesystem Mounting`, `Filesystem Statistics`, `File Synchronization`, `Character Input Reading`, `Initialization and Timing`, `Filesystem Mounting`, `Filesystem Statistics`?**
-  _High betweenness centrality (0.150) - this node is a cross-community bridge._
+  _High betweenness centrality (0.140) - this node is a cross-community bridge._
 - **Why does `dependencies` connect `scripts` to `fs`, `Path and Directory Management`?**
-  _High betweenness centrality (0.051) - this node is a cross-community bridge._
+  _High betweenness centrality (0.048) - this node is a cross-community bridge._
 - **Why does `$lib/lipSync` connect `$lib/lipSync` to `+page.svelte`, `Session`, `visemeMap.ts`?**
-  _High betweenness centrality (0.030) - this node is a cross-community bridge._
+  _High betweenness centrality (0.029) - this node is a cross-community bridge._
 - **Are the 8 inferred relationships involving `send_next_question_stream()` (e.g. with `InterviewAvatar` and `MasterInstitution`) actually correct?**
   _`send_next_question_stream()` has 8 INFERRED edges - model-reasoned connections that need verification._
 - **What connects `Config`, `user_profile`, `interview_session` to the rest of the system?**
-  _309 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _340 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `brain.py` be split into smaller, more focused modules?**
-  _Cohesion score 0.062146892655367235 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.060655737704918035 - nodes in this community are weakly interconnected._
 - **Should `vision_wasm_internal.js` be split into smaller, more focused modules?**
   _Cohesion score 0.015037593984962405 - nodes in this community are weakly interconnected._

@@ -93,6 +93,28 @@ async def websocket_endpoint(websocket: WebSocket, sessionId: str):
                         await send_next_question_stream(websocket, db, interview_session, question_count + 1)
                         question_count += 1
 
+                elif message["type"] == "USER_ANSWER":
+                    user_text = message.get("text", "").strip()
+                    if user_text:
+                        fillers = ["eh", "hmm", "umm", "anu", "jadi", "kayaknya", "mungkin", "apa ya"]
+                        filler_breakdown = {}
+                        filler_count = 0
+                        text_lower = user_text.lower()
+                        for f in fillers:
+                            cnt = text_lower.count(f)
+                            if cnt > 0:
+                                filler_breakdown[f] = cnt
+                                filler_count += cnt
+
+                        print(f"User answer received from frontend (Web Speech API): '{user_text}'")
+                        await websocket.send_json({"type": "PROCESSING"})
+                        await websocket.send_json({"type": "TRANSCRIPT", "text": user_text})
+                        await handle_user_answer(websocket, db, interview_session, user_text, question_count, filler_count, filler_breakdown)
+                        question_count += 1
+                    else:
+                        print("User answer was empty string from frontend")
+                        await websocket.send_json({"type": "QUESTION", "text": "Maaf, suara tidak terdengar jelas. Bisa diulangi?", "turnNumber": question_count})
+
                 elif message["type"] == "END_SESSION":
                     await finish_and_report(websocket, db, interview_session)
                     break
